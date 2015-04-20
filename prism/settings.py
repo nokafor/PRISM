@@ -37,6 +37,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrapform',
+    'companies',
+    'profiles',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -100,7 +103,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-
+TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR,'static'),
 )
@@ -111,6 +114,8 @@ AUTHENTICATION_BACKENDS = (
 )
 
 CAS_SERVER_URL = "https://fed.princeton.edu/cas/login"
+CAS_LOGOUT_COMPLETELY = True
+CAS_IGNORE_REFERER = True
 
 #--- HEROKU, POSTGRES ---
 

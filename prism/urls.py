@@ -1,10 +1,10 @@
-from django.conf.urls import include, url
+from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
-urlpatterns = [
-    # Examples:
-    # url(r'^$', 'prism.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-
+urlpatterns = patterns('',
+    #url(r'^$', include('companyMembers.urls', namespace="companyMembers")),
     url(r'^admin/', include(admin.site.urls)),
-]
+    url(r'', include('companies.urls', namespace="companies")),
+    url(r'^(?P<company_name>[\w\ ]+)/(?P<member_name>\w+)/', include('profiles.urls', namespace="profiles")),
+    
+)
