@@ -4,7 +4,7 @@ from django.contrib.auth import logout
 from django.http import HttpResponse, HttpResponseRedirect
 
 from companies.models import Company, Member, Admin
-from profiles.models import ConflictForm
+from profiles.models import ConflictForm, RehearsalTime, RehearsalForm
 from profiles.forms import NameForm
 
 # Create your views here.
@@ -73,5 +73,38 @@ def conflicts(request, company_name, member_name):
             else:
                 form = ConflictForm()
             return render(request, 'profiles/addconflict.html', {'company':company, 'member':member, 'conflict_list':conflict_list, 'form':form})
+    else:
+        return redirect('profiles:profile', company_name, member_name,)
+
+def spaces(request, company_name, member_name):
+    company = get_object_or_404(Company, name=company_name)
+
+    # user must come from profile page to get here... don't need to reauthenticate
+    if request.user.is_authenticated() and member_name == request.user.username:
+        try:
+            member = company.member_set.get(netid=member_name)
+        except (KeyError, Member.DoesNotExist):
+            return redirect('profiles:profile', company_name, member_name,)
+        else:
+            try:
+                admin = Admin.objects.get(member=member)
+            except (KeyError, Admin.DoesNotExist):
+                return redirect('profiles:profile', company_name, member_name,)
+            else:
+                rehearsal_list = company.rehearsaltime_set.all()
+
+                # process the form and conflict data of the user
+                if request.method == 'POST':
+                    form = RehearsalForm(request.POST)
+                    if form.is_valid():
+                        new_rehearsal = form.save(commit=False)
+                        new_rehearsal.company = company
+                        new_rehearsal.save()
+                        form.save_m2m()
+
+                        return HttpResponseRedirect('')
+                else:
+                    form = RehearsalForm()
+                return render(request, 'profiles/addspace.html', {'company':company, 'member':member, 'rehearsal_list':rehearsal_list, 'form':form})
     else:
         return redirect('profiles:profile', company_name, member_name,)

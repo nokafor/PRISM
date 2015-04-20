@@ -46,7 +46,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">{{ company.name }}</a>
+                <a class="navbar-brand" href="#">{{ company.name }}</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -56,7 +56,7 @@
                         <a href="{% url 'profiles:profile' company.name member.netid %}">Hub</a>
                     </li>
                     <li>
-                        <a href="#">Logout</a>
+                        <a href="logout/">Logout</a>
                     </li>
                 </ul>
             </div>
