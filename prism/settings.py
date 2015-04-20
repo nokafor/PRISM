@@ -117,8 +117,6 @@ CAS_SERVER_URL = "https://fed.princeton.edu/cas/login"
 CAS_LOGOUT_COMPLETELY = True
 CAS_IGNORE_REFERER = True
 
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
-
 # # Static asset configuration
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
