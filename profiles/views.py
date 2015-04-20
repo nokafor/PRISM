@@ -108,3 +108,25 @@ def spaces(request, company_name, member_name):
                 return render(request, 'profiles/addspace.html', {'company':company, 'member':member, 'rehearsal_list':rehearsal_list, 'form':form})
     else:
         return redirect('profiles:profile', company_name, member_name,)
+
+def members(request, company_name, member_name):
+    company = get_object_or_404(Company, name=company_name)
+
+    # user must come from profile page to get here... don't need to reauthenticate
+    if request.user.is_authenticated() and member_name == request.user.username:
+        try:
+            member = company.member_set.get(netid=member_name)
+        except (KeyError, Member.DoesNotExist):
+            return redirect('profiles:profile', company_name, member_name,)
+        else:
+            try:
+                admin = Admin.objects.get(member=member)
+            except (KeyError, Admin.DoesNotExist):
+                return redirect('profiles:profile', company_name, member_name,)
+            else:
+                member_list = company.member_set.all()
+                admin_list = company.admin_set.all()
+
+                return render(request, 'profiles/members.html', {'company':company, 'member':member, 'member_list':member_list, 'admin_list':admin_list})
+    else:
+        return redirect('profiles:profile', company_name, member_name,)
