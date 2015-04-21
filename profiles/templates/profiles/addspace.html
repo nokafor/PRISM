@@ -93,7 +93,7 @@
                         {% for rehearsal in rehearsal_list %}
                             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                                 <p>{{ rehearsal.day_of_week }}</p>
-                                <p>{{ rehearsal.description }}: {{rehearsal.start_time}} - {{rehearsal.end_time}}</p>
+                                <p>{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}}</p>
                             </div>
                         {% endfor %}
                     {% else %}
@@ -126,6 +126,14 @@
     </section>
 
 
+    <!-- jQuery -->
+    <script src="{% static 'profiles/js/jquery.js' %}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'profiles/js/bootstrap.min.js' %}"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="{% static 'profiles/js/clean-blog.min.js' %}"></script>
 
 </body>
 </html>

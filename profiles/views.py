@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.http import HttpResponse, HttpResponseRedirect
 
-from companies.models import Company, Member, Admin
-from profiles.models import ConflictForm, RehearsalTime, RehearsalForm
+from companies.models import Company, Member, Admin, Rehearsal
+from profiles.models import ConflictForm, RehearsalForm
 from profiles.forms import NameForm
 
 # Create your views here.
@@ -91,7 +91,7 @@ def spaces(request, company_name, member_name):
             except (KeyError, Admin.DoesNotExist):
                 return redirect('profiles:profile', company_name, member_name,)
             else:
-                rehearsal_list = company.rehearsaltime_set.all()
+                rehearsal_list = company.rehearsal_set.all()
 
                 # process the form and conflict data of the user
                 if request.method == 'POST':

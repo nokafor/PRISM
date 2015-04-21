@@ -17,6 +17,13 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='Cast',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('choreographerID', models.CharField(max_length=200)),
+            ],
+        ),
+        migrations.CreateModel(
             name='Company',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -30,8 +37,27 @@ class Migration(migrations.Migration):
                 ('first_name', models.CharField(max_length=200, blank=True)),
                 ('last_name', models.CharField(max_length=200, blank=True)),
                 ('netid', models.CharField(max_length=100)),
+                ('cast', models.ManyToManyField(to='companies.Cast')),
                 ('company', models.ManyToManyField(to='companies.Company')),
             ],
+        ),
+        migrations.CreateModel(
+            name='Rehearsal',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('start_time', models.TimeField(verbose_name=b'Start Time')),
+                ('end_time', models.TimeField(verbose_name=b'End Time')),
+                ('day_of_week', models.CharField(default=b'MON', max_length=3, choices=[(b'MON', b'Monday'), (b'TUE', b'Tuesday'), (b'WED', b'Wednesday'), (b'THU', b'Thursday'), (b'FRI', b'Friday'), (b'SAT', b'Saturday'), (b'SUN', b'Sunday')])),
+                ('place', models.CharField(max_length=200)),
+            ],
+            options={
+                'abstract': False,
+            },
+        ),
+        migrations.AddField(
+            model_name='cast',
+            name='rehearsal',
+            field=models.ForeignKey(to='companies.Rehearsal'),
         ),
         migrations.AddField(
             model_name='admin',
