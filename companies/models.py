@@ -40,8 +40,10 @@ class Rehearsal(TimeBlock):
         return "%s: %s - %s (%s)" % (self.place, self.start_time, self.end_time, self.day_of_week)
 
 class Cast(models.Model):
-    choreographerID = models.CharField(max_length=200)
+    choreographerID = models.CharField('Choreographer Netid', max_length=200)
     rehearsal = models.ForeignKey(Rehearsal)
+    def __str__(self):
+        return "%s's Cast" % (self.choreographerID)
 
 class Member(models.Model):
     first_name = models.CharField(max_length=200, blank=True)

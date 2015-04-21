@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.http import HttpResponse, HttpResponseRedirect
 
-from companies.models import Company, Member, Admin, Rehearsal
-from profiles.models import ConflictForm, RehearsalForm
+from companies.models import Company, Member, Admin, Rehearsal, Cast
+from profiles.models import ConflictForm, RehearsalForm, CreateCastForm
 from profiles.forms import NameForm
 
 # Create your views here.
@@ -128,5 +128,39 @@ def members(request, company_name, member_name):
                 admin_list = company.admin_set.all()
 
                 return render(request, 'profiles/members.html', {'company':company, 'member':member, 'member_list':member_list, 'admin_list':admin_list})
+    else:
+        return redirect('profiles:profile', company_name, member_name,)
+
+def casts(request, company_name, member_name):
+    company = get_object_or_404(Company, name=company_name)
+
+    # user must come from profile page to get here... don't need to reauthenticate
+    if request.user.is_authenticated() and member_name == request.user.username:
+        try:
+            member = company.member_set.get(netid=member_name)
+        except (KeyError, Member.DoesNotExist):
+            return redirect('profiles:profile', company_name, member_name,)
+        else:
+            try:
+                admin = Admin.objects.get(member=member)
+            except (KeyError, Admin.DoesNotExist):
+                return redirect('profiles:profile', company_name, member_name,)
+            else:
+                member_list = company.member_set.all()
+                total_casts = Cast.objects.all()
+
+                # process the form and conflict data of the user
+                if request.method == 'POST':
+                    form = CreateCastForm(request.POST)
+                    if form.is_valid():
+                        new_cast = form.save(commit=False)
+                        new_cast.company = company
+                        new_cast.save()
+                        form.save_m2m()
+
+                        return HttpResponseRedirect('')
+                else:
+                    form = CreateCastForm()
+                return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'member_list':member_list, 'total_casts':total_casts, 'form':form})
     else:
         return redirect('profiles:profile', company_name, member_name,)
