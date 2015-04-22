@@ -164,3 +164,28 @@ def casts(request, company_name, member_name):
                 return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'member_list':member_list, 'total_casts':total_casts, 'form':form})
     else:
         return redirect('profiles:profile', company_name, member_name,)
+
+def updateConflict(request, company_name, member_name, conflict_id):
+    company = get_object_or_404(Company, name=company_name)
+
+    # user must come from profile page to get here... don't need to reauthenticate
+    if request.user.is_authenticated() and member_name == request.user.username:
+        try:
+            member = company.member_set.get(netid=member_name)
+        except (KeyError, Member.DoesNotExist):
+            return redirect('profiles:profile', company_name, member_name,)
+        else:
+            conflict = member.conflict_set.get(id=conflict_id)
+
+            # process the form and conflict data of the user
+            if request.method == 'POST':
+                form = ConflictForm(request.POST)
+                if form.is_valid():
+                    form.save()
+
+                    return redirect('profiles:conflicts', company_name, member_name,)
+            else:
+                form = ConflictForm(instance=conflict)
+            return render(request, 'profiles/practice.html', {'company':company, 'member':member, 'form':form})
+    else:
+        return redirect('profiles:profile', company_name, member_name,)
