@@ -30,6 +30,7 @@ from django.template.loader import render_to_string
 #       return HttpResponse(render_to_string('updates/member_edit_form_success.html', {'member':member}))
 
 def addConflict(request, company_name, member_name):
+    name = 'updates:addConflict'
     company = get_object_or_404(Company, name=company_name)
 
     # user must come from profile page to get here... don't need to reauthenticate
@@ -51,11 +52,12 @@ def addConflict(request, company_name, member_name):
                     return redirect('profiles:conflicts', company_name, member_name,)
             else:
                 form = ConflictForm()
-            return render(request, 'updates/add.html', {'company':company, 'member':member, 'form':form})
+            return render(request, 'updates/add.html', {'company':company, 'member':member, 'form':form, 'redirect_name':name})
     else:
         return redirect('profiles:profile', company_name, member_name,)
 
 def updateConflict(request, company_name, member_name, conflict_id):
+    name = 'updates:updateConflict'
     company = get_object_or_404(Company, name=company_name)
 
     # user must come from profile page to get here... don't need to reauthenticate
@@ -76,7 +78,7 @@ def updateConflict(request, company_name, member_name, conflict_id):
                     return redirect('profiles:conflicts', company_name, member_name,)
             else:
                 form = ConflictForm(instance=conflict)
-            return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':conflict, 'form':form})
+            return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':conflict, 'form':form, 'redirect_name':name})
     else:
         return redirect('profiles:profile', company_name, member_name,)
 
@@ -97,7 +99,8 @@ def deleteConflict(request, company_name, member_name, conflict_id):
     else:
         return redirect('profiles:profile', company_name, member_name,)
 
-def updateRehearsal(request, company_name, member_name, rehearsal_id):
+def addRehearsal(request, company_name, member_name):
+    name = 'updates:addRehearsal'
     company = get_object_or_404(Company, name=company_name)
 
     # user must come from profile page to get here... don't need to reauthenticate
@@ -107,17 +110,76 @@ def updateRehearsal(request, company_name, member_name, rehearsal_id):
         except (KeyError, Member.DoesNotExist):
             return redirect('profiles:profile', company_name, member_name,)
         else:
-            rehearsal = company.rehearsal_set.get(id=rehearsal_id)
-
-            # process the form and conflict data of the user
-            if request.method == 'POST':
-                form = RehearsalForm(request.POST)
-                if form.is_valid():
-                    form.save()
-
-                    return redirect('profiles:conflicts', company_name, member_name,)
+            try:
+                admin = Admin.objects.get(member=member)
+            except (KeyError, Admin.DoesNotExist):
+                return redirect('profiles:profile', company_name, member_name,)
             else:
-                form = RehearsalForm(instance=rehearsal)
-            return render(request, 'updates/update.html', {'company':company, 'member':member, 'form':form})
+                # process the form and rehearsal data
+                if request.method == 'POST':
+                    form = RehearsalForm(request.POST)
+                    if form.is_valid():
+                        new_rehearsal = form.save(commit=False)
+                        new_rehearsal.company = company
+                        new_rehearsal.save()
+                        form.save_m2m()
+
+                        return redirect('profiles:spaces', company_name, member_name,)
+                else:
+                    form = RehearsalForm()
+                return render(request, 'updates/add.html', {'company':company, 'member':member, 'form':form, 'redirect_name':name})
+    else:
+        return redirect('profiles:profile', company_name, member_name,)
+
+def updateRehearsal(request, company_name, member_name, rehearsal_id):
+    name = 'updates:updateRehearsal'
+    company = get_object_or_404(Company, name=company_name)
+
+    # user must come from profile page to get here... don't need to reauthenticate
+    if request.user.is_authenticated() and member_name == request.user.username:
+        try:
+            member = company.member_set.get(netid=member_name)
+        except (KeyError, Member.DoesNotExist):
+            return redirect('profiles:profile', company_name, member_name,)
+        else:
+            try:
+                admin = Admin.objects.get(member=member)
+            except (KeyError, Admin.DoesNotExist):
+                return redirect('profiles:profile', company_name, member_name,)
+            else:
+                rehearsal = company.rehearsal_set.get(id=rehearsal_id)
+                
+                # process the form and rehearsal data
+                if request.method == 'POST':
+                    form = RehearsalForm(request.POST, instance=rehearsal)
+                    if form.is_valid():
+                        form.save()
+
+                        return redirect('profiles:spaces', company_name, member_name,)
+                else:
+                    form = RehearsalForm(instance=rehearsal)
+                return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':rehearsal, 'form':form, 'redirect_name':name})
+    else:
+        return redirect('profiles:profile', company_name, member_name,)
+
+def deleteRehearsal(request, company_name, member_name, rehearsal_id):
+    company = get_object_or_404(Company, name=company_name)
+
+    # user must come from profile page to get here... don't need to reauthenticate
+    if request.user.is_authenticated() and member_name == request.user.username:
+        try:
+            member = company.member_set.get(netid=member_name)
+        except (KeyError, Member.DoesNotExist):
+            return redirect('profiles:profile', company_name, member_name,)
+        else:
+            try:
+                admin = Admin.objects.get(member=member)
+            except (KeyError, Admin.DoesNotExist):
+                return redirect('profiles:profile', company_name, member_name,)
+            else:
+                rehearsal = company.rehearsal_set.get(id=rehearsal_id)
+                rehearsal.delete()
+
+            return redirect('profiles:spaces', company_name, member_name,)
     else:
         return redirect('profiles:profile', company_name, member_name,)

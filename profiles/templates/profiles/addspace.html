@@ -96,7 +96,8 @@
                                     {{ rehearsal.day_of_week }}
                                     <p>{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}}</p>
                                 </div>
-                                <div><a data-toggle="modal" href="{% url 'updates:updateRehearsal' company.name member.netid rehearsal.id %}" data-target="#form-modal"><span class="fa fa-pencil-square-o"></span></a></div>
+                                <div><a data-toggle="modal" href="{% url 'updates:updateRehearsal' company.name member.netid rehearsal.id %}" data-target="#form-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
+                                <div><a href="{% url 'updates:deleteRehearsal' company.name member.netid rehearsal.id %}"><span class="fa fa-minus-circle"></span></a></div> 
                             </div>
                         {% endfor %}
                     {% else %}
@@ -112,9 +113,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <h2 class="section-heading">Add Another Rehearsal</h2>
+                    <br>
+                    <div><a data-toggle="modal" href="{% url 'updates:addRehearsal' company.name member.netid %}" data-target="#form-modal" class="btn btn-primary">Add Rehearsal Space</a></div>
+                    <!-- <h2 class="section-heading">Add Another Conflict</h2>
                     <hr>
-                    <form class="form-horizontal" action="" method="post">
+                    <form class="form-horizontal" action="{% url 'profiles:conflicts' company.name member.netid %}" method="post">
                         {% csrf_token %}
                         {{ form|bootstrap_horizontal }}
                         <div class="form-group">
@@ -122,7 +125,7 @@
                                 <button type="submit" class="btn btn-primary">Save and Add Another</button>
                             </div>
                         </div>
-                    </form>
+                    </form> -->
                 </div>
             </div>
         </div>
@@ -135,6 +138,7 @@
                 </div>
             </div>
         </div> 
+
     <!-- jQuery -->
     <script src="{% static 'profiles/js/jquery.js' %}"></script>
 
