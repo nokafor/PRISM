@@ -2,6 +2,7 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+from django.forms import ModelForm
 
 # Create your models here.
 class Company(models.Model):
@@ -59,3 +60,8 @@ class Member(models.Model):
 class Admin(models.Model):
     member = models.ForeignKey(Member)
     company = models.ForeignKey(Company)
+
+class MemberForm(ModelForm):
+    class Meta:
+        model = Member
+        fields = ['first_name', 'last_name', 'netid']

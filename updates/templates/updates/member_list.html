@@ -12,7 +12,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Rehearsals</title>
+    <title>Members/Conflicts</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'profiles/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -31,6 +31,7 @@
         <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script src="//malsup.github.com/jquery.form.js"></script>
 
 </head>
 <body>
@@ -53,9 +54,6 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="{% url 'profiles:profile' company.name member.netid %}">Hub</a>
-                    </li>
-                    <li>
                         <a href="logout/">Logout</a>
                     </li>
                 </ul>
@@ -72,9 +70,7 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
-                        <h1>Rehearsal Spaces</h1>
-                        <h2 class="subheading">Manage all {{ company.name }} rehearsal spaces</h2>
-                        <span class="meta">Changes allowed until March 3, 2015</span>
+                        <h1>Members List</h1>
                     </div>
                 </div>
             </div>
@@ -82,59 +78,26 @@
     </header>
 
 
-    <!-- View Old Rehearsals -->
     <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <h2 class="section-heading">Current Rehearsal Spaces</h2>
-                    <hr>
-                    {% if rehearsal_list %}
-                        {% for rehearsal in rehearsal_list %}
-                            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="display:flex; flex-direction:row; align-items:center">
-                                <div>
-                                    {{ rehearsal.day_of_week }}
-                                    <p>{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}}</p>
-                                </div>
-                                <div><a data-toggle="modal" href="{% url 'updates:updateRehearsal' company.name member.netid rehearsal.id %}" data-target="#form-modal"><span class="fa fa-pencil-square-o"></span></a></div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <blockquote>You have not added any rehearsals yet.</blockquote>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+        <h1>Members List</h1>
+        <!-- Modal -->
+        <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+        <table class="table table-bordered table-hovered "cellspacing='0'> 
+            <tr> 
+                <th>Member</th> 
+                <th>Actions</th> 
+            </tr> 
+            {% for member in object_list %} 
+                <tr> 
+                    <td>{{ member }}</td> 
+                    <td> 
+                        <a class="fa fa-pencil" data-toggle="modal" href="{% url 'updates:member_edit' member.id %}" data-target="#modal" title="edit item" data-tooltip></a> | 
+                    </td>
+                </tr> 
+            {% endfor %} 
+        </table>
     </section>
-
-    <!-- Add New Rehearsals -->    
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <h2 class="section-heading">Add Another Rehearsal</h2>
-                    <hr>
-                    <form class="form-horizontal" action="" method="post">
-                        {% csrf_token %}
-                        {{ form|bootstrap_horizontal }}
-                        <div class="form-group">
-                            <div class="col-sm-10 col-sm-offset-2">
-                                <button type="submit" class="btn btn-primary">Save and Add Another</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Form Modal -->
-        <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                </div>
-            </div>
-        </div> 
+    
     <!-- jQuery -->
     <script src="{% static 'profiles/js/jquery.js' %}"></script>
 

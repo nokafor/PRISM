@@ -95,8 +95,9 @@
                 {% if member_list %}
                     {% for member in member_list %}
                         <div class="col-md-4 col-sm-6 portfolio-item">
-                            <div class="portfolio-caption">
+                            <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
                                 <a href="#"><h4>{{ member }}</h4></a>
+                                <a data-toggle="modal" href="#delete-modal"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
                             </div>
                         </div>
                     {% endfor %}
@@ -105,14 +106,58 @@
                 {% endif %}
                 <div class="col-md-4 col-sm-6 portfolio-item">
                     <div class="portfolio-caption">
-                        <a href="#"><h4>Manage members...</h4></a>
+                        <a data-toggle="modal" href="#member-form-modal"><h4>Add members...</h4></a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Member Form Modal -->
+        <div class="modal fade" id="member-form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Add Member</h4>
+                    </div>
+                    <div id="form-modal-body" class="modal-body">
+                        <form class="form-horizontal" action="" method="post">
+                            {% csrf_token %}
+                            {{ member_form|bootstrap_horizontal }}
+                            <div class="form-group">
+                                <div class="col-sm-10 col-sm-offset-2">
+                                    <button type="submit" class="btn btn-primary">Add Member</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div> 
 
+    <!-- Delete Modal -->
+        <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Are you sure you want to delete?</h4>
+                    </div>
+                    <div id="form-modal-body" class="modal-body">
+                        <!-- load to a different page -->
+                        <a href="#" class="btn btn-default">Yes</a>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div> 
     <!-- List of Admins -->
     <section>
         <div class="container">
@@ -126,9 +171,16 @@
                 {% if admin_list %}
                     {% for admin in admin_list %}
                         <div class="col-md-4 col-sm-6 portfolio-item">
-                            <div class="portfolio-caption">
-                                <h4>{{ admin.member }}</h4>
-                            </div>
+                            {% ifequal admin.member member%}
+                                <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
+                                    <h4> {{ member }}</h4>
+                                    <a data-toggle="modal" href="#delete-modal"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
+                                </div>
+                            {% else %}
+                                <div class="portfolio-caption">
+                                    <h4>{{ admin.member }}</h4>
+                                </div>
+                            {% endifequal %}
                         </div>
                     {% endfor %}
                 {% else %}
@@ -136,7 +188,7 @@
                 {% endif %}
                 <div class="col-md-4 col-sm-6 portfolio-item">
                     <div class="portfolio-caption">
-                        <a href="#"><h4>Manage admins...</h4></a>
+                        <a href="#"><h4>Add admins...</h4></a>
                     </div>
                 </div>
             </div>

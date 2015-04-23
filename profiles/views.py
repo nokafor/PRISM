@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.http import HttpResponse, HttpResponseRedirect
 
-from companies.models import Company, Member, Admin, Rehearsal, Cast
+from companies.models import Company, Member, Admin, Rehearsal, Cast, MemberForm
 from profiles.models import ConflictForm, RehearsalForm, CreateCastForm
 from profiles.forms import NameForm
 
@@ -127,7 +127,19 @@ def members(request, company_name, member_name):
                 member_list = company.member_set.all()
                 admin_list = company.admin_set.all()
 
-                return render(request, 'profiles/members.html', {'company':company, 'member':member, 'member_list':member_list, 'admin_list':admin_list})
+                # process the form and conflict data of the user
+                if request.method == 'POST':
+                    member_form = MemberForm(request.POST)
+                    if member_form.is_valid():
+                        new_member = member_form.save(commit=False)
+                        new_member.company = company
+                        new_member.save()
+                        member_form.save_m2m()
+
+                        return HttpResponseRedirect('')
+                else:
+                    member_form = MemberForm()
+                return render(request, 'profiles/members.html', {'company':company, 'member':member, 'member_list':member_list, 'admin_list':admin_list, 'member_form':member_form})
     else:
         return redirect('profiles:profile', company_name, member_name,)
 
@@ -162,30 +174,5 @@ def casts(request, company_name, member_name):
                 else:
                     form = CreateCastForm()
                 return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'member_list':member_list, 'total_casts':total_casts, 'form':form})
-    else:
-        return redirect('profiles:profile', company_name, member_name,)
-
-def updateConflict(request, company_name, member_name, conflict_id):
-    company = get_object_or_404(Company, name=company_name)
-
-    # user must come from profile page to get here... don't need to reauthenticate
-    if request.user.is_authenticated() and member_name == request.user.username:
-        try:
-            member = company.member_set.get(netid=member_name)
-        except (KeyError, Member.DoesNotExist):
-            return redirect('profiles:profile', company_name, member_name,)
-        else:
-            conflict = member.conflict_set.get(id=conflict_id)
-
-            # process the form and conflict data of the user
-            if request.method == 'POST':
-                form = ConflictForm(request.POST)
-                if form.is_valid():
-                    form.save()
-
-                    return redirect('profiles:conflicts', company_name, member_name,)
-            else:
-                form = ConflictForm(instance=conflict)
-            return render(request, 'profiles/practice.html', {'company':company, 'member':member, 'form':form})
     else:
         return redirect('profiles:profile', company_name, member_name,)
