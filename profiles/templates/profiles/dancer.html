@@ -56,10 +56,13 @@
                         <a href="/">Home</a>
                     </li>
                     <li>
-                        <a href="addconflict.html">Enter Conflicts</a>
+                        <a href="{% url 'profiles:conflicts' company.name member.netid %}">Your Conflicts</a>
                     </li>
                     <li>
                         <a href="logout/">Logout</a>
+                    </li>
+                    <li>
+                        <a data-toggle="modal" href="{% url 'updates:updateName' company.name member.netid %}" data-target="#form-modal"><span class="fa fa-cog fa-lg"></span></a>
                     </li>
                 </ul>
             </div>
@@ -84,12 +87,20 @@
         </div>
     </header>
 
+    <!-- Form Modal -->
+        <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                </div>
+            </div>
+        </div> 
+        
     <!-- Main Content -->
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-preview">
-                    <a href="addconflict.html">
+                    <a href="{% url 'profiles:conflicts' company.name member.netid %}">
                         <h2 class="post-title">
                             Conflicts
                         </h2>

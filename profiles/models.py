@@ -12,7 +12,7 @@ class Conflict(TimeBlock):
     description = models.CharField(max_length=200)
     def __str__(self):
         return "%s: %s - %s (%s)" % (self.description, self.start_time, self.end_time, self.day_of_week)
-
+        
 class ConflictForm(ModelForm):
     class Meta:
         model = Conflict

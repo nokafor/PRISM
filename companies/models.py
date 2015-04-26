@@ -41,10 +41,8 @@ class Rehearsal(TimeBlock):
         return "%s: %s - %s (%s)" % (self.place, self.start_time, self.end_time, self.day_of_week)
 
 class Cast(models.Model):
-    choreographerID = models.CharField('Choreographer Netid', max_length=200)
+    name = models.CharField(max_length=255)
     rehearsal = models.ForeignKey(Rehearsal)
-    def __str__(self):
-        return "%s's Cast" % (self.choreographerID)
 
 class Member(models.Model):
     first_name = models.CharField(max_length=200, blank=True)
@@ -60,8 +58,25 @@ class Member(models.Model):
 class Admin(models.Model):
     member = models.ForeignKey(Member)
     company = models.ForeignKey(Company)
+    def __str__(self):
+        return self.member
+    
+class Choreographer(models.Model):
+    member = models.ForeignKey(Member)
+    company = models.ForeignKey(Company)
+    cast = models.ForeignKey(Cast)
+    
 
 class MemberForm(ModelForm):
     class Meta:
         model = Member
         fields = ['first_name', 'last_name', 'netid']
+
+class AdminForm(ModelForm):
+    class Meta:
+        model = Admin
+        fields = ['member']
+    def __init__(self, *args, **kwargs):
+        super(AdminForm, self).__init__(*args, **kwargs)
+        if self.instance:
+             self.fields['member'].queryset = Member.objects.filter(company=self.instance.company)
