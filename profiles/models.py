@@ -26,4 +26,4 @@ class RehearsalForm(ModelForm):
 class CreateCastForm(ModelForm):
     class Meta:
         model = Cast
-        fields = '__all__'
+        fields = ['name']

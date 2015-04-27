@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from companies.models import Company, Member, Admin, Cast, Rehearsal
+from companies.models import Company, Member, Admin, Cast, Rehearsal, Choreographer
 from profiles.models import Conflict
 
 # Register your models here.
@@ -23,4 +23,5 @@ class MemberAdmin(admin.ModelAdmin):
 admin.site.register(Company)
 admin.site.register(Rehearsal)
 admin.site.register(Cast)
+admin.site.register(Choreographer)
 admin.site.register(Member, MemberAdmin)

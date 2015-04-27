@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 
-from companies.models import Company, Member, Admin, Rehearsal, Cast, MemberForm
+from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, MemberForm
 from profiles.models import ConflictForm, RehearsalForm, CreateCastForm
 
 from profiles.functions import memberAuth, profileAuth, adminAuth
@@ -122,19 +122,7 @@ def casts(request, company_name, member_name):
         company = Company.objects.get(name=company_name)
         member = company.member_set.get(netid=member_name)
 
-        member_list = company.member_set.all()
-        total_casts = Cast.objects.all()
+        total_casts = Cast.objects.filter(company=company)
+        total_choreographers = Choreographer.objects.filter(company=company)
 
-        # process the form and conflict data of the user
-        if request.method == 'POST':
-            form = CreateCastForm(request.POST)
-            if form.is_valid():
-                new_cast = form.save(commit=False)
-                new_cast.company = company
-                new_cast.save()
-                form.save_m2m()
-
-                return HttpResponseRedirect('')
-        else:
-            form = CreateCastForm()
-        return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'member_list':member_list, 'total_casts':total_casts, 'form':form})
+        return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'total_casts':total_casts, 'total_choreographers':total_choreographers})

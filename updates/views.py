@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 
-from companies.models import Company, Member, Admin, Rehearsal, Cast, MemberForm, AdminForm
+from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, MemberForm, AdminForm, ChoreographerForm
 from profiles.models import ConflictForm, RehearsalForm, CreateCastForm
 
 from django.views.generic import DetailView
@@ -13,6 +13,129 @@ from profiles.functions import memberAuth, profileAuth, adminAuth
 class ConflictView(DetailView):
     model = Member
     template_name = 'updates/conflicts.html'
+
+def addCast(request, company_name, member_name):
+    name = 'updates:addCast'
+
+    # check if valid admin
+    not_valid_admin = adminAuth(request, company_name, member_name)
+    if not_valid_admin:
+        return not_valid_admin
+    else:
+        company = Company.objects.get(name=company_name)
+        member = company.member_set.get(netid=member_name)
+
+        new_cast = Cast(company=company)
+
+        # save casting data
+        if request.method == 'POST':
+            form = CreateCastForm(request.POST, instance=new_cast)
+            if form.is_valid():
+                form.save()
+
+                return redirect('profiles:casts', company_name, member_name,)
+        else:
+            form = CreateCastForm(instance=new_cast)
+        return render(request, 'updates/add.html', {'company':company, 'member':member, 'form':form, 'redirect_name':name})
+
+def updateCastName(request, company_name, member_name, cast_id):
+    name = 'updates:updateCastName'
+
+    # check if valid admin
+    not_valid_admin = adminAuth(request, company_name, member_name)
+    if not_valid_admin:
+        return not_valid_admin
+    else:
+        company = Company.objects.get(name=company_name)
+        member = company.member_set.get(netid=member_name)
+        cast = Cast.objects.get(id=cast_id)
+
+        # save casting data
+        if request.method == 'POST':
+            form = CreateCastForm(request.POST, instance=cast)
+            if form.is_valid():
+                form.save()
+
+                return redirect('profiles:casts', company_name, member_name,)
+        else:
+            form = CreateCastForm(instance=cast)
+        return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':cast, 'form':form, 'redirect_name':name})
+
+def addChoreographer(request, company_name, member_name, cast_id):
+    name = 'updates:addChoreographer'
+
+    # check if valid admin
+    not_valid_admin = adminAuth(request, company_name, member_name)
+    if not_valid_admin:
+        return not_valid_admin
+    else:
+        company = Company.objects.get(name=company_name)
+        member = company.member_set.get(netid=member_name)
+        cast = Cast.objects.get(id=cast_id)
+
+        new_choreographer = Choreographer(company=company, cast=cast)
+
+        # save choreographer data
+        if request.method == 'POST':
+            form = ChoreographerForm(request.POST, instance=new_choreographer)
+            if form.is_valid():
+                form.save()
+
+                return redirect('profiles:casts', company_name, member_name,)
+        else:
+            form = ChoreographerForm(instance=new_choreographer)
+        return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':cast, 'form':form, 'redirect_name':name})
+
+def updateChoreographer(request, company_name, member_name, choreographer_id):
+    name = 'updates:updateChoreographer'
+
+    # check if valid admin
+    not_valid_admin = adminAuth(request, company_name, member_name)
+    if not_valid_admin:
+        return not_valid_admin
+    else:
+        company = Company.objects.get(name=company_name)
+        member = company.member_set.get(netid=member_name)
+        
+        choreographer = Choreographer.objects.get(id=choreographer_id)
+
+        # save choreographer data
+        if request.method == 'POST':
+            form = ChoreographerForm(request.POST, instance=choreographer)
+            if form.is_valid():
+                form.save()
+
+                return redirect('profiles:casts', company_name, member_name,)
+        else:
+            form = ChoreographerForm(instance=choreographer)
+        return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':choreographer, 'form':form, 'redirect_name':name})
+
+
+def addCastMem(request, company_name, member_name, cast_id):
+    name = 'updates:addCastMem'
+
+    # check if valid admin
+    not_valid_admin = adminAuth(request, company_name, member_name)
+    if not_valid_admin:
+        return not_valid_admin
+    else:
+        company = Company.objects.get(name=company_name)
+        member = company.member_set.get(netid=member_name)
+        cast = Cast.objects.get(id=cast_id)
+
+        new_choreographer = Choreographer(company=company, cast=cast)
+
+        # save casting data
+        if request.method == 'POST':
+            form = ChoreographerForm(request.POST, instance=new_choreographer)
+            if form.is_valid():
+                false_choreographer = form.save(commit=False)
+                cast.member_set.add(false_choreographer.member)
+
+                return redirect('profiles:casts', company_name, member_name,)
+        else:
+            form = ChoreographerForm(instance=new_choreographer)
+        return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':cast, 'form':form, 'redirect_name':name})
 
 def addAdmin(request, company_name, member_name):
     name = 'updates:addAdmin'
