@@ -46,6 +46,25 @@ class Cast(models.Model):
     rehearsal = models.ForeignKey(Rehearsal, blank=True, null=True)
     def __str__(self):
         return self.name
+    def getAvailableRehearsals(self):
+        rehearsals = self.company.rehearsal_set.all()
+        members = self.member_set.all()
+
+        rehearsal_list = []
+        for rehearsal in rehearsals:
+            for member in members:
+                available = True
+                for conflict in member.conflict_set.all():
+                    if conflict.conflictsWith(rehearsal):
+                        available = False
+                        break
+
+                if available == False:
+                    break
+
+            if available == True:
+                rehearsal_list.append(rehearsal)
+        return rehearsal_list
 
 class Member(models.Model):
     first_name = models.CharField(max_length=200, blank=True)

@@ -101,7 +101,7 @@
                             <ul style="list-style:none">
                                 {% for choreographer in total_choreographers %}
                                     {% ifequal choreographer.cast cast%}
-                                        <li><a data-toggle="modal" href="{% url 'updates:updateChoreographer' company.name member.netid cast.id %}" data-target="#form-modal" style="text-decoration:none">{{ choreographer.member }}</a></li>
+                                        <li><a data-toggle="modal" href="{% url 'updates:updateChoreographer' company.name member.netid choreographer.id %}" data-target="#form-modal" style="text-decoration:none">{{ choreographer.member }}</a></li>
                                     {% endifequal %}
                                 {% endfor %}
                             </ul>
@@ -109,7 +109,9 @@
                             <strong>Dancer(s):</strong>
                             <ul style="list-style:none">
                                 {% for mem in cast.member_set.all %}
-                                    <li>{{ mem }}</li>
+                                    <li>
+                                        {{ mem }}
+                                    </li>
                                 {% endfor %}
                             </ul>
                             <a data-toggle="modal" href="{% url 'updates:addCastMem' company.name member.netid cast.id %}" data-target="#form-modal" style="text-decoration:none" class="btn btn-primary">Add Cast Member</a>
@@ -143,6 +145,7 @@
             </div>
         </div>
     </footer>
+    
 
     <!-- jQuery -->
     <script src="{% static 'profiles/js/jquery.js' %}"></script>
