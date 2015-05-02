@@ -39,6 +39,25 @@ class Rehearsal(TimeBlock):
     place = models.CharField(max_length=200)
     def __str__(self):
         return "%s: %s - %s (%s)" % (self.place, self.start_time, self.end_time, self.day_of_week)
+    def getAvailableCasts(self):
+        casts = Cast.objects.filter(company=self.company)
+
+        cast_list = []
+        for cast in casts:
+            members = cast.member_set.all()
+            for member in members:
+                available = True
+                for conflict in member.conflict_set.all():
+                    if conflict.conflictsWith(self):
+                        available = False
+                        break
+
+                if available == False:
+                    break
+
+            if available == True:
+                cast_list.append(cast)
+        return cast_list
 
 class Cast(models.Model):
     company = models.ForeignKey(Company)
@@ -91,7 +110,7 @@ class Choreographer(models.Model):
 class MemberForm(ModelForm):
     class Meta:
         model = Member
-        fields = ['first_name', 'last_name', 'netid']
+        fields = ['first_name', 'last_name']
 
 class AdminForm(ModelForm):
     class Meta:

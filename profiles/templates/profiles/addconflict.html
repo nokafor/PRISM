@@ -96,9 +96,17 @@
                                     {{ conflict.day_of_week }}
                                     <p>{{ conflict.description }}: {{conflict.start_time}} - {{conflict.end_time}}</p>
                                 </div>
-                                <div><a data-toggle="modal" href="{% url 'updates:updateConflict' company.name member.netid conflict.id %}" data-target="#form-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
+                                <div><a data-toggle="modal" href="{% url 'updates:updateConflict' company.name member.netid conflict.id %}" data-target="#{{ conflict.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
                                 <div><a href="{% url 'updates:deleteConflict' company.name member.netid conflict.id %}"><span class="fa fa-minus-circle"></span></a></div> 
                             </div>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="{{ conflict.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                    </div>
+                                </div>
+                            </div> 
                         {% endfor %}
                     {% else %}
                         <blockquote>You have not added any conflicts yet.</blockquote>
@@ -132,12 +140,13 @@
     </section>
 
     <!-- Form Modal -->
-        <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                </div>
+    <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
             </div>
-        </div> 
+        </div>
+    </div> 
+        
 
     <!-- jQuery -->
     <script src="{% static 'profiles/js/jquery.js' %}"></script>

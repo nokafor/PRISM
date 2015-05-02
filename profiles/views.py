@@ -126,3 +126,17 @@ def casts(request, company_name, member_name):
         total_choreographers = Choreographer.objects.filter(company=company)
 
         return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'total_casts':total_casts, 'total_choreographers':total_choreographers})
+
+def scheduling(request, company_name, member_name):
+    # check if valid admin
+    not_valid_admin = adminAuth(request, company_name, member_name)
+    if not_valid_admin:
+        return not_valid_admin
+    else:
+        company = Company.objects.get(name=company_name)
+        member = company.member_set.get(netid=member_name)
+        rehearsals = company.rehearsal_set.all()
+
+        casts = Cast.objects.filter(company=company)
+
+        return render(request, 'profiles/schedule.html', {'company':company, 'member':member, 'cast_list':casts, 'rehearsal_list':rehearsals})

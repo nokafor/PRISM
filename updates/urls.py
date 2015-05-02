@@ -22,5 +22,6 @@ urlpatterns = patterns('',
     url(r'^ch/(?P<cast_id>\d+)/add$', views.addChoreographer, name='addChoreographer'),    
     url(r'^ch/(?P<choreographer_id>\d+)$', views.updateChoreographer, name='updateChoreographer'),    
     # url(r'^u/(?P<rehearsal_id>\d+)$', views.updateRehearsal, name='updateRehearsal'),
-    url(r'^save/rehearsals$', views.writeRehearsals, name='writeRehearsals'),
+    url(r'^s/(?P<pk>\d+)$', views.RehearsalView.as_view(), name='RehearsalView'),
+    url(r'^s/c/(?P<pk>\d+)$', views.CastView.as_view(), name='CastView'),
 )

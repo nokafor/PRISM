@@ -99,9 +99,17 @@
                                 {% ifequal mem.id member.id %}
                                     <a href="{% url 'profiles:conflicts' company.name member.netid %}"><h4>{{ mem }}</h4></a>
                                 {% else %}
-                                    <a data-toggle="modal" href="{% url 'updates:ConflictView' company.name member.netid mem.id %}" data-target="#display-modal"><h4>{{ mem }}</h4></a>
+                                    <a data-toggle="modal" href="{% url 'updates:ConflictView' company.name member.netid mem.id %}" data-target="#{{ mem.id }}-modal"><h4>{{ mem }}</h4></a>
                                 {% endifequal %}
                                 <a href="{% url 'updates:deleteMember' company.name member.netid mem.id %}"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
+                            </div>
+                        </div>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="{{ mem.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                </div>
                             </div>
                         </div>
                     {% endfor %}
@@ -110,28 +118,26 @@
                 {% endif %}
                 <div class="col-md-4 col-sm-6 portfolio-item">
                     <div class="portfolio-caption">
-                        <a data-toggle="modal" href="{% url 'updates:addMember' company.name member.netid %}" data-target="#form-modal"><h4>Add members...</h4></a>
+                        <a data-toggle="modal" href="{% url 'updates:addMember' company.name member.netid %}" data-target="#addmember-modal"><h4>Add members...</h4></a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Form Modal -->
-        <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                </div>
+    <!-- Form Modals -->
+    <div class="modal fade" id="addmember-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
             </div>
-        </div> 
-
-    <!-- Display Modal -->
-        <div class="modal fade" id="display-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                </div>
+        </div>
+    </div> 
+    <div class="modal fade" id="addadmin-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
             </div>
-        </div> 
+        </div>
+    </div> 
 
     <!-- List of Admins -->
     <section>
@@ -163,7 +169,7 @@
                 {% endif %}
                 <div class="col-md-4 col-sm-6 portfolio-item">
                     <div class="portfolio-caption">
-                        <a data-toggle="modal" href="{% url 'updates:addAdmin' company.name member.netid %}" data-target="#form-modal"><h4>Add admins...</h4></a>
+                        <a data-toggle="modal" href="{% url 'updates:addAdmin' company.name member.netid %}" data-target="#addadmin-modal"><h4>Add admins...</h4></a>
                     </div>
                 </div>
             </div>

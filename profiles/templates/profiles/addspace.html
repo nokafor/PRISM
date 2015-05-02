@@ -96,9 +96,17 @@
                                     {{ rehearsal.day_of_week }}
                                     <p>{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}}</p>
                                 </div>
-                                <div><a data-toggle="modal" href="{% url 'updates:updateRehearsal' company.name member.netid rehearsal.id %}" data-target="#form-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
+                                <div><a data-toggle="modal" href="{% url 'updates:updateRehearsal' company.name member.netid rehearsal.id %}" data-target="#{{ rehearsal.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
                                 <div><a href="{% url 'updates:deleteRehearsal' company.name member.netid rehearsal.id %}"><span class="fa fa-minus-circle"></span></a></div> 
                             </div>
+                            
+                            <!-- Modal -->
+                            <div class="modal fade" id="{{ rehearsal.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                    </div>
+                                </div>
+                            </div> 
                         {% endfor %}
                     {% else %}
                         <blockquote>You have not added any rehearsals yet.</blockquote>

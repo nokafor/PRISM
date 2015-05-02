@@ -16,18 +16,13 @@ class ConflictView(DetailView):
     model = Member
     template_name = 'updates/conflicts.html'
 
-def writeRehearsals(request, company_name, member_name):
-    # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
-        company = Company.objects.get(name=company_name)
-        rehearsals = company.rehearsal_set.all()
+class RehearsalView(DetailView):
+    model = Cast
+    template_name = 'updates/availableRehearsals.html'
 
-        casts = Cast.objects.filter(company=company)
-
-        return render(request, 'updates/testing.html', {'company':company, 'casts':casts})
+class CastView(DetailView):
+    model = Rehearsal
+    template_name = 'updates/available.html'
 
 def addCast(request, company_name, member_name):
     name = 'updates:addCast'

@@ -4,18 +4,18 @@
 
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">{{ rehearsal }}</h4>
+            <h4 class="modal-title">{{ cast.name }}</h4>
         </div>
         <div id="display-modal-body" class="modal-body">
             {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-            {% if rehearsal.getAvailableCasts %}
+            {% if cast.getAvailableRehearsals %}
                 <ul>
-                    {% for cast in rehearsal.getAvailableCasts %}
-                        <li>{{ cast.name }}</li>
+                    {% for rehearsal in cast.getAvailableRehearsals %}
+                        <li>{{ rehearsal }}</li>
                     {% endfor %}
                 </ul>
             {% else %}
-                <p><strong>There are no casts available for this rehearsal.</strong></p>
+                <p><strong>The entire cast is not available for any of the available rehearsals.</strong></p>
             {% endif %}
         </div>
         <div class="modal-footer">
