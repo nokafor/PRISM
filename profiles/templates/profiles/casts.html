@@ -108,7 +108,7 @@
 
                             <strong>Dancer(s):</strong>
                             <ul style="list-style:none">
-                                {% for mem in cast.member_set.all %}
+                                {% for mem in cast.sortedMembers %}
                                     <li>
                                         {{ mem }}
                                     </li>

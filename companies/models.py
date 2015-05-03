@@ -65,6 +65,10 @@ class Cast(models.Model):
     rehearsal = models.ForeignKey(Rehearsal, blank=True, null=True)
     def __str__(self):
         return self.name
+
+    def sortedMembers(self):
+        return self.member_set.all().order_by('first_name', 'netid')
+
     def getAvailableRehearsals(self):
         rehearsals = self.company.rehearsal_set.all()
         members = self.member_set.all()
@@ -110,7 +114,7 @@ class Choreographer(models.Model):
 class MemberForm(ModelForm):
     class Meta:
         model = Member
-        fields = ['first_name', 'last_name']
+        fields = ['first_name', 'last_name', 'netid']
 
 class AdminForm(ModelForm):
     class Meta:

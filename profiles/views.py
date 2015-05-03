@@ -96,7 +96,7 @@ def members(request, company_name, member_name):
         company = Company.objects.get(name=company_name)
         member = company.member_set.get(netid=member_name)
         
-        member_list = company.member_set.all()
+        member_list = company.member_set.all().order_by('first_name', 'netid')
         admin_list = company.admin_set.all()
 
         # process the form and conflict data of the user
@@ -122,7 +122,7 @@ def casts(request, company_name, member_name):
         company = Company.objects.get(name=company_name)
         member = company.member_set.get(netid=member_name)
 
-        total_casts = Cast.objects.filter(company=company)
+        total_casts = Cast.objects.filter(company=company).order_by('name')
         total_choreographers = Choreographer.objects.filter(company=company)
 
         return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'total_casts':total_casts, 'total_choreographers':total_choreographers})
@@ -137,6 +137,6 @@ def scheduling(request, company_name, member_name):
         member = company.member_set.get(netid=member_name)
         rehearsals = company.rehearsal_set.all()
 
-        casts = Cast.objects.filter(company=company)
+        casts = Cast.objects.filter(company=company).order_by('name')
 
         return render(request, 'profiles/schedule.html', {'company':company, 'member':member, 'cast_list':casts, 'rehearsal_list':rehearsals})
