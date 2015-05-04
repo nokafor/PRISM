@@ -147,6 +147,33 @@ def addCastMem(request, company_name, member_name, cast_id):
             form = ChoreographerForm(instance=new_choreographer)
         return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':cast, 'form':form, 'redirect_name':name})
 
+def updateCastMem(request, company_name, member_name, cast_id, mem_id):
+    # check if valid admin
+    not_valid_admin = adminAuth(request, company_name, member_name)
+    if not_valid_admin:
+        return not_valid_admin
+    else:
+        company = Company.objects.get(name=company_name)
+        member = company.member_set.get(netid=member_name)
+
+        cast = Cast.objects.get(id=cast_id)
+        mem = Member.objects.get(id=mem_id)
+
+        return render(request, 'updates/updateCastMem.html', {'company':company, 'member':member, 'cast':cast, 'mem':mem})
+
+def deleteCastMem(request, company_name, member_name, cast_id, mem_id):
+    # check if valid admin
+    not_valid_admin = adminAuth(request, company_name, member_name)
+    if not_valid_admin:
+        return not_valid_admin
+    else:
+        cast = Cast.objects.get(id=cast_id)
+        mem = Member.objects.get(id=mem_id)
+        # mem = cast.member_set.get(id=mem_id)
+        cast.member_set.remove(mem)
+
+        return redirect('profiles:casts', company_name, member_name,)
+
 def addAdmin(request, company_name, member_name):
     name = 'updates:addAdmin'
 

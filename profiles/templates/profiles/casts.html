@@ -127,12 +127,39 @@
                             <ul style="list-style:none">
                                 {% for mem in cast.sortedMembers %}
                                     <li>
-                                        {{ mem }}
+                                        <a data-toggle="modal" href="{% url 'updates:updateCastMem' company.name member.netid cast.id mem.id %}" data-target="#{{ cast.id }}-{{ mem.id }}-modal" style="text-decoration:none">{{ mem }}</a>
                                     </li>
+
+                                    <!-- Member Modal -->
+                                    <div class="modal fade" id="{{ cast.id }}-{{ mem.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                            </div>
+                                        </div>
+                                    </div>   
                                 {% endfor %}
                             </ul>
-                            <a data-toggle="modal" href="{% url 'updates:addCastMem' company.name member.netid cast.id %}" data-target="#form-modal" style="text-decoration:none" class="btn btn-primary">Add Cast Member</a>
-                            <a data-toggle="modal" href="{% url 'updates:addChoreographer' company.name member.netid cast.id %}" data-target="#form-modal" style="text-decoration:none" class="btn btn-primary">Add Choreographer</a>
+
+                            <a data-toggle="modal" href="{% url 'updates:addCastMem' company.name member.netid cast.id %}" data-target="#mem-{{ cast.id }}-modal" style="text-decoration:none" class="btn btn-primary">Add Cast Member</a>
+
+                            <!-- Add Cast Mem Modal -->
+                            <div class="modal fade" id="mem-{{ cast.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                    </div>
+                                </div>
+                            </div> 
+
+                            <a data-toggle="modal" href="{% url 'updates:addChoreographer' company.name member.netid cast.id %}" data-target="#{{ cast.id }}-modal" style="text-decoration:none" class="btn btn-primary">Add Choreographer</a>
+
+                            <!-- Add Choreographer Modal -->
+                            <div class="modal fade" id="{{ cast.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                    </div>
+                                </div>
+                            </div> 
+                            
                             <br>
                         {% endfor %}
                     {% else %}
