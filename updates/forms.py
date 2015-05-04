@@ -16,7 +16,7 @@ class AdminForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(AdminForm, self).__init__(*args, **kwargs)
         if self.instance:
-             self.fields['member'].queryset = Member.objects.filter(company=self.instance.company)
+             self.fields['member'].queryset = Member.objects.filter(company=self.instance.company).order_by('first_name', 'netid')
 
 class ChoreographerForm(ModelForm):
     class Meta:
@@ -25,7 +25,7 @@ class ChoreographerForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(ChoreographerForm, self).__init__(*args, **kwargs)
         if self.instance:
-             self.fields['member'].queryset = Member.objects.filter(company=self.instance.company)
+             self.fields['member'].queryset = Member.objects.filter(company=self.instance.company).order_by('first_name', 'netid')
 
 class ConflictForm(ModelForm):
     class Meta:
