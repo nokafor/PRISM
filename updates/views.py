@@ -3,8 +3,8 @@ from django.core.files import File
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 
-from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, MemberForm, AdminForm, ChoreographerForm
-from profiles.models import ConflictForm, RehearsalForm, CreateCastForm
+from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer
+from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, AdminForm, ChoreographerForm
 
 from django.views.generic import DetailView
 from django.template.loader import render_to_string
@@ -39,13 +39,13 @@ def addCast(request, company_name, member_name):
 
         # save casting data
         if request.method == 'POST':
-            form = CreateCastForm(request.POST, instance=new_cast)
+            form = CastForm(request.POST, instance=new_cast)
             if form.is_valid():
                 form.save()
 
                 return redirect('profiles:casts', company_name, member_name,)
         else:
-            form = CreateCastForm(instance=new_cast)
+            form = CastForm(instance=new_cast)
         return render(request, 'updates/add.html', {'company':company, 'member':member, 'form':form, 'redirect_name':name})
 
 def updateCastName(request, company_name, member_name, cast_id):
@@ -62,13 +62,13 @@ def updateCastName(request, company_name, member_name, cast_id):
 
         # save casting data
         if request.method == 'POST':
-            form = CreateCastForm(request.POST, instance=cast)
+            form = CastForm(request.POST, instance=cast)
             if form.is_valid():
                 form.save()
 
                 return redirect('profiles:casts', company_name, member_name,)
         else:
-            form = CreateCastForm(instance=cast)
+            form = CastForm(instance=cast)
         return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':cast, 'form':form, 'redirect_name':name})
 
 def addChoreographer(request, company_name, member_name, cast_id):
@@ -118,7 +118,7 @@ def updateChoreographer(request, company_name, member_name, choreographer_id):
                 return redirect('profiles:casts', company_name, member_name,)
         else:
             form = ChoreographerForm(instance=choreographer)
-        return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':choreographer, 'form':form, 'redirect_name':name})
+        return render(request, 'updates/updateChoreographer.html', {'company':company, 'member':member, 'curr':choreographer, 'form':form, 'redirect_name':name})
 
 
 def addCastMem(request, company_name, member_name, cast_id):
@@ -213,15 +213,34 @@ def deleteMember(request, company_name, member_name, member_id):
 
         return redirect('profiles:members', company_name, member_name,)
 
+def deleteCast(request, company_name, member_name, cast_id):
+    # check if valid admin
+    not_valid_admin = adminAuth(request, company_name, member_name)
+    if not_valid_admin:
+        return not_valid_admin
+    else:
+        cast = Cast.objects.get(id=cast_id)
+        cast.delete()
+
+        return redirect('profiles:casts', company_name, member_name,)
+
+def deleteChoreographer(request, company_name, member_name, choreographer_id):
+    # check if valid admin
+    not_valid_admin = adminAuth(request, company_name, member_name)
+    if not_valid_admin:
+        return not_valid_admin
+    else:
+        choreographer = Choreographer.objects.get(id=choreographer_id)
+        choreographer.delete()
+
+        return redirect('profiles:casts', company_name, member_name,)
+
 def deleteAdmin(request, company_name, member_name):
     # check if valid admin
     not_valid_admin = adminAuth(request, company_name, member_name)
     if not_valid_admin:
         return not_valid_admin
     else:
-        company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
-        
         admin = Admin.objects.get(member=member)
         admin.delete()
 

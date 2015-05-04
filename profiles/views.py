@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 
-from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, MemberForm
-from profiles.models import ConflictForm, RehearsalForm, CreateCastForm
+from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer
+from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, AdminForm, ChoreographerForm
 
 from profiles.functions import memberAuth, profileAuth, adminAuth
 

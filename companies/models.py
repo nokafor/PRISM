@@ -2,7 +2,6 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
-from django.forms import ModelForm
 
 # Create your models here.
 class Company(models.Model):
@@ -110,26 +109,3 @@ class Choreographer(models.Model):
     member = models.ForeignKey(Member)
     company = models.ForeignKey(Company)
     cast = models.ForeignKey(Cast)
-
-class MemberForm(ModelForm):
-    class Meta:
-        model = Member
-        fields = ['first_name', 'last_name', 'netid']
-
-class AdminForm(ModelForm):
-    class Meta:
-        model = Admin
-        fields = ['member']
-    def __init__(self, *args, **kwargs):
-        super(AdminForm, self).__init__(*args, **kwargs)
-        if self.instance:
-             self.fields['member'].queryset = Member.objects.filter(company=self.instance.company)
-
-class ChoreographerForm(ModelForm):
-    class Meta:
-        model = Choreographer
-        fields = ['member']
-    def __init__(self, *args, **kwargs):
-        super(ChoreographerForm, self).__init__(*args, **kwargs)
-        if self.instance:
-             self.fields['member'].queryset = Member.objects.filter(company=self.instance.company)

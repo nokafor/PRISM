@@ -37,17 +37,3 @@ class Conflict(TimeBlock):
 
         return False
         
-class ConflictForm(ModelForm):
-    class Meta:
-        model = Conflict
-        fields = ['description', 'day_of_week', 'start_time', 'end_time']
-
-class RehearsalForm(ModelForm):
-    class Meta:
-        model = Rehearsal
-        fields = ['place', 'day_of_week', 'start_time', 'end_time']
-
-class CreateCastForm(ModelForm):
-    class Meta:
-        model = Cast
-        fields = ['name']

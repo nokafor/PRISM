@@ -91,17 +91,34 @@
                     {% if total_casts %}
                         {% for cast in total_casts %}
                             <div style="display:flex; flex-direction:row; align-items:center">
-                                <a data-toggle="modal" href="{% url 'updates:updateCastName' company.name member.netid cast.id %}" data-target="#form-modal" style="text-decoration:none">
+                                <a data-toggle="modal" href="{% url 'updates:updateCastName' company.name member.netid cast.id %}" data-target="#cast-{{ cast.id }}-modal" style="text-decoration:none">
                                     <h2>{{ cast.name }}</h2>
                                 </a>
-                                <a href="#"><span class="fa fa-minus-circle"></span></a>
-                            </div>                            
+                                <a href="{% url 'updates:deleteCast' company.name member.netid cast.id %}"><span class="fa fa-minus-circle"></span></a>
+                            </div>
+
+                            <!-- Cast Modal -->
+                            <div class="modal fade" id="cast-{{ cast.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                    </div>
+                                </div>
+                            </div>    
+
                             <!-- <br> -->
                             <strong>Choreographer(s):</strong>
                             <ul style="list-style:none">
                                 {% for choreographer in total_choreographers %}
                                     {% ifequal choreographer.cast cast%}
-                                        <li><a data-toggle="modal" href="{% url 'updates:updateChoreographer' company.name member.netid choreographer.id %}" data-target="#form-modal" style="text-decoration:none">{{ choreographer.member }}</a></li>
+                                        <li><a data-toggle="modal" href="{% url 'updates:updateChoreographer' company.name member.netid choreographer.id %}" data-target="#ch-{{ choreographer.id }}-modal" style="text-decoration:none">{{ choreographer.member }}</a></li>
+                                        
+                                        <!-- Choreographer Modal -->
+                                        <div class="modal fade" id="ch-{{ choreographer.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                </div>
+                                            </div>
+                                        </div> 
                                     {% endifequal %}
                                 {% endfor %}
                             </ul>
@@ -127,13 +144,14 @@
     </section>
 
     <hr>
-    <!-- Form Modal -->
-        <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                </div>
+
+    <!-- Add Cast Modal -->
+    <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
             </div>
-        </div> 
+        </div>
+    </div> 
 
     <!-- Footer -->
     <footer>
