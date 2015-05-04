@@ -14,6 +14,8 @@ class Conflict(TimeBlock):
         return "%s: %s - %s (%s)" % (self.description, self.start_time, self.end_time, self.day_of_week)
     
     def conflictsWith(self, that):
+        if self.day_of_week != that.day_of_week:
+            return False
         if that.start_time == self.end_time or that.end_time == self.start_time:
             return False
         if that.start_time >= self.start_time and that.start_time <= self.end_time:
