@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 
-from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer
-from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, AdminForm, ChoreographerForm
+from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock
+from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, MemberNameForm, AdminForm, ChoreographerForm
 
 from profiles.functions import memberAuth, profileAuth, adminAuth
 
@@ -15,25 +15,23 @@ def profile(request, company_name, member_name):
     else:
         company = Company.objects.get(name=company_name)
         member = company.member_set.get(netid=member_name)
-        if member.first_name and member.last_name:
-            try:
-                admin = Admin.objects.get(member=member)
-            except (KeyError, Admin.DoesNotExist):
-                return render(request, 'profiles/dancer.html', {'member':member, 'company':company})
-            else:
-                return render(request, 'profiles/admin.html', {'member':member, 'company':company})
-        # if you need to enter your information ...
-        else:
-            # process the form and conflict data of the user
-            if request.method == 'POST':
-                form = MemberForm(request.POST, instance=member)
-                if form.is_valid():
-                    form.save()
 
-                    return redirect('profiles:profile', company_name, member_name,)
-            else:
-                form = MemberForm(instance=member)
-            return render(request, 'profiles/name.html', {'company':company, 'member':member, 'form':form})
+        # process the form and conflict data of the user
+        if request.method == 'POST':
+            form = MemberNameForm(request.POST, instance=member)
+            if form.is_valid():
+                form.save()
+
+                return redirect('profiles:profile', company_name, member_name,)
+        else:
+            form = MemberNameForm(instance=member)
+
+        try:
+            admin = Admin.objects.get(member=member)
+        except (KeyError, Admin.DoesNotExist):
+            return render(request, 'profiles/dancer.html', {'member':member, 'company':company, 'form':form})
+        else:
+            return render(request, 'profiles/admin.html', {'member':member, 'company':company, 'form':form})
 
 def conflicts(request, company_name, member_name):
     # check if came from profile
@@ -44,7 +42,7 @@ def conflicts(request, company_name, member_name):
         company = Company.objects.get(name=company_name)
         member = company.member_set.get(netid=member_name)    
 
-        conflict_list = member.conflict_set.all()
+        conflict_list = member.conflict_set.all().order_by('day_of_week', 'start_time')
 
         # process the form and conflict data of the user
         if request.method == 'POST':
@@ -58,7 +56,7 @@ def conflicts(request, company_name, member_name):
                 return HttpResponseRedirect('')
         else:
             form = ConflictForm()
-        return render(request, 'profiles/addconflict.html', {'company':company, 'member':member, 'conflict_list':conflict_list, 'form':form})
+        return render(request, 'profiles/addconflict.html', {'company':company, 'member':member, 'conflict_list':conflict_list, 'form':form, 'timeblock':TimeBlock})
     
 
 def spaces(request, company_name, member_name):
@@ -84,7 +82,7 @@ def spaces(request, company_name, member_name):
                 return HttpResponseRedirect('')
         else:
             form = RehearsalForm()
-        return render(request, 'profiles/addspace.html', {'company':company, 'member':member, 'rehearsal_list':rehearsal_list, 'form':form})
+        return render(request, 'profiles/addspace.html', {'company':company, 'member':member, 'rehearsal_list':rehearsal_list, 'form':form, 'timeblock':TimeBlock})
     
 
 def members(request, company_name, member_name):
@@ -97,7 +95,7 @@ def members(request, company_name, member_name):
         member = company.member_set.get(netid=member_name)
         
         member_list = company.member_set.all().order_by('first_name', 'netid')
-        admin_list = company.admin_set.all()
+        admin_list = company.getSortedAdmins()
 
         # process the form and conflict data of the user
         if request.method == 'POST':
@@ -116,15 +114,20 @@ def members(request, company_name, member_name):
 def casts(request, company_name, member_name):
     # check if valid admin
     not_valid_admin = adminAuth(request, company_name, member_name)
+
+    company = Company.objects.get(name=company_name)
+    member = company.member_set.get(netid=member_name)
+
+    total_casts = Cast.objects.filter(company=company).order_by('name')
+    total_choreographers = Choreographer.objects.filter(company=company)
+
     if not_valid_admin:
-        return not_valid_admin
+        not_valid_member = memberAuth(request, company_name, member_name)
+        if not_valid_member:
+            return not_valid_member
+        else:
+            return render(request, 'profiles/viewcasts.html', {'company':company, 'member':member, 'total_casts':total_casts, 'total_choreographers':total_choreographers})
     else:
-        company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
-
-        total_casts = Cast.objects.filter(company=company).order_by('name')
-        total_choreographers = Choreographer.objects.filter(company=company)
-
         return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'total_casts':total_casts, 'total_choreographers':total_choreographers})
 
 def scheduling(request, company_name, member_name):

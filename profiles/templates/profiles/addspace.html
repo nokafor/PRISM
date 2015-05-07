@@ -90,23 +90,27 @@
                     <h2 class="section-heading">Current Rehearsal Spaces</h2>
                     <hr>
                     {% if rehearsal_list %}
-                        {% for rehearsal in rehearsal_list %}
-                            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="display:flex; flex-direction:row; align-items:center">
-                                <div>
-                                    {{ rehearsal.day_of_week }}
-                                    <p>{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}}</p>
-                                </div>
-                                <div><a data-toggle="modal" href="{% url 'updates:updateRehearsal' company.name member.netid rehearsal.id %}" data-target="#{{ rehearsal.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
-                                <div><a href="{% url 'updates:deleteRehearsal' company.name member.netid rehearsal.id %}"><span class="fa fa-minus-circle"></span></a></div> 
-                            </div>
-                            
-                            <!-- Modal -->
-                            <div class="modal fade" id="{{ rehearsal.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
+                        {% for day, value in timeblock.DAY_OF_WEEK_CHOICES %}
+                            <h2>{{ value }}</h2>
+                            {% for rehearsal in rehearsal_list %}
+                                {% ifequal day rehearsal.day_of_week %}
+                                    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="display:flex; flex-direction:row; align-items:center">
+                                        <div>
+                                            <p>{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}}</p>
+                                        </div>
+                                        <div><a data-toggle="modal" href="{% url 'updates:updateRehearsal' company.name member.netid rehearsal.id %}" data-target="#{{ rehearsal.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
+                                        <div><a href="{% url 'updates:deleteRehearsal' company.name member.netid rehearsal.id %}"><span class="fa fa-minus-circle"></span></a></div> 
                                     </div>
-                                </div>
-                            </div> 
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="{{ rehearsal.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                            </div>
+                                        </div>
+                                    </div>                           
+                                {% endifequal %}
+                            {% endfor %}
                         {% endfor %}
                     {% else %}
                         <blockquote>You have not added any rehearsals yet.</blockquote>

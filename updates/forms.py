@@ -9,6 +9,11 @@ class MemberForm(ModelForm):
         model = Member
         fields = ['first_name', 'last_name', 'netid']
 
+class MemberNameForm(ModelForm):
+    class Meta:
+        model = Member
+        fields = ['first_name', 'last_name']
+
 class AdminForm(ModelForm):
     class Meta:
         model = Admin

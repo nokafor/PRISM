@@ -8,6 +8,14 @@ class Company(models.Model):
     name = models.CharField(max_length=200)
     def __str__(self):
         return self.name
+    def getSortedAdmins(self):
+        members = self.member_set.all().order_by('netid', 'first_name')
+        admins = self.admin_set.all()
+        admin_list = []
+        for mem in members:
+            if admins.filter(member=mem).exists():
+                admin_list.append(mem)
+        return admin_list
 
 class TimeBlock(models.Model):
     start_time = models.TimeField('Start Time')

@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load bootstrap %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -34,7 +35,6 @@
 </head>
 
 <body>
-
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
         <div class="container-fluid">
@@ -88,12 +88,12 @@
     </header>
 
     <!-- Form Modal -->
-        <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                </div>
+    <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
             </div>
-        </div> 
+        </div>
+    </div>    
 
     <!-- Main Content -->
     <div class="container">
@@ -195,6 +195,21 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'profiles/js/clean-blog.min.js' %}"></script>
+
+    {% if not member.first_name %}
+    <a id="getModal" data-toggle="modal" href="{% url 'updates:updateName' company.name member.netid %}" data-target="#name-modal"></a>
+    <div class="modal fade" id="name-modal" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+     $(window).load(function(){
+            $('#getModal').click();
+        });
+    </script>
+    {% endif %}
 
 </body>
 

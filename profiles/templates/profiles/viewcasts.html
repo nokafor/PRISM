@@ -73,73 +73,56 @@
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
                         <h1>Casting</h1>
-                        <h2 class="subheading">Manage casting list for the upcoming shows and/or performances</h2>
-                        <span class="meta">Changes allowed until March 3, 2015</span>
+                        <h2 class="subheading">Find out what pieces you are in</h2>
+                        <span class="meta">Will be posted by March 3, 2015</span>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Post Content -->
-    <article>
+    <!-- Current Casts -->
+    <section>
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <h2 class="section-heading">Choreographer 1</h2>
-                    <ul style="list-style-type: none">
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                    </ul>
+                    <h2 class="section-heading">Current Choreographers and Casts</h2>
+                    <hr>
+                    {% if total_casts %}
+                        {% for cast in total_casts %}
+                            <div style="display:flex; flex-direction:row; align-items:center">
+                                    <h2>{{ cast.name }}</h2>
+                            </div>   
 
-                    <h2 class="section-heading">Choreographer 2</h2>
-                    <ul style="list-style-type: none">
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                    </ul>
-
-                    <h2 class="section-heading">Choreographer 3</h2>
-                    <ul style="list-style-type: none">
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                    </ul>
-
-                    <h2 class="section-heading">Choreographer 4</h2>
-                    <ul style="list-style-type: none">
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                        <li>Dancer</li>
-                    </ul>
+                            <br>
+                            <strong>Choreographer(s):</strong>
+                            <ul style="list-style:none">
+                                {% for choreographer in total_choreographers %}
+                                    {% ifequal choreographer.cast cast%}
+                                        <li>{{ choreographer.member }}</li>
+                                    {% endifequal %}
+                                {% endfor %}
+                            </ul>
+                            <br>
+                            <strong>Dancer(s):</strong>
+                            <ul style="list-style:none">
+                                {% for mem in cast.sortedMembers %}
+                                    <li>{{ mem }}</li>
+                                {% endfor %}
+                            </ul>
+                            
+                            <br>
+                        {% endfor %}
+                    {% else %}
+                        <blockquote>You have not added any casts yet.</blockquote>
+                    {% endif %}
                 </div>
             </div>
         </div>
-    </article>
+    </section>
 
     <hr>
+    
 
     <!-- jQuery -->
     <script src="{% static 'profiles/js/jquery.js' %}"></script>

@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 
 from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer
-from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, AdminForm, ChoreographerForm
+from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, MemberNameForm, AdminForm, ChoreographerForm
 
 from django.views.generic import DetailView
 from django.template.loader import render_to_string
@@ -284,13 +284,13 @@ def updateName(request, company_name, member_name):
 
         # process the form and update user's name
         if request.method == 'POST':
-            form = MemberForm(request.POST, instance=member)
+            form = MemberNameForm(request.POST, instance=member)
             if form.is_valid():
                 form.save()
 
                 return redirect('profiles:profile', company_name, member_name,)
         else:
-            form = MemberForm(instance=member)
+            form = MemberNameForm(instance=member)
         return render(request, 'profiles/name.html', {'company':company, 'member':member, 'form':form})
 
 def addConflict(request, company_name, member_name):

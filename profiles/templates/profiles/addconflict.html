@@ -90,23 +90,27 @@
                     <h2 class="section-heading">Current Conflicts</h2>
                     <hr>
                     {% if conflict_list %}
-                        {% for conflict in conflict_list %}
-                            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="display:flex; flex-direction:row; align-items:center">
-                                <div>
-                                    {{ conflict.day_of_week }}
-                                    <p>{{ conflict.description }}: {{conflict.start_time}} - {{conflict.end_time}}</p>
-                                </div>
-                                <div><a data-toggle="modal" href="{% url 'updates:updateConflict' company.name member.netid conflict.id %}" data-target="#{{ conflict.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
-                                <div><a href="{% url 'updates:deleteConflict' company.name member.netid conflict.id %}"><span class="fa fa-minus-circle"></span></a></div> 
-                            </div>
-
-                            <!-- Modal -->
-                            <div class="modal fade" id="{{ conflict.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
+                        {% for day, value in timeblock.DAY_OF_WEEK_CHOICES %}
+                            <h2>{{ value }}</h2>
+                            {% for conflict in conflict_list %}
+                                {% ifequal day conflict.day_of_week %}
+                                    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="display:flex; flex-direction:row; align-items:center">
+                                        <div>
+                                            <p>{{ conflict.description }}: {{conflict.start_time}} - {{conflict.end_time}}</p>
+                                        </div>
+                                        <div><a data-toggle="modal" href="{% url 'updates:updateConflict' company.name member.netid conflict.id %}" data-target="#{{ conflict.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
+                                        <div><a href="{% url 'updates:deleteConflict' company.name member.netid conflict.id %}"><span class="fa fa-minus-circle"></span></a></div> 
                                     </div>
-                                </div>
-                            </div> 
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="{{ conflict.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                            </div>
+                                        </div>
+                                    </div>                           
+                                {% endifequal %}
+                            {% endfor %}
                         {% endfor %}
                     {% else %}
                         <blockquote>You have not added any conflicts yet.</blockquote>

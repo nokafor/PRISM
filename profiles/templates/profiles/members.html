@@ -152,14 +152,14 @@
                 {% if admin_list %}
                     {% for admin in admin_list %}
                         <div class="col-md-4 col-sm-6 portfolio-item">
-                            {% ifequal admin.member member%}
+                            {% ifequal admin member%}
                                 <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
                                     <h4> {{ member }}</h4>
                                     <a href="{% url 'updates:deleteAdmin' company.name member.netid %}"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
                                 </div>
                             {% else %}
                                 <div class="portfolio-caption">
-                                    <h4>{{ admin.member }}</h4>
+                                    <h4>{{ admin }}</h4>
                                 </div>
                             {% endifequal %}
                         </div>

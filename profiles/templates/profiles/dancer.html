@@ -112,7 +112,7 @@
                 </div>
                 <hr>
                 <div class="post-preview">
-                    <a href="casting.html">
+                    <a href="{% url 'profiles:casts' company.name member.netid %}">
                         <h2 class="post-title">
                             Casting
                         </h2>
@@ -185,6 +185,21 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'profiles/js/clean-blog.min.js' %}"></script>
+
+    {% if not member.first_name %}
+    <a id="getModal" data-toggle="modal" href="{% url 'updates:updateName' company.name member.netid %}" data-target="#name-modal"></a>
+    <div class="modal fade" id="name-modal" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+     $(window).load(function(){
+            $('#getModal').click();
+        });
+    </script>
+    {% endif %}
 
 </body>
 
