@@ -125,7 +125,7 @@
 
                             <strong>Dancer(s):</strong>
                             <ul style="list-style:none">
-                                {% for mem in cast.sortedMembers %}
+                                {% for mem in cast.member_set.all %}
                                     <li>
                                         <a data-toggle="modal" href="{% url 'updates:updateCastMem' company.name member.netid cast.id mem.id %}" data-target="#{{ cast.id }}-{{ mem.id }}-modal" style="text-decoration:none">{{ mem }}</a>
                                     </li>

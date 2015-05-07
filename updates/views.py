@@ -291,7 +291,11 @@ def updateName(request, company_name, member_name):
                 return redirect('profiles:profile', company_name, member_name,)
         else:
             form = MemberNameForm(instance=member)
-        return render(request, 'profiles/name.html', {'company':company, 'member':member, 'form':form})
+        
+        if member.first_name:
+            return render(request, 'profiles/name.html', {'company':company, 'member':member, 'form':form})
+        else:
+            return render(request, 'profiles/name2.html', {'company':company, 'member':member, 'form':form})
 
 def addConflict(request, company_name, member_name):
     name = 'updates:addConflict'

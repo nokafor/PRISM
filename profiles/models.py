@@ -12,7 +12,8 @@ class Conflict(TimeBlock):
     description = models.CharField(max_length=200)
     def __str__(self):
         return "%s: %s - %s (%s)" % (self.description, self.start_time, self.end_time, self.day_of_week)
-    
+    class Meta:
+        ordering = ['day_of_week', 'start_time']
     def conflictsWith(self, that):
         if self.day_of_week != that.day_of_week:
             return False

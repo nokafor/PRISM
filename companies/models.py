@@ -8,14 +8,6 @@ class Company(models.Model):
     name = models.CharField(max_length=200)
     def __str__(self):
         return self.name
-    def getSortedAdmins(self):
-        members = self.member_set.all().order_by('netid', 'first_name')
-        admins = self.admin_set.all()
-        admin_list = []
-        for mem in members:
-            if admins.filter(member=mem).exists():
-                admin_list.append(mem)
-        return admin_list
 
 class TimeBlock(models.Model):
     start_time = models.TimeField('Start Time')
@@ -46,6 +38,9 @@ class Rehearsal(TimeBlock):
     place = models.CharField(max_length=200)
     def __str__(self):
         return "%s: %s - %s (%s)" % (self.place, self.start_time, self.end_time, self.day_of_week)
+    class Meta:
+        ordering = ['day_of_week', 'start_time']
+        
     def getAvailableCasts(self):
         casts = Cast.objects.filter(company=self.company)
 
@@ -73,8 +68,8 @@ class Cast(models.Model):
     def __str__(self):
         return self.name
 
-    def sortedMembers(self):
-        return self.member_set.all().order_by('first_name', 'netid')
+    class Meta:
+        ordering = ['name']
 
     def getAvailableRehearsals(self):
         rehearsals = self.company.rehearsal_set.all()
@@ -106,14 +101,22 @@ class Member(models.Model):
         if self.first_name and self.last_name:
             return "%s %s" % (self.first_name, self.last_name)
         return self.netid
+    class Meta:
+        ordering = ['netid', 'first_name']
 
 class Admin(models.Model):
     member = models.ForeignKey(Member)
     company = models.ForeignKey(Company)
     def __str__(self):
         return self.member.netid
+
+    class Meta:
+        ordering = ['member']
     
 class Choreographer(models.Model):
     member = models.ForeignKey(Member)
     company = models.ForeignKey(Company)
     cast = models.ForeignKey(Cast)
+
+    class Meta:
+        ordering = ['member']
