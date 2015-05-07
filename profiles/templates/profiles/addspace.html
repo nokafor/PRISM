@@ -92,16 +92,28 @@
                     {% if rehearsals %}
                         {% regroup rehearsals by day_of_week as rehearsal_list %}
 
-                        <ul>
-                            {% for rehearsal in rehearsal_list %}
+                        <ul style="list-style-type:none">
+                            {% for r in rehearsal_list %}
                             {% for day in timeblock.DAY_OF_WEEK_CHOICES %}
-                                {% ifequal day.0 rehearsal.grouper %}
+                                {% ifequal day.0 r.grouper %}
                                     <li>{{ day.1 }}</li>
                                 {% endifequal %}
                             {% endfor %}
-                            <ul>
-                                {% for r in rehearsal.list %}
-                                <li>{{ r }}</li>
+                            <ul style="list-style-type:none">
+                                {% for rehearsal in r.list %}
+                                <li><div style="display:flex; flex-direction:row; align-items:center">
+                                    {{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}}
+                                    <div><a data-toggle="modal" href="{% url 'updates:updateRehearsal' company.name member.netid rehearsal.id %}" data-target="#{{ rehearsal.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
+                                    <div><a href="{% url 'updates:deleteRehearsal' company.name member.netid rehearsal.id %}"><span class="fa fa-minus-circle"></span></a></div> 
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="{{ rehearsal.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                            </div>
+                                        </div>
+                                    </div>   
+                                </div></li>
                                 {% endfor %}
                             </ul>
                             <br>
