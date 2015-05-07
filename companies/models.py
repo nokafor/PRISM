@@ -81,13 +81,12 @@ class Cast(models.Model):
 
         rehearsal_list = []
         for rehearsal in rehearsals:
+            available = True
             for member in members:
-                available = True
                 for conflict in member.conflict_set.all():
                     if conflict.conflictsWith(rehearsal):
                         available = False
                         break
-
                 if available == False:
                     break
 
