@@ -56,7 +56,7 @@ def conflicts(request, company_name, member_name):
                 return HttpResponseRedirect('')
         else:
             form = ConflictForm()
-        return render(request, 'profiles/addconflict.html', {'company':company, 'member':member, 'conflict_list':conflict_list, 'form':form, 'timeblock':TimeBlock})
+        return render(request, 'profiles/addconflict.html', {'company':company, 'member':member, 'conflicts':conflict_list, 'form':form, 'timeblock':TimeBlock})
     
 
 def spaces(request, company_name, member_name):
@@ -82,7 +82,7 @@ def spaces(request, company_name, member_name):
                 return HttpResponseRedirect('')
         else:
             form = RehearsalForm()
-        return render(request, 'profiles/addspace.html', {'company':company, 'member':member, 'rehearsal_list':rehearsal_list, 'form':form, 'timeblock':TimeBlock})
+        return render(request, 'profiles/addspace.html', {'company':company, 'member':member, 'rehearsals':rehearsal_list, 'form':form, 'timeblock':TimeBlock})
     
 
 def members(request, company_name, member_name):
