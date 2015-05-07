@@ -138,7 +138,7 @@ def scheduling(request, company_name, member_name):
     else:
         company = Company.objects.get(name=company_name)
         member = company.member_set.get(netid=member_name)
-        rehearsals = company.rehearsal_set.all()
+        rehearsals = company.getSortedRehearsals()
 
         casts = Cast.objects.filter(company=company)
 

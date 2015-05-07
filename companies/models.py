@@ -8,6 +8,10 @@ class Company(models.Model):
     name = models.CharField(max_length=200)
     def __str__(self):
         return self.name
+    def getSortedRehearsals(self):
+        rehearsals = self.rehearsal_set.all()
+        sortedRehearsals = sorted(rehearsals, key = lambda t : len(t.getAvailableCasts()) )
+        return sortedRehearsals
 
 class TimeBlock(models.Model):
     start_time = models.TimeField('Start Time')
@@ -59,7 +63,7 @@ class Rehearsal(TimeBlock):
 
             if available == True:
                 cast_list.append(cast)
-        return cast_list
+        return list(cast_list)
 
 class Cast(models.Model):
     company = models.ForeignKey(Company)
