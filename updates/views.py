@@ -268,6 +268,9 @@ def deleteAdmin(request, company_name, member_name):
     if not_valid_admin:
         return not_valid_admin
     else:
+        company = Company.objects.get(name=company_name)
+        member = company.member_set.get(netid=member_name)
+        
         admin = Admin.objects.get(member=member)
         admin.delete()
 

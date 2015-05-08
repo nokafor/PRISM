@@ -116,14 +116,19 @@
                 {% else %}
                     <p>No members have been added yet.</p>
                 {% endif %}
-                <div class="col-md-4 col-sm-6 portfolio-item">
-                    <div class="portfolio-caption">
-                        <a data-toggle="modal" href="{% url 'updates:addMember' company.name member.netid %}" data-target="#addmember-modal"><h4>Add members...</h4></a>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <p class="copyright text-muted"><a data-toggle="modal" href="{% url 'updates:addMember' company.name member.netid %}" data-target="#addmember-modal" class="btn btn-lg btn-default" style="text-decoration:none">Add Members...</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <!-- Form Modals -->
     <div class="modal fade" id="addmember-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -167,14 +172,19 @@
                 {% else %}
                     <p>No admins have been added yet.</p>
                 {% endif %}
-                <div class="col-md-4 col-sm-6 portfolio-item">
-                    <div class="portfolio-caption">
-                        <a data-toggle="modal" href="{% url 'updates:addAdmin' company.name member.netid %}" data-target="#addadmin-modal"><h4>Add admins...</h4></a>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <p class="copyright text-muted"><a data-toggle="modal" href="{% url 'updates:addAdmin' company.name member.netid %}" data-target="#addadmin-modal" class="btn btn-lg btn-default" style="text-decoration:none">Add Admins...</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
     
     <!-- jQuery -->
     <script src="{% static 'profiles/js/jquery.js' %}"></script>
