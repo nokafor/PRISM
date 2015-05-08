@@ -96,14 +96,14 @@
                             {% for con in conflict_list %}
                             {% for day in timeblock.DAY_OF_WEEK_CHOICES %}
                                 {% ifequal day.0 con.grouper %}
-                                    <li>{{ day.1 }}</li>
+                                    <li><h3>{{ day.1 }}</h3></li>
                                 {% endifequal %}
                             {% endfor %}
                             <ul style="list-style-type:none">
                                 {% for conflict in con.list %}
                                 <li><div style="display:flex; flex-direction:row; align-items:center">
-                                    {{ conflict.description }}: {{conflict.start_time}} - {{conflict.end_time}}
-                                    <div><a data-toggle="modal" href="{% url 'updates:updateConflict' company.name member.netid conflict.id %}" data-target="#{{ conflict.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
+                                    <p>{{ conflict.description }}: {{conflict.start_time}} - {{conflict.end_time}}</p>
+                                    <div style="margin-left:5%"><a data-toggle="modal" href="{% url 'updates:updateConflict' company.name member.netid conflict.id %}" data-target="#{{ conflict.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
                                     <div><a href="{% url 'updates:deleteConflict' company.name member.netid conflict.id %}"><span class="fa fa-minus-circle"></span></a></div> 
 
                                     <!-- Modal -->

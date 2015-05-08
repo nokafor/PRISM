@@ -96,14 +96,14 @@
                             {% for r in rehearsal_list %}
                             {% for day in timeblock.DAY_OF_WEEK_CHOICES %}
                                 {% ifequal day.0 r.grouper %}
-                                    <li>{{ day.1 }}</li>
+                                    <li><h3>{{ day.1 }}</h3></li>
                                 {% endifequal %}
                             {% endfor %}
                             <ul style="list-style-type:none">
                                 {% for rehearsal in r.list %}
                                 <li><div style="display:flex; flex-direction:row; align-items:center">
-                                    {{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}}
-                                    <div><a data-toggle="modal" href="{% url 'updates:updateRehearsal' company.name member.netid rehearsal.id %}" data-target="#{{ rehearsal.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
+                                    <p>{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}}</p>
+                                    <div style="margin-left:5%"><a data-toggle="modal" href="{% url 'updates:updateRehearsal' company.name member.netid rehearsal.id %}" data-target="#{{ rehearsal.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
                                     <div><a href="{% url 'updates:deleteRehearsal' company.name member.netid rehearsal.id %}"><span class="fa fa-minus-circle"></span></a></div> 
 
                                     <!-- Modal -->

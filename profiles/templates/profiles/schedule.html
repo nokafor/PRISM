@@ -129,7 +129,7 @@
                     {% for rehearsal in rehearsal_list %}
                         <div class="col-md-4 col-sm-6 portfolio-item">
                             <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
-                                <a data-toggle="modal" href="{% url 'updates:CastView' company.name member.netid rehearsal.id %}" data-target="#r-{{ rehearsal.id }}-modal"><h4>{{ rehearsal }}</h4></a>
+                                <a data-toggle="modal" href="{% url 'updates:CastView' company.name member.netid rehearsal.id %}" data-target="#r-{{ rehearsal.id }}-modal"><h4>{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</h4></a>
                             </div>
                         </div>
                         

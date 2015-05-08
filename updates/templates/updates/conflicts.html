@@ -11,7 +11,7 @@
             {% if member.conflict_set.all %}
                 <ul>
                     {% for conflict in member.conflict_set.all %}
-                        <li>{{ conflict }}</li>
+                        <li>{{ conflict.description }}: {{conflict.start_time}} - {{conflict.end_time}} ({{conflict.day_of_week}})</li>
                     {% endfor %}
                 </ul>
             {% else %}
