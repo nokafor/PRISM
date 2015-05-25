@@ -12,6 +12,9 @@ class Company(models.Model):
         rehearsals = self.rehearsal_set.all()
         sortedRehearsals = sorted(rehearsals, key = lambda t : len(t.getAvailableCasts()) )
         return sortedRehearsals
+    def scheduleRehearsals(self):
+        N = len(self.cast_set.all())
+        return N
 
 class TimeBlock(models.Model):
     start_time = models.TimeField('Start Time')

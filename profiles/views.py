@@ -7,6 +7,12 @@ from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, Mem
 from profiles.functions import memberAuth, profileAuth, adminAuth
 
 # Create your views here.
+def testing(request, company_name, member_name):
+    company = Company.objects.get(name=company_name)
+    member = company.member_set.get(netid=member_name)
+
+    return render(request, 'updates/testing.html', {'company':company})
+
 def profile(request, company_name, member_name):
     # check if valid member
     not_valid_member = memberAuth(request, company_name, member_name)
