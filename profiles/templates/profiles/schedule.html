@@ -32,6 +32,9 @@
         <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <!-- Form Validation -->
+    <script src="{% static 'profiles/js/scheduling.js' %}"></script>
+
 </head>
 
 <body>
@@ -126,7 +129,8 @@
             </div>
             <div class="row">
                 {% if cast_list %}
-                    <form action="">
+                    <form id="castForm" action="" method="get">
+                        <!-- {% csrf_token %} -->
                         {% for cast in cast_list %}
                             <div class="col-md-4 col-sm-6 portfolio-item">
                                 <div class="checkbox" style="display:flex; flex-direction:row; align-items:center">
@@ -147,7 +151,7 @@
                                 </div>
                             </div> 
                         {% endfor %}
-                        <button type="submit" class="btn btn-primary">Make Rehearsal Schedule</button>
+                        <button type="submit" class="btn btn-primary" onclick="return validateForm()">Make Rehearsal Schedule</button>
                     </form>
                 {% else %}
                     <p>No casts have been added yet.</p>
