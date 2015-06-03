@@ -86,6 +86,8 @@
     </header>
 
     <!-- List of Rehearsals -->
+    <form id="castForm" action="" method="get">
+    
     <section>
         <div class="container">
             <div class="row">
@@ -98,9 +100,15 @@
                 {% if rehearsal_list %}
                     {% for rehearsal in rehearsal_list %}
                         <div class="col-md-4 col-sm-6 portfolio-item">
-                            <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
-                                <a data-toggle="modal" href="{% url 'updates:CastView' company.name member.netid rehearsal.id %}" data-target="#r-{{ rehearsal.id }}-modal"><h4>{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</h4></a>
+                            <div class="checkbox" style="display:flex; flex-direction:row; align-items:center">
+                                <label>
+                                    <input type="checkbox"> <a data-toggle="modal" href="{% url 'updates:CastView' company.name member.netid rehearsal.id %}" data-target="#r-{{ rehearsal.id }}-modal">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</a>
+                                </label>
                             </div>
+
+                            <!-- <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
+                                <a data-toggle="modal" href="{% url 'updates:CastView' company.name member.netid rehearsal.id %}" data-target="#r-{{ rehearsal.id }}-modal"><h4>{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</h4></a>
+                            </div> -->
                         </div>
                         
                         <!-- Modal -->
@@ -129,7 +137,6 @@
             </div>
             <div class="row">
                 {% if cast_list %}
-                    <form id="castForm" action="" method="get">
                         <!-- {% csrf_token %} -->
                         {% for cast in cast_list %}
                             <div class="col-md-4 col-sm-6 portfolio-item">
@@ -151,8 +158,6 @@
                                 </div>
                             </div> 
                         {% endfor %}
-                        <button type="submit" class="btn btn-primary" onclick="return validateForm()">Make Rehearsal Schedule</button>
-                    </form>
                 {% else %}
                     <p>No casts have been added yet.</p>
                 {% endif %}
@@ -160,21 +165,36 @@
         </div>
     </section>
 
-    <hr>
+    </form>
 
     <!-- Footer -->
     <footer>
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <!-- <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <p class="copyright text-muted"><a href="{% url 'profiles:casts' company.name member.netid %}" class="btn btn-lg btn-default" style="text-decoration:none">Manage Casts</a></p>
-                </div>
+                </div> -->
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <p class="copyright text-muted"><a href="{% url 'profiles:spaces' company.name member.netid %}" class="btn btn-lg btn-default" style="text-decoration:none">Manage Rehearsals</a></p>
+                    <p class="copyright text-muted"><button type="submit" class="btn btn-lg btn-default" onclick="return validateForm()">Make Rehearsal Schedule</button></p>
                 </div>
+                
+                <!-- <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <p class="copyright text-muted"><a href="{% url 'profiles:spaces' company.name member.netid %}" class="btn btn-lg btn-default" style="text-decoration:none">Manage Rehearsals</a></p>
+                </div> -->
             </div>
         </div>
     </footer>
+
+    <hr>
+
+    {% if company.has_schedule %}
+        <h2>Current Weekly Rehearsal Schedule</h2>    
+        {% for cast in cast_list %}
+            <p>{{cast}}: {{cast.rehearsal}}</p>
+        {% empty %}
+            Schedule has not been made yet. Click Make Rehearsal Schedule button above to create a new weekly schedule
+        {% endfor%}
+    {% endif %}
 
     <!-- jQuery -->
     <script src="{% static 'profiles/js/jquery.js' %}"></script>

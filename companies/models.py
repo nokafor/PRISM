@@ -9,6 +9,7 @@ import sys
 # Create your models here.
 class Company(models.Model):
     name = models.CharField(max_length=200)
+    has_schedule = models.BooleanField(default=False)
     def __str__(self):
         return self.name
     def getSortedRehearsals(self):
@@ -98,8 +99,12 @@ class Company(models.Model):
                 #return True
 
             else:
+                self.has_schedule = True
+                self.save()
                 return "No more casts"
 
+        self.has_schedule = True
+        self.save()
         return "Iteration done"
 
         
