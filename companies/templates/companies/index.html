@@ -18,6 +18,7 @@
 
     <!-- Custom CSS -->
     <link href="{% static 'companies/css/agency.css' %}" rel="stylesheet">
+    <link href="{% static 'companies/css/custom.css' %}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="{% static 'companies/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
@@ -93,12 +94,12 @@
                 </div>
             </div>
             <div class="row text-center">
-                <span class="fa-stack fa-4x">
+                <!-- <span class="fa-stack fa-4x">
                     <i class="fa fa-circle fa-stack-2x text-primary"></i>
                     <i class="fa fa-calendar fa-stack-1x fa-inverse"></i>
-                </span>
+                </span> -->
                 <!-- <h4 class="service-heading">By Dancers</h4> -->
-                <p style="margin-top:5%" class="text-muted">Princeton Instant Scheduling Machine is an online scheduling tool that allows organizations who have subgroups with overlapping members to easily find optimal times to meet for multiple events. First, members of each subgroup are expected to input their conflicts. Then PRISM creates a list of potential times when the most members can attend. If there is a space or location constraint, feel free to add it in with your conflicts and PRISM will provide the best location for each proposed meeting time. </p>
+                <p class="text-muted">Princeton Instant Scheduling Machine is an online scheduling tool that allows organizations who have subgroups with overlapping members to easily find optimal times to meet for multiple events. First, members of each subgroup are expected to input their conflicts. Then PRISM creates a list of potential times when the most members can attend. If there is a space or location constraint, feel free to add it in with your conflicts and PRISM will provide the best location for each proposed meeting time. </p>
 
                 <p class="text-muted">Finding times for each subgroup to meet without missing members is always difficult no matter the size of the group. PRISM is can save you time and energy so you do not have to run around in circles to find the perfect time to meet for everyone. Let us do the work you. PRISM will take your conflicts and give you a solution that works.</p>
                 <!-- <div class="col-md-4">
@@ -149,11 +150,11 @@
 			                            <i class="fa fa-sign-in fa-3x"></i>
 			                        </div>
 			                    </div>
-			                    <img src="{% static 'companies/img/portfolio/roundicons.png' %}" class="img-responsive" alt="">
+			                    <img src="{{company.logo.url}}" class="img-responsive" alt="">
 			                </a>
 			                <div class="portfolio-caption">
 			                    <h4>{{ company.name }}</h4>
-			                    <p class="text-muted">[Description]</p>
+			                    <p class="text-muted">{{company.logo.url}}</p>
 			                </div>
 			            </div>
 			        {% endfor %}
