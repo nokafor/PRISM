@@ -9,7 +9,8 @@ import sys
 # Create your models here.
 class Company(models.Model):
     name = models.CharField(max_length=200)
-    logo = models.ImageField(upload_to='companies/media/companies/')
+    logo = models.ImageField(upload_to='companies')
+    short_description = models.CharField(max_length=255)
     has_schedule = models.BooleanField(default=False)
     class Meta:
         ordering = ['name']

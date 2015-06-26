@@ -1,5 +1,8 @@
 from django.conf.urls import patterns, include, url
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 from companies import views
 from profiles import views as profile_views
 
@@ -12,3 +15,5 @@ urlpatterns = patterns('',
     # profiles homepage
     
 )
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -124,6 +124,29 @@ fieldset[disabled] .btn-xl.active {
     background: rgba(255,143,0,.9);
 }
 
+.portfolio-divider {
+    background: white;
+    max-width: 400px;
+    margin: 0 auto;
+}
+.portfolio-item {
+    height: 400px;
+    margin-bottom: 15px;
+    /*border: 5px solid blue;*/
+}
+
+.portfolio-item a {
+    height: 289px;
+    background: white;
+    overflow: hidden;
+    /*border-bottom: 1px solid grey;*/
+}
+
+.portfolio-item img {
+    height: 100%;
+    width: 100%;
+}
+
 .timeline>li .timeline-image {
     background-color: #FF8F00;
 }

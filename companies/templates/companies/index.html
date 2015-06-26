@@ -150,11 +150,15 @@
 			                            <i class="fa fa-sign-in fa-3x"></i>
 			                        </div>
 			                    </div>
-			                    <img src="{{company.logo.url}}" class="img-responsive" alt="">
+			                    <img src="{{company.logo.url}}" class="portfolio-image img-responsive" alt="Logo for {{company.name}}">
+                                <!-- {{ company.logo }} -->
+                                <!-- <hr style="margin-top: 0; padding: auto"> -->
 			                </a>
+                            <div class="portfolio-divider"><hr style="margin: 0 auto; width:75%"></div>
 			                <div class="portfolio-caption">
-			                    <h4>{{ company.name }}</h4>
-			                    <p class="text-muted">{{company.logo.url}}</p>
+<!--                                 <hr style="margin-top: 0; padding: auto">
+ -->			                    <h4>{{ company.name }}</h4>
+			                    <p class="text-muted">{{ company.short_description }}</p>
 			                </div>
 			            </div>
 			        {% endfor %}
@@ -171,7 +175,7 @@
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2 class="section-heading">Contact Us</h2>
-                    <h3 class="section-subheading text-muted">We welcome your feedback.</h3>
+                    <h3 class="section-subheading text-muted">We welcome your feedback. Help us help you, by giving us feedback so we can make this site better!</h3>
                 </div>
             </div>
             <div class="row">
@@ -188,7 +192,7 @@
                                     <p class="help-block text-danger"></p>
                                 </div>
                                 <div class="form-group">
-                                    <input type="tel" class="form-control" placeholder="Your Company *" id="phone" required data-validation-required-message="Please enter your phone number.">
+                                    <input type="text" class="form-control" placeholder="Your Organization *" id="organization" required data-validation-required-message="Please enter the organization you are associated with.">
                                     <p class="help-block text-danger"></p>
                                 </div>
                             </div>
@@ -218,11 +222,11 @@
                 </div>
                 <div class="col-md-4">
                     <ul class="list-inline social-buttons">
-                        <li><a href="#"><i class="fa fa-facebook"></i></a>
+                        <li><a href="https://www.facebook.com/bballinsylvia15"><i class="fa fa-facebook"></i></a>
                         </li>
-                        <li><a href="#"><i class="fa fa-envelope"></i></a>
+                        <li><a href="mailto:nokafor@princeton.edu?Subject=PRISM"><i class="fa fa-envelope"></i></a>
                         </li>
-                        <li><a href="#"><i class="fa fa-linkedin"></i></a>
+                        <li><a href="https://www.linkedin.com/pub/sylvia-okafor/99/9/a4"><i class="fa fa-linkedin"></i></a>
                         </li>
                     </ul>
                 </div>
@@ -251,6 +255,78 @@
     <!-- Contact Form JavaScript -->
     <script src="{% static 'companies/js/jqBootstrapValidation.js' %}"></script>
     <script src="{% static 'companies/js/contact_me.js' %}"></script>
+    <script type="text/javascript">
+        $(function() {
+
+            $("input,textarea").jqBootstrapValidation({
+                preventSubmit: true,
+                submitError: function($form, event, errors) {
+                    // additional error messages or events
+                },
+                submitSuccess: function($form, event) {
+                    event.preventDefault(); // prevent default submit behaviour
+                    // get values from FORM
+                    var name = $("input#name").val();
+                    var email = $("input#email").val();
+                    var organization = $("input#organization").val();
+                    var message = $("textarea#message").val();
+                    var firstName = name; // For Success/Failure Message
+                    // Check for white space in name for Success/Fail message
+                    if (firstName.indexOf(' ') >= 0) {
+                        firstName = name.split(' ').slice(0, -1).join(' ');
+                    }
+                    $.ajax({
+                        url: "{% static 'companies/mail/contact_me.php' %}",
+                        type: "POST",
+                        data: {
+                            name: name,
+                            organization: organization,
+                            email: email,
+                            message: message
+                        },
+                        cache: false,
+                        success: function() {
+                            // Success message
+                            $('#success').html("<div class='alert alert-success'>");
+                            $('#success > .alert-success').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
+                                .append("</button>");
+                            $('#success > .alert-success')
+                                .append("<strong>Your message has been sent. </strong>");
+                            $('#success > .alert-success')
+                                .append('</div>');
+
+                            //clear all fields
+                            $('#contactForm').trigger("reset");
+                        },
+                        error: function() {
+                            // Fail message
+                            $('#success').html("<div class='alert alert-danger'>");
+                            $('#success > .alert-danger').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
+                                .append("</button>");
+                            $('#success > .alert-danger').append("<strong>Sorry " + firstName + ", it seems that my mail server is not responding. Please try again later!");
+                            $('#success > .alert-danger').append('</div>');
+                            //clear all fields
+                            $('#contactForm').trigger("reset");
+                        },
+                    })
+                },
+                filter: function() {
+                    return $(this).is(":visible");
+                },
+            });
+
+            $("a[data-toggle=\"tab\"]").click(function(e) {
+                e.preventDefault();
+                $(this).tab("show");
+            });
+        });
+
+
+        /*When clicking on Full hide fail/success boxes */
+        $('#name').focus(function() {
+            $('#success').html('');
+        });
+    </script>
 
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'companies/js/agency.js' %}"></script>
