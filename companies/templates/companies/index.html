@@ -74,7 +74,7 @@
     </nav>
 
     <!-- Header -->
-    <header>
+    <header class="splash-container">
         <div class="container">
             <div class="intro-text">
                 <div class="intro-lead-in">Welcome to PRISM!</div>
@@ -84,163 +84,166 @@
         </div>
     </header>
 
-    <!-- About Section -->
-    <section id="services">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <h2 class="section-heading">What is PRISM?</h2>
-                    <h3 class="section-subheading text-muted">PRISM = Princeton Instant Scheduling Machine</h3>
-                </div>
-            </div>
-            <div class="row text-center">
-                <!-- <span class="fa-stack fa-4x">
-                    <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                    <i class="fa fa-calendar fa-stack-1x fa-inverse"></i>
-                </span> -->
-                <!-- <h4 class="service-heading">By Dancers</h4> -->
-                <p class="text-muted">Princeton Instant Scheduling Machine is an online scheduling tool that allows organizations who have subgroups with overlapping members to easily find optimal times to meet for multiple events. First, members of each subgroup are expected to input their conflicts. Then PRISM creates a list of potential times when the most members can attend. If there is a space or location constraint, feel free to add it in with your conflicts and PRISM will provide the best location for each proposed meeting time. </p>
-
-                <p class="text-muted">Finding times for each subgroup to meet without missing members is always difficult no matter the size of the group. PRISM is can save you time and energy so you do not have to run around in circles to find the perfect time to meet for everyone. Let us do the work you. PRISM will take your conflicts and give you a solution that works.</p>
-                <!-- <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fa fa-shopping-cart fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">For Dancers</h4>
-                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-                </div> -->
-                <!-- <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fa fa-laptop fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">By Dancers</h4>
-                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-                </div> -->
-                <!-- <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fa fa-lock fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">Of Dancers</h4>
-                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-                </div> -->
-            </div>
-        </div>
-    </section>
-
-
-	<!-- Portfolio Grid Section -->
-	<section id="portfolio" class="bg-light-gray">
-	    <div class="container">
-	        <div class="row">
-	            <div class="col-lg-12 text-center">
-	                <h2 class="section-heading">Company Login</h2>
-	                <h3 class="section-subheading text-muted">Choose your company.</h3>
-	            </div>
-	        </div>
-	        <div class="row">
-	        	{% if company_list %}
-	        		{% for company in company_list %}
-			            <div class="col-md-4 col-sm-6 portfolio-item">
-			                <a href="/{{ company.name }}/" class="portfolio-link">
-			                    <div class="portfolio-hover">
-			                        <div class="portfolio-hover-content">
-			                            <i class="fa fa-sign-in fa-3x"></i>
-			                        </div>
-			                    </div>
-			                    <img src="{{company.logo.url}}" class="portfolio-image img-responsive" alt="Logo for {{company.name}}">
-                                <!-- {{ company.logo }} -->
-                                <!-- <hr style="margin-top: 0; padding: auto"> -->
-			                </a>
-                            <div class="portfolio-divider"><hr style="margin: 0 auto; width:75%"></div>
-			                <div class="portfolio-caption">
-<!--                                 <hr style="margin-top: 0; padding: auto">
- -->			                    <h4>{{ company.name }}</h4>
-			                    <p class="text-muted">{{ company.short_description }}</p>
-			                </div>
-			            </div>
-			        {% endfor %}
-			    {% else %}
-			        <p>No companies have been added yet.</p>
-			    {% endif %}
-            </div>
-        </div>
-    </section>
-
-    <!-- contact section -->
-    <section id="contact">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <h2 class="section-heading">Contact Us</h2>
-                    <h3 class="section-subheading text-muted">We welcome your feedback. Help us help you, by giving us feedback so we can make this site better!</h3>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <form name="sentMessage" id="contactForm" novalidate>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Your Name *" id="name" required data-validation-required-message="Please enter your name.">
-                                    <p class="help-block text-danger"></p>
-                                </div>
-                                <div class="form-group">
-                                    <input type="email" class="form-control" placeholder="Your Email *" id="email" required data-validation-required-message="Please enter your email address.">
-                                    <p class="help-block text-danger"></p>
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Your Organization *" id="organization" required data-validation-required-message="Please enter the organization you are associated with.">
-                                    <p class="help-block text-danger"></p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <textarea class="form-control" placeholder="Your Message *" id="message" required data-validation-required-message="Please enter a message."></textarea>
-                                    <p class="help-block text-danger"></p>
-                                </div>
-                            </div>
-                            <div class="clearfix"></div>
-                            <div class="col-lg-12 text-center">
-                                <div id="success"></div>
-                                <button type="submit" class="btn btn-xl">Send Message</button>
-                            </div>
+    <div class="content-wrapper">
+            <!-- About Section -->
+            <section id="services">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 text-center">
+                            <h2 class="section-heading">What is PRISM?</h2>
+                            <h3 class="section-subheading text-muted">PRISM = Princeton Instant Scheduling Machine</h3>
                         </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
+                    </div>
+                    <div class="row text-center">
+                        <!-- <span class="fa-stack fa-4x">
+                            <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                            <i class="fa fa-calendar fa-stack-1x fa-inverse"></i>
+                        </span> -->
+                        <!-- <h4 class="service-heading">By Dancers</h4> -->
+                        <p class="text-muted">Princeton Instant Scheduling Machine is an online scheduling tool that allows organizations who have subgroups with overlapping members to easily find optimal times to meet for multiple events. First, members of each subgroup are expected to input their conflicts. Then PRISM creates a list of potential times when the most members can attend. If there is a space or location constraint, feel free to add it in with your conflicts and PRISM will provide the best location for each proposed meeting time. </p>
 
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <span class="copyright">Copyright &copy; ORF401 2015</span>
+                        <p class="text-muted">Finding times for each subgroup to meet without missing members is always difficult no matter the size of the group. PRISM is can save you time and energy so you do not have to run around in circles to find the perfect time to meet for everyone. Let us do the work you. PRISM will take your conflicts and give you a solution that works.</p>
+                        <!-- <div class="col-md-4">
+                            <span class="fa-stack fa-4x">
+                                <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                                <i class="fa fa-shopping-cart fa-stack-1x fa-inverse"></i>
+                            </span>
+                            <h4 class="service-heading">For Dancers</h4>
+                            <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
+                        </div> -->
+                        <!-- <div class="col-md-4">
+                            <span class="fa-stack fa-4x">
+                                <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                                <i class="fa fa-laptop fa-stack-1x fa-inverse"></i>
+                            </span>
+                            <h4 class="service-heading">By Dancers</h4>
+                            <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
+                        </div> -->
+                        <!-- <div class="col-md-4">
+                            <span class="fa-stack fa-4x">
+                                <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                                <i class="fa fa-lock fa-stack-1x fa-inverse"></i>
+                            </span>
+                            <h4 class="service-heading">Of Dancers</h4>
+                            <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
+                        </div> -->
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <ul class="list-inline social-buttons">
-                        <li><a href="https://www.facebook.com/bballinsylvia15"><i class="fa fa-facebook"></i></a>
-                        </li>
-                        <li><a href="mailto:nokafor@princeton.edu?Subject=PRISM"><i class="fa fa-envelope"></i></a>
-                        </li>
-                        <li><a href="https://www.linkedin.com/pub/sylvia-okafor/99/9/a4"><i class="fa fa-linkedin"></i></a>
-                        </li>
-                    </ul>
+            </section>
+
+
+            <!-- Portfolio Grid Section -->
+            <section id="portfolio" class="bg-light-gray">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 text-center">
+                            <h2 class="section-heading">Company Login</h2>
+                            <h3 class="section-subheading text-muted">Choose your company.</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {% if company_list %}
+                            {% for company in company_list %}
+                                <div class="col-md-4 col-sm-6 portfolio-item">
+                                    <a href="/{{ company.name }}/" class="portfolio-link">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-sign-in fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        <img src="{{company.logo.url}}" class="portfolio-image img-responsive" alt="Logo for {{company.name}}">
+                                        <!-- {{ company.logo }} -->
+                                        <!-- <hr style="margin-top: 0; padding: auto"> -->
+                                    </a>
+                                    <div class="portfolio-divider"><hr style="margin: 0 auto; width:75%"></div>
+                                    <div class="portfolio-caption">
+        <!--                                 <hr style="margin-top: 0; padding: auto">
+         -->                                <h4>{{ company.name }}</h4>
+                                        <p class="text-muted">{{ company.short_description }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>No companies have been added yet.</p>
+                        {% endif %}
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <ul class="list-inline quicklinks">
-                        <li><a href="#">Privacy Policy</a>
-                        </li>
-                        <li><a href="#">Terms of Use</a>
-                        </li>
-                    </ul>
+            </section>
+
+            <!-- contact section -->
+            <section id="contact">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 text-center">
+                            <h2 class="section-heading">Contact Us</h2>
+                            <h3 class="section-subheading text-muted">We welcome your feedback. Help us help you, by giving us feedback so we can make this site better!</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form name="sentMessage" id="contactForm" novalidate>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="Your Name *" id="name" required data-validation-required-message="Please enter your name.">
+                                            <p class="help-block text-danger"></p>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="email" class="form-control" placeholder="Your Email *" id="email" required data-validation-required-message="Please enter your email address.">
+                                            <p class="help-block text-danger"></p>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="Your Organization *" id="organization" required data-validation-required-message="Please enter the organization you are associated with.">
+                                            <p class="help-block text-danger"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <textarea class="form-control" placeholder="Your Message *" id="message" required data-validation-required-message="Please enter a message."></textarea>
+                                            <p class="help-block text-danger"></p>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="col-lg-12 text-center">
+                                        <div id="success"></div>
+                                        <button type="submit" class="btn btn-xl">Send Message</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </footer>
+            </section>
+
+            <footer>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="copyright">Copyright &copy; ORF401 2015</span>
+                        </div>
+                        <div class="col-md-4">
+                            <ul class="list-inline social-buttons">
+                                <li><a href="https://www.facebook.com/bballinsylvia15"><i class="fa fa-facebook"></i></a>
+                                </li>
+                                <li><a href="mailto:nokafor@princeton.edu?Subject=PRISM"><i class="fa fa-envelope"></i></a>
+                                </li>
+                                <li><a href="https://www.linkedin.com/pub/sylvia-okafor/99/9/a4"><i class="fa fa-linkedin"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <ul class="list-inline quicklinks">
+                                <li><a href="#">Privacy Policy</a>
+                                </li>
+                                <li><a href="#">Terms of Use</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+    </div>
+    
     <!-- jQuery -->
     <script src="{% static 'companies/js/jquery.js' %}"></script>
 
