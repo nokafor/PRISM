@@ -125,27 +125,6 @@ fieldset[disabled] .btn-xl.active {
     background-color: #FF8F00;
 }
 
-/*header {
-    z-index: -2;
-    overflow: hidden;
-    width: 100%;
-    height: auto;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    position: fixed !important;
-}
-
-.content-wrapper {
-    position: absolute;
-    width: 100%;
-    height: auto;
-    top: 100vh;
-    z-index: 1;
-    background-color: #fff;
-    text-align: center;
-}*/
-
 #portfolio .portfolio-item .portfolio-link .portfolio-hover {
     background: rgba(255,165,52,.9);
 }
