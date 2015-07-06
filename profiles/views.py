@@ -11,7 +11,7 @@ def testing(request, company_name, member_name):
     company = Company.objects.get(name=company_name)
     member = company.member_set.get(netid=member_name)
 
-    return render(request, 'updates/testing.html', {'company':company})
+    return render(request, 'companies/login.html', {'company':company})
 
 def profile(request, company_name, member_name):
     # check if valid member

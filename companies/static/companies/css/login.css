@@ -1,0 +1,15 @@
+.login-box {
+	display: block;
+	position: relative;
+	margin: 0 auto;
+    width: 50%;
+}
+
+.flexbox {
+	display: -webkit-flex;
+	display: flex;
+	-webkit-justify-content: center;
+	justify-content: center;
+	-webkit-align-items:center;
+	align-items: center;
+}
