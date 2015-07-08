@@ -8,8 +8,6 @@
 .flexbox {
 	display: -webkit-flex;
 	display: flex;
-	flex-direction: column;
-	-webkit-flex-direction: column;
 	-webkit-justify-content: center;
 	justify-content: center;
 	-webkit-align-items:center;
