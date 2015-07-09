@@ -12,7 +12,7 @@
     color: #FFA534;
 }
 
-a {
+a, section#services .section-heading {
     color: #FF8F00;
 }
 
