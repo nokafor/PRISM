@@ -1,4 +1,7 @@
-@font-face { font-family: Prism; src: url(../fonts/Prism2.otf); }
+@font-face { 
+    font-family: 'Prism'; 
+    src: url('../fonts/EvolutionTrueTypeFont.ttf');
+}
 
 .text-primary {
     color: #FFA534;
@@ -91,7 +94,7 @@ fieldset[disabled] .btn-xl.active {
 }
 
 .navbar-brand {
-    font-family: Prism, verdana;
+    font-family: 'Prism', verdana;
 }
 
 .navbar-default .navbar-brand:hover,
