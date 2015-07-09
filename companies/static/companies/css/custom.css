@@ -3,6 +3,11 @@
     src: url('../fonts/EvolutionTrueTypeFont.ttf');
 }
 
+@font-face {
+    font-family: 'Walkway';
+    src: url('../fonts/WalkwayBlack.ttf');
+}
+
 .text-primary {
     color: #FFA534;
 }
