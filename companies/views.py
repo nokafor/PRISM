@@ -12,6 +12,10 @@ def index(request):
     context = {'company_list': company_list}
     return render(request, 'companies/index.html', context)
 
+def modal(request, company_name):
+    company = Company.objects.get(name=company_name)
+    return render(request, 'companies/login.html', {'company':company})
+
 @login_required
 def detail(request, company_name):
     return redirect('%s/' % request.user.username)

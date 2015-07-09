@@ -160,6 +160,10 @@ fieldset[disabled] .btn-xl.active {
     width: 100%;
 }
 
+.modal {
+    z-index: 1051;
+}
+
 .timeline>li .timeline-image {
     background-color: #FFA534;
 }
