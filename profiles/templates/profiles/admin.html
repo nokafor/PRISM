@@ -47,23 +47,23 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">{{ company.name }}</a>
+                <a id="nav-item" class="navbar-brand" href="#">{{ company.name }}</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="/">Home</a>
+                        <a id="nav-item" href="/">Home</a>
                     </li>
                     <li>
-                        <a href="{% url 'profiles:conflicts' company.name member.netid %}">Your Conflicts</a>
+                        <a id="nav-item" href="{% url 'profiles:conflicts' company.name member.netid %}">Your Conflicts</a>
                     </li>
                     <li>
-                        <a href="logout/">Logout</a>
+                        <a id="nav-item" href="logout/">Logout</a>
                     </li>
                     <li>
-                        <a data-toggle="modal" href="{% url 'updates:updateName' company.name member.netid %}" data-target="#form-modal"><span class="fa fa-cog fa-lg"></span></a>
+                        <a id="nav-item" data-toggle="modal" href="{% url 'updates:updateName' company.name member.netid %}" data-target="#form-modal"><span class="fa fa-cog fa-lg"></span></a>
                     </li>
                 </ul>
             </div>
@@ -227,13 +227,25 @@
               if(scroll_start > offset.top) {
                   $(".navbar").css({
                     'background-color': 'white',
-                    'border-bottom':'1px solid black'
-                });
+                    'border-bottom':'1px solid black',
+                    'box-shadow':'0px 0px 5px 0px rgba(0,0,0,.5)'
+                    });
+                  
+                  $("#nav-item").each(function(){
+                    $(this).css('color', 'grey');
+                  });
+
                } else {
                   $('.navbar').css({
                     'background-color': 'transparent',
-                    'border-bottom':'1px solid transparent'
-                });
+                    'border-bottom':'1px solid transparent',
+                    'box-shadow':'0px 0px 0px 0px rgba(0,0,0,.5)'
+                    });
+
+                  $("#nav-item").each(function(){
+                    $(this).css('color', 'white');
+                  });
+
                }
            });
             }
