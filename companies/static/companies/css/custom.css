@@ -98,8 +98,8 @@ fieldset[disabled] .btn-xl.active {
     color: #FFA534;
 }
 
-.navbar-brand {
-    font-family: 'Prism', verdana;
+.custom-font {
+    font-family: 'Prism';
 }
 
 .navbar-default .navbar-brand:hover,
@@ -160,7 +160,7 @@ fieldset[disabled] .btn-xl.active {
     width: 100%;
 }
 
-.modal {
+.portfolio-modal {
     z-index: 1051;
 }
 
