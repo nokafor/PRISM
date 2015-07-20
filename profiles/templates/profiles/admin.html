@@ -215,6 +215,33 @@
     </script>
     {% endif %}
 
+    <script>
+        $(document).ready(function(){       
+           var scroll_start = 0;
+           var startchange = $('.content-wrapper');
+           var offset = startchange.offset();
+           // var offset = 300;
+            if (startchange.length){
+           $(document).scroll(function() { 
+              scroll_start = $(this).scrollTop();
+              if(scroll_start > offset.top) {
+                  $(".navbar").css({
+                    'background-color': 'white',
+                    'border-bottom':'1px solid black',
+                    'color':'black'
+                });
+               } else {
+                  $('.navbar').css({
+                    'background-color': 'transparent',
+                    'border':'none',
+                    'color':'white'
+                });
+               }
+           });
+            }
+        });
+    </script>
+
 </body>
 
 </html>
