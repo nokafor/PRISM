@@ -181,6 +181,7 @@ ul.social-buttons li a:active {
     margin: 0;
     background-color: white;
     color: #FFA534;
+    padding-left: 5%;
 }
 
 a.banner-link:hover,
