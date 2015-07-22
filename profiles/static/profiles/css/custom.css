@@ -84,7 +84,7 @@ header {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
   }
-  /*.navbar.is-fixed {
+  .navbar.is-fixed {
     position: fixed;
     top: -61px;
     background-color: rgba(255, 255, 255, 0.9);
@@ -113,5 +113,5 @@ header {
     -ms-transform: translate3d(0, 100%, 0);
     -o-transform: translate3d(0, 100%, 0);
     transform: translate3d(0, 100%, 0);
-  }*/
+  }
 }
