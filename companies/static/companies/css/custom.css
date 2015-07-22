@@ -177,7 +177,11 @@ ul.social-buttons li a:active {
     background-color: #FFA534;
 }
 
-
+.banner {
+    margin: 0;
+    background-color: white;
+    color: #FFA534;
+}
 
 ::-moz-selection {
     background: #FFA534;
