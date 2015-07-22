@@ -150,7 +150,7 @@ fieldset[disabled] .btn-xl.active {
 }
 
 .portfolio-item a {
-    /*height: 289px;*/
+    height: 289px;
     background: white;
     overflow: hidden;
     /*border-bottom: 1px solid grey;*/
