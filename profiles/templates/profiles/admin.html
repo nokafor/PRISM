@@ -217,8 +217,7 @@
 
     <script>
         $(document).ready(function(){
-            var windowsize = $(window).width();
-            if (windowsize >= 768) {
+            if ($(window).width() >= 768) {
                 var scroll_start = 0;
                 var startchange = $('.content-wrapper');
                 var offset = startchange.offset();
@@ -240,21 +239,23 @@
                        // });
 
                     } 
-                    // else {
-                    //    $('.navbar').css({
-                    //      'background-color': 'transparent',
-                    //      'border-bottom':'1px solid transparent',
-                    //      'box-shadow':'0px 0px 0px 0px rgba(0,0,0,.5)'
-                    //      });
+                    else {
+                        if ($(window).width() >= 768) {
+                            $('.navbar').css({
+                              'background-color': 'transparent',
+                              'border-bottom':'1px solid transparent',
+                              'box-shadow':'0px 0px 0px 0px rgba(0,0,0,.5)'
+                              });
 
-                    //    $(".nav li a").css('color', 'white');
-                    //    $(".navbar-brand").css('color', 'white');
+                            $(".nav li a").css('color', 'white');
+                            $(".navbar-brand").css('color', 'white');
 
-                    //    // $("#nav-item").each(function(){
-                    //    //   $(this).css('color', 'white');
-                    //    // });
+                            // $("#nav-item").each(function(){
+                            //   $(this).css('color', 'white');
+                            // });
+                        }
 
-                    // }
+                    }
                 });
                  }
             }       
