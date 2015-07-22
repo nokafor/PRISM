@@ -183,6 +183,10 @@ ul.social-buttons li a:active {
     color: #FFA534;
 }
 
+.banner-link {
+    text-decoration: none;
+}
+
 .banner p {
     color: #dedede;
 }
