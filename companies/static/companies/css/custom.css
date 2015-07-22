@@ -144,12 +144,13 @@ fieldset[disabled] .btn-xl.active {
 }
 .portfolio-item {
     height: 400px;
+    width: 400px;
     margin-bottom: 15px;
     /*border: 5px solid blue;*/
 }
 
 .portfolio-item a {
-    height: 289px;
+    /*height: 289px;*/
     background: white;
     overflow: hidden;
     /*border-bottom: 1px solid grey;*/
@@ -158,10 +159,6 @@ fieldset[disabled] .btn-xl.active {
 .portfolio-item img {
     height: 100%;
     width: 100%;
-}
-
-.portfolio-modal {
-    z-index: 1051;
 }
 
 .timeline>li .timeline-image {
