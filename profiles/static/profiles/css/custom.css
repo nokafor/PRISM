@@ -39,7 +39,7 @@ header {
   z-index: 3;
   font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
-.navbar .navbar-brand {
+/*.navbar .navbar-brand {
   font-weight: 800;
 }
 .navbar .nav li a {
@@ -75,7 +75,6 @@ header {
     -webkit-transition: background-color 0.3s;
     -moz-transition: background-color 0.3s;
     transition: background-color 0.3s;
-    /* Force Hardware Acceleration in WebKit */
     -webkit-transform: translate3d(0, 0, 0);
     -moz-transform: translate3d(0, 0, 0);
     -ms-transform: translate3d(0, 0, 0);
@@ -115,3 +114,4 @@ header {
     transform: translate3d(0, 100%, 0);
   }
 }
+*/
