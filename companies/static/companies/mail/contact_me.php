@@ -15,12 +15,50 @@ $email_address = $_POST['email'];
 $organization = $_POST['organization'];
 $message = $_POST['message'];
 	
-// Create the email and send the message
-$to = 'nokafor@princeton.edu'; // Add your email address inbetween the '' replacing yourname@yourdomain.com - This is where the form will send a message to.
-$email_subject = "PRISM Feedback Form:  $name";
+require("/PHPMailer/PHPMailerAutoload.php");
+$mail = new PHPMailer();
+
+// set mailer to use SMTP
+$mail->IsSMTP();
+
+// As this email.php script lives on the same server as our email server
+// we are setting the HOST to localhost
+$mail->Host = "localhost";  // specify main and backup server
+
+$mail->SMTPAuth = true;     // turn on SMTP authentication
+
+// When sending email using PHPMailer, you need to send from a valid email address
+// In this case, we setup a test email account with the following credentials:
+// email: send_from_PHPMailer@bradm.inmotiontesting.com
+// pass: password
+$mail->Username = "send_from_PHPMailer@bradm.inmotiontesting.com";  // SMTP username
+$mail->Password = "password"; // SMTP password
+
+$mail->From = $email;
+
+// below we want to set the email address we will be sending our email to.
+$mail->AddAddress("nokafor@princeton.edu", "Sylvia Okafor");
+
+// set word wrap to 50 characters
+$mail->WordWrap = 50;
+// set email format to HTML
+$mail->IsHTML(true);
+
+$mail->Subject = "PRISM Feedback Form Submitted By:  $name";
+
 $email_body = "You have received a new message from your website contact form.\n\n"."Here are the details:\n\nName: $name\n\nEmail: $email_address\n\nOrganization: $organization\n\nMessage:\n$message";
-$headers = "From: noreply@princeton.edu\n"; // This is the email address the generated message will be from. We recommend using something like noreply@yourdomain.com.
-$headers .= "Reply-To: $email_address";	
-mail($to,$email_subject,$email_body,$headers);
+
+$mail->Body    = $email_body;
+$mail->AltBody = $email_body;
+
+if(!$mail->Send())
+{
+   echo "Message could not be sent. <p>";
+   echo "Mailer Error: " . $mail->ErrorInfo;
+   exit;
+}
+
+echo "Message has been sent";
+
 return true;			
 ?>
