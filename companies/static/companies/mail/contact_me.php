@@ -17,7 +17,7 @@ $organization = $_POST['organization'];
 $message = $_POST['message'];
 
 require 'vendor/autoload.php';
-$sendgrid = new SendGrid('YOUR_SENDGRID_USERNAME', 'YOUR_SENDGRID_PASSWORD');
+$sendgrid = new SendGrid('princetonism', 'PRISMfounder16');
 
 $email_body = "You have received a new message from your website contact form.\n\n"."Here are the details:\n\nName: $name\n\nEmail: $email_address\n\nOrganization: $organization\n\nMessage:\n$message";
 
