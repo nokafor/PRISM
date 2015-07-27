@@ -16,8 +16,12 @@ $email_address = $_POST['email'];
 $organization = $_POST['organization'];
 $message = $_POST['message'];
 
+echo "checkpoint";
+
 require 'vendor/autoload.php';
 $sendgrid = new SendGrid('princetonism', 'PRISMfounder16');
+
+echo "checkpoint";
 
 $email_body = "You have received a new message from your website contact form.\n\n"."Here are the details:\n\nName: $name\n\nEmail: $email_address\n\nOrganization: $organization\n\nMessage:\n$message";
 
@@ -27,7 +31,12 @@ $message->addTo('nokafor@princeton.edu')->
           setSubject("PRISM Feedback Form:  $name")->
           setText($email_body)->
           setHtml('<strong>Hello World!</strong>');
+
+echo "checkpoint";
+
 $response = $sendgrid->send($message);
+
+echo $response
 
 return $response
 
