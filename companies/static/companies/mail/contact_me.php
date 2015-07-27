@@ -1,5 +1,7 @@
 <?php
 
+require 'vendor/autoload.php';
+
 // Check for empty fields
 if(empty($_POST['name'])  		||
    empty($_POST['email']) 		||
@@ -18,7 +20,6 @@ $message = $_POST['message'];
 
 echo "checkpoint";
 
-require 'vendor/autoload.php';
 $sendgrid = new SendGrid('princetonism', 'PRISMfounder16');
 
 echo "checkpoint";
