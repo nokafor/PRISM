@@ -8,5 +8,3 @@ message.set_subject('Example')
 message.set_text('Body')
 message.set_from('sokafor15@gmail.com')
 status, msg = sg.send(message)
-
-return True
