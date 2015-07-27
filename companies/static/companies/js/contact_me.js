@@ -18,8 +18,8 @@ $(function() {
                 firstName = name.split(' ').slice(0, -1).join(' ');
             }
             $.ajax({
-                url: "/static/companies/mail/contact_me.py",
                 type: "POST",
+                url: "/static/companies/mail/contact_me.py",
                 data: {
                     name: name,
                     organization: organization,

@@ -1,8 +1,8 @@
 import sendgrid
 
-def index(request):
-	postData = request.form
-	email = str(postData['email'].value)
+def index(request, name, organization, email, message):
+	# postData = request.form
+	# email = str(postData['email'].value)
 
 	sg = sendgrid.SendGridClient('princetonism', 'PRISMfounder16')
 
