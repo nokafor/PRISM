@@ -18,7 +18,7 @@ $(function() {
                 firstName = name.split(' ').slice(0, -1).join(' ');
             }
             $.ajax({
-                url: "/static/companies/contact_me.py",
+                url: "../contact_me.py",
                 type: "POST",
                 data: {
                     name: name,
