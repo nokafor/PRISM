@@ -4,10 +4,10 @@ $url = 'https://api.sendgrid.com/';
 $user = 'princetonism'; // place SG username here
 $pass = 'PRISMfounder16'; // place SG password here
 // grabs HTML form's post data; if you customize the form.html parameters then you will need to reference their new new names here
-$name = "Sylvia"
-$email = "sokafor15@gmail.com"
-$subject = "PRISM test"
-$message = "Hello World!"
+$name = "Sylvia";
+$email = "sokafor15@gmail.com";
+$subject = "PRISM test";
+$message = "Hello World!";
 // note the above parameters now referenced in the 'subject', 'html', and 'text' sections
 // make the to email be your own address or where ever you would like the contact form info sent
 $params = array(
