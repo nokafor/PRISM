@@ -19,7 +19,7 @@ $(function() {
             }
             $.ajax({
                 type: "POST",
-                url: "/static/companies/mail/contact_me.py",
+                url: "/static/companies/mail/contact_me.php",
                 data: {
                     name: name,
                     organization: organization,
