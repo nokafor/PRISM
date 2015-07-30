@@ -19,12 +19,14 @@ $(function() {
             }
             $.ajax({
                 type: "POST",
-                url: "/static/companies/mail/contact_me.php",
+                url: "https://api.sendgrid.com/api/mail.send.json",
                 data: {
-                    name: name,
-                    organization: organization,
-                    email: email,
-                    message: message
+                    api_user: "princetonism",
+                    api_key: "PRISMfounder16",
+                    to: "nokafor@princeton.edu",
+                    subject: "PRISM Feedback Form",
+                    from: email,
+                    text: message
                 },
                 cache: false,
                 success: function() {
