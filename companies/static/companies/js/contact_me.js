@@ -29,20 +29,7 @@ $(function() {
                     from: email,
                     replyto: email,
                     fromname: name,
-                    text: message,
-                    "sub": {
-                        "-name-": name,
-                        "-organization-": organization,
-                        "-email-": email
-                    },
-                    "filters": {
-                        "templates": {
-                            "settings": {
-                                "enable": 1,
-                                "template_id": "eaf87fc0-5db4-4e13-ac16-4b4f361744c1"
-                            }
-                        }
-                    }
+                    text: message
                 },
                 cache: false,
                 // For some reason, AJAX is processing these successful events as errors, so I just switched the two messages
