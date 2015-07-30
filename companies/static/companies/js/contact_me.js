@@ -19,12 +19,14 @@ $(function() {
             }
             $.ajax({
                 type: "POST",
-                url: "/static/companies/mail/contact_me.php",
+                url: "https://api.sendgrid.com/api/mail.send.json",
                 data: {
-                    name: name,
-                    organization: organization,
-                    email: email,
-                    message: message
+                    api_user: "princetonism",
+                    api_key: "PRISMfounder16",
+                    to: "nokafor@princeton.edu",
+                    subject: "PRISM Feedback Form",
+                    from: email,
+                    text: message
                 },
                 cache: false,
                 success: function() {
@@ -40,16 +42,16 @@ $(function() {
                     //clear all fields
                     $('#contactForm').trigger("reset");
                 },
-                error: function() {
-                    // Fail message
-                    $('#success').html("<div class='alert alert-danger'>");
-                    $('#success > .alert-danger').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
-                        .append("</button>");
-                    $('#success > .alert-danger').append("<strong>Sorry " + firstName + ", it seems that my mail server is not responding. Please try again later!");
-                    $('#success > .alert-danger').append('</div>');
-                    //clear all fields
-                    $('#contactForm').trigger("reset");
-                },
+                // error: function() {
+                //     // Fail message
+                //     $('#success').html("<div class='alert alert-danger'>");
+                //     $('#success > .alert-danger').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
+                //         .append("</button>");
+                //     $('#success > .alert-danger').append("<strong>Sorry " + firstName + ", it seems that my mail server is not responding. Please try again later!");
+                //     $('#success > .alert-danger').append('</div>');
+                //     //clear all fields
+                //     $('#contactForm').trigger("reset");
+                // },
             })
         },
         filter: function() {
