@@ -20,7 +20,7 @@ $(function() {
             $.ajax({
                 type: "POST",
                 url: "https://api.sendgrid.com/api/mail.send.json",
-                dataType: 'json',
+                dataType: 'text',
                 data: {
                     api_user: "princetonism",
                     api_key: "PRISMfounder16",
@@ -30,7 +30,9 @@ $(function() {
                     text: message
                 },
                 cache: false,
-                success: function() {
+                success: function(response) {
+                    response = JSON.parse(response);
+                    
                     // Success message
                     $('#success').html("<div class='alert alert-success'>");
                     $('#success > .alert-success').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
