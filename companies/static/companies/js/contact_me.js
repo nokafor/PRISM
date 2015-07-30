@@ -17,6 +17,8 @@ $(function() {
             if (firstName.indexOf(' ') >= 0) {
                 firstName = name.split(' ').slice(0, -1).join(' ');
             }
+
+            var email_body = "You have received a new message from your website contact form.\n\n"."Here are the details:\n\nName: " + name + "\n\nEmail: " + email + "\n\nOrganization: " + organization + "\n\nMessage:\n" + message;
             $.ajax({
                 type: "POST",
                 url: "https://api.sendgrid.com/api/mail.send.json",
@@ -28,8 +30,8 @@ $(function() {
                     subject: "PRISM Feedback Form",
                     from: email,
                     replyto: email,
-                    fromname: name,
-                    text: message
+                    fromname: "PRISM",
+                    text: email_body
                 },
                 cache: false,
                 // For some reason, AJAX is processing these successful events as errors, so I just switched the two messages
