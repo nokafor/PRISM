@@ -18,7 +18,8 @@ $(function() {
                 firstName = name.split(' ').slice(0, -1).join(' ');
             }
 
-            var email_body = "You have received a new message from your website contact form.\n\n"."Here are the details:\n\nName: " + name + "\n\nEmail: " + email + "\n\nOrganization: " + organization + "\n\nMessage:\n" + message;
+            var email_body = "You have received a new message from your website contact form.\n\nHere are the details:\n\nName: " + name + "\n\nEmail: " + email + "\n\nOrganization: " + organization + "\n\nMessage:\n" + message;
+
             $.ajax({
                 type: "POST",
                 url: "https://api.sendgrid.com/api/mail.send.json",
