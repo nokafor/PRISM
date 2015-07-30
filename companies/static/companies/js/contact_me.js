@@ -30,12 +30,12 @@ $(function() {
                     replyto: email,
                     fromname: name,
                     text: message,
-                    sub: {
+                    "sub": {
                         "-name-": name,
                         "-organization-": organization,
                         "-email-": email
                     },
-                    filters: {
+                    "filters": {
                         "templates": {
                             "settings": {
                                 "enable": 1,
