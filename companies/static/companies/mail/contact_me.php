@@ -1,8 +1,4 @@
-
 <?php
-
-require 'vendor/autoload.php';
-
 // Check for empty fields
 if(empty($_POST['name'])      ||
    empty($_POST['email'])     ||
@@ -19,35 +15,44 @@ $email_address = $_POST['email'];
 $organization = $_POST['organization'];
 $message = $_POST['message'];
 
-echo "checkpoint";
+$url = 'https://api.sendgrid.com/';
+$user = 'princetonism';
+$pass = 'PRISMfounder16';
 
-$sendgrid = new SendGrid('princetonism', 'PRISMfounder16');
+$params = array(
+    'api_user'  => $user,
+    'api_key'   => $pass,
+    'to'        => 'nokafor@princeton.edu',
+    'subject'   => 'PRISM Feedback Form',
+    'html'      => 'testing body',
+    'text'      => $message,
+    'from'      => $email,
+  );
 
-echo "checkpoint";
 
-$email_body = "You have received a new message from your website contact form.\n\n"."Here are the details:\n\nName: $name\n\nEmail: $email_address\n\nOrganization: $organization\n\nMessage:\n$message";
+$request =  $url.'api/mail.send.json';
 
-$message = new SendGrid\Email();
-$message->addTo('nokafor@princeton.edu')->
-          setFrom('nokafor@noreply.com')->
-          setSubject("PRISM Feedback Form:  $name")->
-          setText($email_body)->
-          setHtml('<strong>Hello World!</strong>');
+// Generate curl request
+$session = curl_init($request);
+// Tell curl to use HTTP POST
+curl_setopt ($session, CURLOPT_POST, true);
+// Tell curl that this is the body of the POST
+curl_setopt ($session, CURLOPT_POSTFIELDS, $params);
+// Tell curl not to return headers, but do return the response
+curl_setopt($session, CURLOPT_HEADER, false);
+// Tell PHP not to use SSLv3 (instead opting for TLS)
+curl_setopt($session, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
 
-echo "checkpoint";
+// obtain response
+$response = curl_exec($session);
+curl_close($session);
 
-$response = $sendgrid->send($message);
+// print everything out
+print_r($response);
 
-echo $response;
+return True;
 
-return $response;
-
-// Create the email and send the message
-// $to = 'nokafor@princeton.edu'; // Add your email address inbetween the '' replacing yourname@yourdomain.com - This is where the form will send a message to.
-// $email_subject = "PRISM Feedback Form:  $name";
-// $email_body = "You have received a new message from your website contact form.\n\n"."Here are the details:\n\nName: $name\n\nEmail: $email_address\n\nOrganization: $organization\n\nMessage:\n$message";
-// $headers = "From: nokafor@princeton.edu\n"; // This is the email address the generated message will be from. We recommend using something like noreply@yourdomain.com.
-// $headers .= "Reply-To: $email_address";   
-// mail($to,$email_subject,$email_body,$headers);
-// return true;         
 ?>
+
+
