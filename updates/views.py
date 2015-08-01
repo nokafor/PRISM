@@ -33,7 +33,7 @@ def addCast(request, company_name, member_name):
         return not_valid_admin
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
 
         new_cast = Cast(company=company)
 
@@ -57,7 +57,7 @@ def updateCastName(request, company_name, member_name, cast_id):
         return not_valid_admin
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
         cast = Cast.objects.get(id=cast_id)
 
         # save casting data
@@ -80,7 +80,7 @@ def addChoreographer(request, company_name, member_name, cast_id):
         return not_valid_admin
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
         cast = Cast.objects.get(id=cast_id)
 
         new_choreographer = Choreographer(company=company, cast=cast)
@@ -105,7 +105,7 @@ def updateChoreographer(request, company_name, member_name, choreographer_id):
         return not_valid_admin
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
         
         choreographer = Choreographer.objects.get(id=choreographer_id)
 
@@ -130,7 +130,7 @@ def addCastMem(request, company_name, member_name, cast_id):
         return not_valid_admin
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
         cast = Cast.objects.get(id=cast_id)
 
         new_choreographer = Choreographer(company=company, cast=cast)
@@ -154,7 +154,7 @@ def updateCastMem(request, company_name, member_name, cast_id, mem_id):
         return not_valid_admin
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
 
         cast = Cast.objects.get(id=cast_id)
         mem = Member.objects.get(id=mem_id)
@@ -183,7 +183,7 @@ def addAdmin(request, company_name, member_name):
         return not_valid_admin
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
 
         admin = Admin(company=company)
 
@@ -208,7 +208,7 @@ def addMember(request, company_name, member_name):
         return not_valid_admin
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
 
         # process the form and add new member
         if request.method == 'POST':
@@ -229,7 +229,7 @@ def deleteMember(request, company_name, member_name, member_id):
         return not_valid_admin
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
 
         old_member = company.member_set.get(id=member_id)
 
@@ -269,7 +269,7 @@ def deleteAdmin(request, company_name, member_name):
         return not_valid_admin
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
         
         admin = Admin.objects.get(member=member)
         admin.delete()
@@ -283,7 +283,7 @@ def updateName(request, company_name, member_name):
         return not_from_profile
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name) 
+        member = company.member_set.get(username=member_name) 
 
         # process the form and update user's name
         if request.method == 'POST':
@@ -309,7 +309,7 @@ def addConflict(request, company_name, member_name):
         return not_from_profile
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name) 
+        member = company.member_set.get(username=member_name) 
         
         # process the form and conflict data of the user
         if request.method == 'POST':
@@ -335,7 +335,7 @@ def updateConflict(request, company_name, member_name, conflict_id):
         return not_from_profile
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
 
         conflict = member.conflict_set.get(id=conflict_id)
 
@@ -357,7 +357,7 @@ def deleteConflict(request, company_name, member_name, conflict_id):
         return not_from_profile
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
 
         conflict = member.conflict_set.get(id=conflict_id)
         conflict.delete()
@@ -373,7 +373,7 @@ def addRehearsal(request, company_name, member_name):
         return not_valid_admin
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
 
         # process the form and rehearsal data
         if request.method == 'POST':
@@ -398,7 +398,7 @@ def updateRehearsal(request, company_name, member_name, rehearsal_id):
         return not_valid_admin
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
         
         rehearsal = company.rehearsal_set.get(id=rehearsal_id)
                 
@@ -420,7 +420,7 @@ def deleteRehearsal(request, company_name, member_name, rehearsal_id):
         return not_valid_admin
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
 
         rehearsal = company.rehearsal_set.get(id=rehearsal_id)
         rehearsal.delete()

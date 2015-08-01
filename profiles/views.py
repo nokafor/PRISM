@@ -9,7 +9,7 @@ from profiles.functions import memberAuth, profileAuth, adminAuth
 # Create your views here.
 def testing(request, company_name, member_name):
     company = Company.objects.get(name=company_name)
-    member = company.member_set.get(netid=member_name)
+    member = company.member_set.get(username=member_name)
 
     return render(request, 'companies/login.html', {'company':company})
 
@@ -20,7 +20,7 @@ def profile(request, company_name, member_name):
         return not_valid_member
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
 
         # process the form and conflict data of the user
         if request.method == 'POST':
@@ -46,7 +46,7 @@ def conflicts(request, company_name, member_name):
         return not_from_profile
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)    
+        member = company.member_set.get(username=member_name)    
 
         conflict_list = member.conflict_set.all()
 
@@ -72,7 +72,7 @@ def spaces(request, company_name, member_name):
         return not_valid_admin
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
 
         rehearsal_list = company.rehearsal_set.all()
 
@@ -98,7 +98,7 @@ def members(request, company_name, member_name):
         return not_valid_admin
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
         
         member_list = company.member_set.all()
         admin_list = company.admin_set.all()
@@ -122,7 +122,7 @@ def casts(request, company_name, member_name):
     not_valid_admin = adminAuth(request, company_name, member_name)
 
     company = Company.objects.get(name=company_name)
-    member = company.member_set.get(netid=member_name)
+    member = company.member_set.get(username=member_name)
 
     total_casts = Cast.objects.filter(company=company)
     total_choreographers = Choreographer.objects.filter(company=company)
@@ -143,7 +143,7 @@ def scheduling(request, company_name, member_name):
         return not_valid_admin
     else:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(netid=member_name)
+        member = company.member_set.get(username=member_name)
         rehearsals = company.getSortedRehearsals()
 
         casts = Cast.objects.filter(company=company)

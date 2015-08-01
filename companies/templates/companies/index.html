@@ -151,26 +151,37 @@
                         </div>
                     </div>
                     <div class="row">
-                        {% if company_list %}
-                            {% for company in company_list %}
+                        {% if group_list %}
+                            {% for group in group_list %}
                                 <div class="col-md-4 col-sm-6 portfolio-item">
-                                    <a data-toggle="modal" href="{% url 'companies:modal' company.name %}" data-target="#modal-{{company.id}}" class="portfolio-link">
+                                {% if request.user.is_authenticated and group in user.groups.all %}
+                                <a href="{% url 'companies:detail' group.name %}" class="portfolio-link">
                                         <div class="portfolio-hover">
                                             <div class="portfolio-hover-content">
                                                 <i class="fa fa-sign-in fa-3x"></i>
                                             </div>
                                         </div>
-                                        <img src="{{company.logo.url}}" class="portfolio-image img-responsive" alt="Logo for {{company.name}}">
+                                        <img src="{{group.company.logo.url}}" class="portfolio-image img-responsive" alt="Logo for {{group.name}}">
                                     </a>
+                                {% else %}
+                                <a data-toggle="modal" href="{% url 'companies:modal' group.name %}" data-target="#modal-{{group.id}}" class="portfolio-link">
+                                        <div class="portfolio-hover">
+                                            <div class="portfolio-hover-content">
+                                                <i class="fa fa-sign-in fa-3x"></i>
+                                            </div>
+                                        </div>
+                                        <img src="{{group.company.logo.url}}" class="portfolio-image img-responsive" alt="Logo for {{group.name}}">
+                                    </a>
+                                {% endif %}
                                     <div class="portfolio-divider"><hr style="margin: 0 auto; width:75%"></div>
                                     <div class="portfolio-caption">
-                                        <h4>{{ company.name }}</h4>
-                                        <p class="text-muted">{{ company.short_description }}</p>
+                                        <h4>{{ group.name }}</h4>
+                                        <p class="text-muted">{{ group.company.short_description }}</p>
                                     </div>
                                 </div>
 
                                 <!-- Modal -->
-                                <div class="modal fade" id="modal-{{company.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="z-index:1051;">
+                                <div class="modal fade" id="modal-{{group.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="z-index:1051;">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                         </div>
@@ -185,7 +196,7 @@
             </section>
             
             <!--- banner -->
-                <a class="banner-link" id="join" href="#"><div class="jumbotron banner">
+                <a class="banner-link" id="join" href="mailto:nokafor@princeton.edu?Subject=PRISM"><div class="jumbotron banner">
                     <h1>Don't See Your Company?</h1>
                     <p>Shoot us an email, and we will help get you on your way.</p>
                 </div></a>

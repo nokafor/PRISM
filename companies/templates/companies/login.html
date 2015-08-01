@@ -17,8 +17,7 @@
     <!-- Custom CSS -->
     <link href="{% static 'companies/css/agency.css' %}" rel="stylesheet">
     <link href="{% static 'companies/css/custom.css' %}" rel="stylesheet">
-	<link href="{% static 'companies/css/login.css' %}" rel="stylesheet">
-	<!-- // <script src="{% static 'companies/js/login.js' %}"></script> -->
+    <link href="{% static 'companies/css/login.css' %}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="{% static 'companies/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
@@ -34,52 +33,71 @@
         <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <script src="{% static 'companies/js/jquery.js' %}"></script>
+    <script src="{% static 'companies/js/jqBootstrapValidation.js' %}"></script>
+    <script src="{% static 'companies/js/login.js' %}"></script>
+
 </head>
 
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h4 class="modal-title">Choose a sign in option</h4> <!-- figure out the header -->
-</div>
+<body>
+    <script>
+        $(function () { $("input").not("[type=submit]").jqBootstrapValidation(); } );
+    </script>
 
-<div class="modal-body flexbox">
-    <!-- box on the left -->
-	<div class="signin-box netid-signin" style="width: 44%">
-		<div class="flexbox">
-			<a href="{% url 'companies:detail' company.name %}" class="btn btn-warning btn-lg" style="margin: 0 auto;">Sign in with NetID</a>
-		</div>
-	</div>  
-    
-	<div style="width: 1px; height: 250px; background-color: #ccc;">&nbsp;</div>   
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Choose a sign in option</h4> <!-- figure out the header -->
+    </div>
 
-    <!-- box on the right -->      		
-	<div class="signin-box normal-signin flexbox" style="flex-direction:column; -webkit-flex-direction: column;">
-		<div style="width: 100%; height: 80%;">
-            <div class="flex-inline">
-                <h4>Sign In</h4>
-                <a href="#" class="signin-muted text-muted">or create an account</a>
+    <div class="modal-body flexbox">
+        <!-- box on the left -->
+        <div class="signin-box netid-signin" style="width: 44%">
+            <div class="flexbox">
+                <a href="{% url 'companies:detail' company.name %}" class="btn btn-warning btn-lg" style="margin: 0 auto;">Sign in with NetID</a>
             </div>
-            <form action="">
-                <div class="form-group"><input type="email" class="form-control" placeholder="Email"></div>
-                <div class="form-group"><input type="password" class="form-control" placeholder="Password"></div>
+        </div>  
+        
+        <div style="width: 1px; height: 250px; background-color: #ccc;">&nbsp;</div>   
 
+        <!-- box on the right -->           
+        <div class="signin-box normal-signin flexbox" style="flex-direction:column; -webkit-flex-direction: column;">
+            <div style="width: 100%; height: 80%;">
                 <div class="flex-inline">
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox">Remember Me
-                        </label>
-                    </div>
-                    <button type="submit" class="btn btn-default">Sign in</button>
+                    <h4>Sign In</h4>
+                    <a href="#" class="signin-muted text-muted">or create an account</a>
                 </div>
-            </form>
-            
-            <br>
+                <form id="loginForm" onsubmit="return validateLogin()">
+                    <div class="form-group">
+                        <input type="email" class="form-control" placeholder="Email" id="loginEmail" required data-validation-required-message="Please enter your email address.">
+                        <p class="help-block text-danger"></p>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" placeholder="Password" id="loginPwd" required data-validation-required-message="Please enter your password.">
+                        <p class="help-block text-danger"></p>
+                    </div>
 
-            <a href="#" class="text-muted">Forgot your password?</a>
+                    <div class="flex-inline">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox">Remember Me
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-default">Sign in</button>
+                    </div>
+                </form>
+                
+                <br>
 
-        </div>
-	</div> 
-</div>
+                <a href="#" class="text-muted">Forgot your password?</a>
 
-<div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-</div>
+            </div>
+        </div> 
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+</body>
+
+
+

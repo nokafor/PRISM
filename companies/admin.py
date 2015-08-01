@@ -20,8 +20,8 @@ def unschedule_casts(modeladmin, request, queryset):
 unschedule_casts.short_description = "Unschedule Casts"
 
 # Register your models here.
-class CompanyInline(admin.TabularInline):
-    model = Member.company.through
+# class CompanyInline(admin.TabularInline):
+#     model = Member.company.through
 
 class AdminInline(admin.TabularInline):
 	model = Admin
@@ -33,8 +33,8 @@ class ConflictInline(admin.TabularInline):
 
 class MemberAdmin(admin.ModelAdmin):
     search_fields=['first_name', 'last_name', 'netid']
-    inlines = [CompanyInline, AdminInline, ConflictInline]
-    list_filter = ['company']
+    inlines = [AdminInline, ConflictInline]
+    # list_filter = ['company']
 
 class RehearsalAdmin(admin.ModelAdmin):
 	list_display = ['day_of_week', 'start_time', 'place']

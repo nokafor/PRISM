@@ -7,7 +7,7 @@ from django.forms import ModelForm
 class MemberForm(ModelForm):
     class Meta:
         model = Member
-        fields = ['first_name', 'last_name', 'netid']
+        fields = ['first_name', 'last_name', 'username']
 
 class MemberNameForm(ModelForm):
     class Meta:
@@ -21,7 +21,7 @@ class AdminForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(AdminForm, self).__init__(*args, **kwargs)
         if self.instance:
-             self.fields['member'].queryset = Member.objects.filter(company=self.instance.company).order_by('first_name', 'netid')
+             self.fields['member'].queryset = Member.objects.filter(company=self.instance.company).order_by('first_name', 'username')
 
 class ChoreographerForm(ModelForm):
     class Meta:
@@ -30,7 +30,7 @@ class ChoreographerForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(ChoreographerForm, self).__init__(*args, **kwargs)
         if self.instance:
-             self.fields['member'].queryset = Member.objects.filter(company=self.instance.company).order_by('first_name', 'netid')
+             self.fields['member'].queryset = Member.objects.filter(company=self.instance.company).order_by('first_name', 'username')
 
 class ConflictForm(ModelForm):
     class Meta:

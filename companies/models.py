@@ -2,13 +2,14 @@ import datetime
 import random
 
 from django.db import models
+from django.contrib.auth.models import User, Group
+
 from django.utils import timezone
 
 import sys
 
 # Create your models here.
-class Company(models.Model):
-    name = models.CharField(max_length=200)
+class Company(Group):
     logo = models.ImageField(upload_to='companies')
     short_description = models.CharField(max_length=255)
     has_schedule = models.BooleanField(default=False)
@@ -229,24 +230,20 @@ class Cast(models.Model):
                 rehearsal_list.append(rehearsal)
         return list(rehearsal_list)
 
-class Member(models.Model):
-    first_name = models.CharField(max_length=200, blank=True)
-    last_name = models.CharField(max_length=200, blank=True)
-    netid = models.CharField(max_length=100)
-    company = models.ManyToManyField(Company)
+class Member(User):
     cast = models.ManyToManyField(Cast, blank=True)
     def __str__(self):
         if self.first_name and self.last_name:
             return "%s %s" % (self.first_name, self.last_name)
-        return self.netid
+        return self.username
     class Meta:
-        ordering = ['netid', 'first_name']
+        ordering = ['username', 'first_name']
 
 class Admin(models.Model):
     member = models.ForeignKey(Member)
     company = models.ForeignKey(Company)
     def __str__(self):
-        return self.member.netid
+        return self.member.username
 
     class Meta:
         ordering = ['member']
