@@ -4,12 +4,13 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 
 from django.contrib.auth.models import Group, User
-from companies.models import Company, Member, Admin
+from companies.models import Founder, Company, Member, Admin
 
 # Create your views here.
 def index(request):
     group_list = Group.objects.all().order_by('name')
-    return render(request, 'companies/index.html', {'group_list': group_list, 'user':request.user})
+    founder = Founder.objects.get(id=1)
+    return render(request, 'companies/index.html', {'group_list': group_list, 'user':request.user, 'founder':founder})
 
 def modal(request, company_name):
     # company = Company.objects.get(name=company_name)

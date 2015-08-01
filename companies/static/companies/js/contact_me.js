@@ -12,6 +12,9 @@ $(function() {
             var email = $("input#email").val();
             var organization = $("input#organization").val();
             var message = $("textarea#message").val();
+            var api_user = $("input#api_user").val()
+            var api_key = $("input#api_key").val()
+            var toEmail = $("input#toEmail").val()
             var firstName = name; // For Success/Failure Message
             // Check for white space in name for Success/Fail message
             if (firstName.indexOf(' ') >= 0) {
@@ -25,9 +28,9 @@ $(function() {
                 url: "https://api.sendgrid.com/api/mail.send.json",
                 dataType: 'text',
                 data: {
-                    api_user: "princetonism",
-                    api_key: "PRISMfounder16",
-                    to: "nokafor@princeton.edu",
+                    api_user: api_user,
+                    api_key: api_key,
+                    to: toEmail,
                     subject: "PRISM Feedback Form",
                     from: email,
                     replyto: email,

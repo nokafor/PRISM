@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from companies.models import Company, Member, Admin, Cast, Rehearsal, Choreographer
+from companies.models import Founder, Company, Member, Admin, Cast, Rehearsal, Choreographer
 from profiles.models import Conflict
 
 # def unschedule_rehearsals(modeladmin, request, queryset):
@@ -48,6 +48,7 @@ class CastAdmin(admin.ModelAdmin):
 	list_filter = ['company']
 	actions = [unschedule_casts]
 
+admin.site.register(Founder)
 admin.site.register(Company)
 admin.site.register(Rehearsal, RehearsalAdmin)
 admin.site.register(Cast, CastAdmin)
