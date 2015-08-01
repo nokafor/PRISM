@@ -9,9 +9,9 @@ urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
     url(r'^accounts/login/', 'django_cas_ng.views.login'),
     url(r'logout/$', views.logout_view, name='logout_view'),
-    url(r'^(?P<company_name>[\w\ ]+)/$', views.detail, name='detail'),
+    url(r'^login/(?P<company_name>[\w\ ]+)/', views.userLogin, name='login'),
     url(r'^m/(?P<company_name>[\w\ ]+)/$', views.modal, name='modal'),
-    url(r'^login/', views.userLogin, name='login'),
+    url(r'^(?P<company_name>[\w\ ]+)/$', views.detail, name='detail'),
     
 )
 

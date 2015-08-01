@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.contrib.auth import logout
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 
@@ -21,19 +21,41 @@ def modal(request, company_name):
     
     # If no user is logged in
     else:
-        company = Company.objects.get(name=company_name)
-        return render(request, 'companies/login.html', {'company':company})
+        return render(request, 'companies/login.html', {'company_name':company_name})
 
 @login_required
 def detail(request, company_name):
     return redirect('%s/' % request.user.username)
-    # company = Company.objects.get(name=company_name)
-    # return render(request, 'companies/test.html', {'company':company})
 
 def userLogin(request, company_name):
-    # get post code from updates app
-    company = Company.objects.get(name=company_name)
-    return render(request, 'companies/test.html', {'company':company})
+    # get POST data
+    if request.method == 'POST':
+        loginEmail = request.POST["loginEmail"]
+        loginPwd = request.POST["loginPwd"]
+
+        try:
+            user = User.objects.get(email=loginEmail)
+        except (KeyError, User.DoesNotExist):
+            return HttpResponse('There is no user with that email')
+        else:
+            # if user password matches
+            if user.check_password(loginPwd):
+                # make sure account is active
+                if user.is_active:
+                    authUser = authenticate(username=user.username, password=loginPwd)
+                    login(request, authUser)
+                    # print "Login checkpoint."
+                    return redirect('profiles:profile', company_name=company_name, member_name=user.username)
+                # if account is disabled
+                else:
+                    return HttpResponse('Account is disabled. Please contact an administrator')
+            
+            # if user password doesn't match
+            else:
+                return HttpResponse('Password does not match')
+    # if no post data, go back to homepage
+    else: 
+        return redirect('companies:index')
 
 def logout_view(request):
     logout(request)
