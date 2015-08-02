@@ -13,7 +13,6 @@ def index(request):
     return render(request, 'companies/index.html', {'group_list': group_list, 'user':request.user, 'founder':founder})
 
 def modal(request, company_name):
-    # company = Company.objects.get(name=company_name)
     # Since the template filters users logged into the company they are trying to access, if  the
     # user is logged in at this point, they are not part of the company
     if request.user.is_authenticated():
