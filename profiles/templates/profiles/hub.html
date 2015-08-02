@@ -14,8 +14,10 @@
 
     <title>Profile</title>
 
+    <link rel="shortcut icon" href="http://faviconist.com/icons/de3e284ee55ce978c399cd74f2eab5df/favicon.ico">
+
     <!-- Bootstrap Core CSS -->
-    <link href="{% static 'profiles/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="{% static 'profiles/css/clean-blog.min.css' %}" rel="stylesheet">
@@ -57,13 +59,13 @@
                         <a href="/">Home</a>
                     </li>
                     <li>
-                        <a href="{% url 'profiles:conflicts' company.name member.netid %}">Your Conflicts</a>
+                        <a href="{% url 'profiles:conflicts' company.name member.username %}">Your Conflicts</a>
                     </li>
                     <li>
                         <a href="logout/">Logout</a>
                     </li>
                     <li>
-                        <a data-toggle="modal" href="{% url 'updates:updateName' company.name member.netid %}" data-target="#form-modal"><span class="fa fa-cog fa-lg"></span></a>
+                        <a data-toggle="modal" href="{% url 'updates:updateName' company.name member.username %}" data-target="#form-modal"><span class="fa fa-cog fa-lg"></span></a>
                     </li>
                 </ul>
             </div>
@@ -102,47 +104,47 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-preview">
-                        <a href="{% url 'profiles:members' company.name member.netid %}">
+                        <a href="{% url 'profiles:members' company.name member.username %}">
                             <h2 class="post-title">
                                 Members / Conflicts
                             </h2>
                             <h3 class="post-subtitle">
-                                Manage the members and admins of {{ company.name }}, and their conflicts
+                                View / manage the members and admins of {{ company.name }}
                             </h3>
                         </a>
                         <p class="post-meta"><a href="#">Set the date by which company members must post their conflicts</a></p>
                     </div>
                     <hr>
                     <div class="post-preview">
-                        <a href="{% url 'profiles:spaces' company.name member.netid %}">
+                        <a href="{% url 'profiles:spaces' company.name member.username %}">
                             <h2 class="post-title">
                                 Rehearsal Spaces
                             </h2>
                             <h3 class="post-subtitle">
-                                Manage all {{ company.name }} rehearsal spaces for the current semester
+                                View / manage {{ company.name }} rehearsal spaces for the current semester
                             </h3>
                         </a>
                     </div>
                     <hr>
                     <div class="post-preview">
-                        <a href="{% url 'profiles:casts' company.name member.netid %}">
+                        <a href="{% url 'profiles:casts' company.name member.username %}">
                             <h2 class="post-title">
                                 Casting
                             </h2>
                             <h3 class="post-subtitle">
-                                Manage casting list for the upcoming show and/or performances
+                                View / manage casting list for the upcoming show and/or performances
                             </h3>
                         </a>
                         <p class="post-meta"><a href="#">Set the date by which company members will be able to see casting results</a></p>
                     </div>
                     <hr>
                     <div class="post-preview">
-                        <a href="{% url 'profiles:scheduling' company.name member.netid %}">
+                        <a href="{% url 'profiles:scheduling' company.name member.username %}">
                             <h2 class="post-title">
                                 Rehearsal Schedule
                             </h2>
                             <h3 class="post-subtitle">
-                                Manage the rehearsal schedules for all pieces and/or performances
+                                View / manage the rehearsal schedules for all pieces and/or performances
                             </h3>
                         </a>
                     </div>
@@ -183,7 +185,7 @@
                                 </a>
                             </li>
                         </ul>
-                        <p class="copyright text-muted">Copyright &copy; ORF401 2015</p>
+                        <p class="copyright text-muted">Copyright &copy; Princeton University</p>
                     </div>
                 </div>
             </div>
@@ -192,16 +194,16 @@
     </div>
     
     <!-- jQuery -->
-    <script src="{% static 'profiles/js/jquery.js' %}"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'profiles/js/bootstrap.min.js' %}"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'profiles/js/clean-blog.min.js' %}"></script>
 
     {% if not member.first_name %}
-    <a id="getModal" data-toggle="modal" href="{% url 'updates:updateName' company.name member.netid %}" data-target="#name-modal"></a>
+    <a id="getModal" data-toggle="modal" href="{% url 'updates:updateName' company.name member.username %}" data-target="#name-modal"></a>
     <div class="modal fade" id="name-modal" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">

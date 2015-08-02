@@ -1,0 +1,20 @@
+html { 
+  background: url(../img/about-bg.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
+  overflow: hidden;
+}
+
+.flexbox {
+	color:white;
+
+	display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items:center;
+    align-items: center;
+}

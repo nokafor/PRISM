@@ -8,6 +8,9 @@ from django.contrib.auth.models import User, Group
 
 # Function to make sure user has access to the company and profile they are trying to access
 def memberAuth(request, company_name, member_name):
+    # make sure group exists
+    company = get_object_or_404(Company, name=company_name)
+
     if request.user.is_authenticated() and member_name == request.user.username:
         # make sure user is a part of the group they are trying to access
         if request.user.groups.filter(name=company_name).exists():

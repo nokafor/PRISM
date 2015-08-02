@@ -30,7 +30,7 @@ def profile(request, company_name, member_name):
         else:
             form = MemberNameForm(instance=member)
 
-        return render(request, 'profiles/hub.html', {'member':member, 'company':company, 'form':form})
+        return render(request, 'profiles/test.html', {'member':member, 'company':company, 'form':form})
 
     else:
         return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')

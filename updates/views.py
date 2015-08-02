@@ -277,13 +277,11 @@ def deleteAdmin(request, company_name, member_name):
         return redirect('profiles:profile', company_name, member_name,)
 
 def updateName(request, company_name, member_name):
-    # check if came from profile
-    not_from_profile = profileAuth(request, company_name, member_name)
-    if not_from_profile:
-        return not_from_profile
-    else:
+    # make sure member has access to this profile
+    member = memberAuth(request, company_name, member_name)
+
+    if member:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name) 
 
         # process the form and update user's name
         if request.method == 'POST':
@@ -296,9 +294,14 @@ def updateName(request, company_name, member_name):
             form = MemberNameForm(instance=member)
         
         if member.first_name:
-            return render(request, 'profiles/name.html', {'company':company, 'member':member, 'form':form})
+            header = 'Edit Name'
+            return render(request, 'profiles/name.html', {'company':company, 'member':member, 'form':form, 'dismiss':"modal", 'header':header})
         else:
-            return render(request, 'profiles/name2.html', {'company':company, 'member':member, 'form':form})
+            header = 'Enter Name Before Continuing'
+            return render(request, 'profiles/name.html', {'company':company, 'member':member, 'form':form, 'dismiss':"", 'header':header})
+
+    else:
+        return redirect('profiles:profile', company_name, member_name,)
 
 def addConflict(request, company_name, member_name):
     name = 'updates:addConflict'
