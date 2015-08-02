@@ -4,23 +4,15 @@ from django.contrib.auth import logout
 from django.http import HttpResponse
 
 from companies.models import Company, Member, Admin
+from django.contrib.auth.models import User, Group
 
-@login_required
+# Function to make sure user has access to the company and profile they are trying to access
 def memberAuth(request, company_name, member_name):
-    if member_name == request.user.username:
-        company = get_object_or_404(Company, name=company_name)
-        try:
-            member = company.member_set.get(netid=request.user.username)
-        # if you are not a member...
-        except (KeyError, Member.DoesNotExist):
-            logout(request)
-            return HttpResponse("You are not a member of the company you are trying to log in to. Please log into a correct company.")
-        # if you are a member ...
-        else:
-            pass
-    else:
-        logout(request)
-        return HttpResponse("You are trying to access the profile of...")
+    if request.user.is_authenticated() and member_name == request.user.username:
+        # make sure user is a part of the group they are trying to access
+        if request.user.groups.filter(name=company_name).exists():
+            return Member.objects.get(username=member_name)
+    return None
 
 @login_required
 def profileAuth(request, company_name, member_name):

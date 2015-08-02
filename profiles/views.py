@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 
 from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock
 from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, MemberNameForm, AdminForm, ChoreographerForm
@@ -14,13 +14,11 @@ def testing(request, company_name, member_name):
     return render(request, 'companies/login.html', {'company':company})
 
 def profile(request, company_name, member_name):
-    # check if valid member
-    not_valid_member = memberAuth(request, company_name, member_name)
-    if not_valid_member:
-        return not_valid_member
-    else:
+    # make sure member has access to this profile
+    member = memberAuth(request, company_name, member_name)
+
+    if member:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
 
         # process the form and conflict data of the user
         if request.method == 'POST':
@@ -32,12 +30,10 @@ def profile(request, company_name, member_name):
         else:
             form = MemberNameForm(instance=member)
 
-        try:
-            admin = Admin.objects.get(member=member)
-        except (KeyError, Admin.DoesNotExist):
-            return render(request, 'profiles/dancer.html', {'member':member, 'company':company, 'form':form})
-        else:
-            return render(request, 'profiles/admin.html', {'member':member, 'company':company, 'form':form})
+        return render(request, 'profiles/hub.html', {'member':member, 'company':company, 'form':form})
+
+    else:
+        return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')
 
 def conflicts(request, company_name, member_name):
     # check if came from profile
