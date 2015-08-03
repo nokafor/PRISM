@@ -34,7 +34,7 @@ form {
 	padding: 5%;
 }
 
-a {
+.form-group a {
 	color: black;
 	text-decoration: underline;
 }
