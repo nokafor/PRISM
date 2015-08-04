@@ -37,8 +37,16 @@
         <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <!-- Javascript for Form -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="{% static 'companies/js/jqBootstrapValidation.js' %}"></script>
+
 </head>
 <body>
+    <script>
+        $(function () { $("input").not("[type=submit]").jqBootstrapValidation(); } );
+    </script>
+
     <div class="container background">
         <div class="signup-box">
             <div class="header">
