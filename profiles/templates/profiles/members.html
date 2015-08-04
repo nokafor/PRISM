@@ -15,7 +15,7 @@
     <title>Members/Conflicts</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="{% static 'profiles/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="{% static 'profiles/css/clean-blog.min.css' %}" rel="stylesheet">
@@ -53,7 +53,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="{% url 'profiles:profile' company.name member.netid %}">Hub</a>
+                        <a href="{% url 'profiles:profile' company.name member.username %}">Hub</a>
                     </li>
                     <li>
                         <a href="logout/">Logout</a>
@@ -67,13 +67,13 @@
 
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header" style="background-image: url({% static 'profiles/img/post-bg.jpg' %})">
+    <header class="intro-header" style="background-image: url({% static 'profiles/img/post-bg-3.jpg' %})">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
                         <h1>Members and Conflicts</h1>
-                        <h2 class="subheading">Manage the members and admins of {{ company.name }}, and their conflicts</h2>
+                        <h2 class="subheading">View / manage the members and admins of {{ company.name }}. Admins can also view conflicts.</h2>
                         <span class="meta">Changes allowed until March 3, 2015</span>
                     </div>
                 </div>
@@ -94,14 +94,14 @@
             <div class="row">
                 {% if member_list %}
                     {% for mem in member_list %}
-                        <div class="col-md-4 col-sm-6 portfolio-item">
+                        <div class="col-md-3 col-sm-4 col-xs-6 portfolio-item">
                             <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
                                 {% ifequal mem.id member.id %}
-                                    <a href="{% url 'profiles:conflicts' company.name member.netid %}"><h4>{{ mem }}</h4></a>
+                                    <a href="{% url 'profiles:conflicts' company.name member.username %}"><h4>{{ mem }}</h4></a>
                                 {% else %}
-                                    <a data-toggle="modal" href="{% url 'updates:ConflictView' company.name member.netid mem.id %}" data-target="#{{ mem.id }}-modal"><h4>{{ mem }}</h4></a>
+                                    <a data-toggle="modal" href="{% url 'updates:ConflictView' company.name member.username mem.id %}" data-target="#{{ mem.id }}-modal"><h4>{{ mem }}</h4></a>
                                 {% endifequal %}
-                                <a href="{% url 'updates:deleteMember' company.name member.netid mem.id %}"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
+                                <a href="{% url 'updates:deleteMember' company.name member.username mem.id %}"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
                             </div>
                         </div>
 
@@ -124,7 +124,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <p class="copyright text-muted"><a data-toggle="modal" href="{% url 'updates:addMember' company.name member.netid %}" data-target="#addmember-modal" class="btn btn-lg btn-default" style="text-decoration:none">Add Members...</a></p>
+                    <p class="copyright text-muted"><a data-toggle="modal" href="{% url 'updates:addMember' company.name member.username %}" data-target="#addmember-modal" class="btn btn-lg btn-default" style="text-decoration:none">Add Members...</a></p>
                 </div>
             </div>
         </div>
@@ -160,7 +160,7 @@
                             {% ifequal admin.member member%}
                                 <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
                                     <h4> {{ member }}</h4>
-                                    <a href="{% url 'updates:deleteAdmin' company.name member.netid %}"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
+                                    <a href="{% url 'updates:deleteAdmin' company.name member.username %}"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
                                 </div>
                             {% else %}
                                 <div class="portfolio-caption">
@@ -180,17 +180,17 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <p class="copyright text-muted"><a data-toggle="modal" href="{% url 'updates:addAdmin' company.name member.netid %}" data-target="#addadmin-modal" class="btn btn-lg btn-default" style="text-decoration:none">Add Admins...</a></p>
+                    <p class="copyright text-muted"><a data-toggle="modal" href="{% url 'updates:addAdmin' company.name member.username %}" data-target="#addadmin-modal" class="btn btn-lg btn-default" style="text-decoration:none">Add Admins...</a></p>
                 </div>
             </div>
         </div>
     </footer>
     
     <!-- jQuery -->
-    <script src="{% static 'profiles/js/jquery.js' %}"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'profiles/js/bootstrap.min.js' %}"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'profiles/js/clean-blog.min.js' %}"></script>

@@ -4,7 +4,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock
 from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, MemberNameForm, AdminForm, ChoreographerForm
 
-from profiles.functions import memberAuth, profileAuth, adminAuth
+from profiles.functions import memberAuth
+from django.contrib.auth.models import User, Group
 
 # Create your views here.
 def testing(request, company_name, member_name):
@@ -31,6 +32,32 @@ def profile(request, company_name, member_name):
             form = MemberNameForm(instance=member)
 
         return render(request, 'profiles/hub.html', {'member':member, 'company':company, 'form':form})
+
+    else:
+        return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')
+
+def members(request, company_name, member_name):
+    # make sure member has access to this profile
+    member = memberAuth(request, company_name, member_name)
+
+    if member:
+        company = Company.objects.get(name=company_name)
+        member_list = User.objects.filter(groups__name=company_name)
+        admin_list = company.admin_set.all()
+
+        # process the form and conflict data of the user
+        if request.method == 'POST':
+            member_form = MemberForm(request.POST)
+            if member_form.is_valid():
+                new_member = member_form.save(commit=False)
+                new_member.company = company
+                new_member.save()
+                member_form.save_m2m()
+
+                return HttpResponseRedirect('')
+        else:
+            member_form = MemberForm()
+        return render(request, 'profiles/members.html', {'company':company, 'member':member, 'member_list':member_list, 'admin_list':admin_list, 'member_form':member_form})
 
     else:
         return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')
@@ -85,33 +112,7 @@ def spaces(request, company_name, member_name):
         else:
             form = RehearsalForm()
         return render(request, 'profiles/addspace.html', {'company':company, 'member':member, 'rehearsals':rehearsal_list, 'form':form, 'timeblock':TimeBlock})
-    
 
-def members(request, company_name, member_name):
-    # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
-        company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
-        
-        member_list = company.member_set.all()
-        admin_list = company.admin_set.all()
-
-        # process the form and conflict data of the user
-        if request.method == 'POST':
-            member_form = MemberForm(request.POST)
-            if member_form.is_valid():
-                new_member = member_form.save(commit=False)
-                new_member.company = company
-                new_member.save()
-                member_form.save_m2m()
-
-                return HttpResponseRedirect('')
-        else:
-            member_form = MemberForm()
-        return render(request, 'profiles/members.html', {'company':company, 'member':member, 'member_list':member_list, 'admin_list':admin_list, 'member_form':member_form})
 
 def casts(request, company_name, member_name):
     # check if valid admin
