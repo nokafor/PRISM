@@ -53,26 +53,32 @@
                 <h3>Start Scheduling Better</h3>
                 <h6>Get started now. It's free!</h6>
             </div>
-            <form action="">
+            <form id="signupForm" method="post" action="">
+            {% csrf_token %}
                 <div class="form-group">
                     <label for="first_name">First Name</label>
-                    <input type="text" class="form-control" id="first_name">
+                    <input type="text" class="form-control" id="first_name" name="first_name" required data-validation-required-message="Please enter your first name.">
+                    <p class="help-block text-danger"></p>
                 </div>
                 <div class="form-group">
                     <label for="last_name">Last Name</label>
-                    <input type="text" class="form-control" id="last_name">
+                    <input type="text" class="form-control" id="last_name" name="last_name" required data-validation-required-message="Please enter your last name.">
+                    <p class="help-block text-danger"></p>
                 </div>
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email">
+                    <input type="email" class="form-control" id="email" name="email" required data-validation-required-message="Please enter your email address.">
+                    <p class="help-block text-danger"></p>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password">
+                    <input type="password" class="form-control" id="password" name="password" required data-validation-required-message="Please enter your password.">
+                    <p class="help-block text-danger"></p>
                 </div>
                 <div class="form-group">
                     <label for="password2">Enter Password Again</label>
-                    <input type="password2" class="form-control" id="password2">
+                    <input type="password2" class="form-control" id="password2" name="password2" required data-validation-required-message="Please enter your password again.">
+                    <p class="help-block text-danger"></p>
                 </div>
                 <!-- <br> -->
                 <div class="form-group">
