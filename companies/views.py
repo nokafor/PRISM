@@ -10,8 +10,11 @@ from companies.models import Founder, Company, Member, Admin
 def index(request):
     group_list = Group.objects.all().order_by('name')
     founder = Founder.objects.get(id=1)
-    return render(request, 'companies/test.html', {'group_list': group_list, 'user':request.user, 'founder':founder})
+    return render(request, 'companies/index.html', {'group_list': group_list, 'user':request.user, 'founder':founder})
 
+def signup(request):
+    return render(request, 'companies/test.html')
+    
 def modal(request, company_name):
     # Since the template filters users logged into the company they are trying to access, if  the
     # user is logged in at this point, they are not part of the company
