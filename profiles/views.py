@@ -9,10 +9,9 @@ from django.contrib.auth.models import User, Group
 
 # Create your views here.
 def testing(request, company_name, member_name):
-    company = Company.objects.get(name=company_name)
-    member = company.member_set.get(username=member_name)
+    # ADD AUTHENTICATION 
 
-    return render(request, 'companies/login.html', {'company':company})
+    return render(request, 'profiles/test.html', {'company_name':company_name, 'member_name':member_name})
 
 def profile(request, company_name, member_name):
     # make sure member has access to this profile
