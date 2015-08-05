@@ -212,9 +212,6 @@
 
     </div>
 
-    <!-- Custom Theme JavaScript -->
-    <script src="{% static 'profiles/js/clean-blog.min.js' %}"></script>
-
     {% if not member.first_name %}
     <a id="getModal" data-toggle="modal" href="{% url 'updates:updateName' company.name member.username %}" data-target="#name-modal"></a>
     <div class="modal fade" id="name-modal" data-backdrop="static">

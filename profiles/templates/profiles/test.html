@@ -8,16 +8,17 @@
     <script src="{% static 'profiles/js/bootstrap-datetimepicker.min.js' %}"></script>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'profiles/css/bootstrap-datetimepicker.min.css' %}">
-</head> -->
-<!-- <body> -->
+</head>
+<body> -->
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title">Conflicts Due Date</h4>
     </div>
     <div id="form-modal-body" class="modal-body">
-        <form action="" class="form-inline">
+        <form class="form-inline" id="conflicts_due_form" action="{% url 'profiles:testing' company_name member_name %}" method="post">
+        {% csrf_token %}
                 <div class="form-group">
-                    <input type='text' class="form-control" id='datetimepicker4'>
+                    <input type='text' class="form-control" id='datetimepicker4' name="datetimepicker4">
                 </div>
                 <script type="text/javascript">
                     $(function () {

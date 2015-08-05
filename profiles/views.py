@@ -7,9 +7,14 @@ from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, Mem
 from profiles.functions import memberAuth
 from django.contrib.auth.models import User, Group
 
+from datetime import datetime
+
 # Create your views here.
 def testing(request, company_name, member_name):
     # ADD AUTHENTICATION 
+    if request.method == 'POST':
+        valid_datetime = datetime.strptime(request.POST['datetimepicker4'], '%m/%d/%Y %I:%M %p')
+        print valid_datetime
 
     return render(request, 'profiles/test.html', {'company_name':company_name, 'member_name':member_name})
 
