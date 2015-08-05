@@ -20,6 +20,7 @@ def testing(request, company_name, member_name):
         admin = adminAuth(request, company_name, member_name)
 
         if admin:
+            # save posted data if available
             if request.method == 'POST':
                 try: 
                     valid_datetime = datetime.strptime(request.POST['datetimepicker4'], '%m/%d/%Y %I:%M %p')

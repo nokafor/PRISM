@@ -128,10 +128,15 @@
                                 Members / Conflicts
                             </h2>
                             <h3 class="post-subtitle">
-                                View / manage the members and admins of {{ company.name }}
+                                View / manage the members of {{ company.name }}
                             </h3>
                         </a>
-                        <p class="post-meta"><a data-toggle="modal" href="{% url 'profiles:testing' company.name member.username %}" data-target="#conflict_due_modal">Set the date by which company members must post their conflicts</a></p>
+                        <p class="post-meta"><a data-toggle="modal" href="{% url 'profiles:testing' company.name member.username %}" data-target="#conflict_due_modal">
+                        {% if company.conflicts_due %}
+                        Change the date conflicts are due (currently set to {{ company.conflicts_due }}).
+                        {% else %}
+                        Set the date by which company members must post their conflicts
+                        {% endif %}</a></p>
                     </div>
                     <hr>
                     <div class="post-preview">
