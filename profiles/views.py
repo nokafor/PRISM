@@ -13,8 +13,11 @@ from datetime import datetime
 def testing(request, company_name, member_name):
     # ADD AUTHENTICATION 
     if request.method == 'POST':
-        valid_datetime = datetime.strptime(request.POST['datetimepicker4'], '%m/%d/%Y %I:%M %p')
-        print valid_datetime
+        try: 
+            valid_datetime = datetime.strptime(request.POST['datetimepicker4'], '%m/%d/%Y %I:%M %p')
+            print valid_datetime
+        except ValueError:
+            return HttpResponse('You did not enter a valid date and time. So the information was not saved.')
 
     return render(request, 'profiles/test.html', {'company_name':company_name, 'member_name':member_name})
 

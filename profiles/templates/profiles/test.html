@@ -15,7 +15,7 @@
         <h4 class="modal-title">Conflicts Due Date</h4>
     </div>
     <div id="form-modal-body" class="modal-body">
-        <form class="form-inline" id="conflicts_due_form" action="{% url 'profiles:testing' company_name member_name %}" method="post">
+        <form class="form-inline" id="conflicts_due_form" action="{% url 'profiles:testing' company_name member_name %}" method="post" style="text-align:center">
         {% csrf_token %}
                 <div class="form-group">
                     <input type='text' class="form-control" id='datetimepicker4' name="datetimepicker4">
@@ -25,7 +25,9 @@
                         $('#datetimepicker4').datetimepicker();
                     });
                 </script>
-                <button class="btn btn-primary" type="submit">Save</button>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit" style="padding:0; margin:0; height: 35px; width:35px; border-radius: 5px;"><span class="fa fa-check"></span></button>
+                </div>
         </form>
     </div>
     <div class="modal-footer">
