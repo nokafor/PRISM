@@ -8,6 +8,7 @@ from profiles.functions import memberAuth, adminAuth
 from django.contrib.auth.models import User, Group
 
 from datetime import datetime
+from django.utils import timezone
 
 # Create your views here.
 def testing(request, company_name, member_name):
@@ -23,6 +24,10 @@ def testing(request, company_name, member_name):
                 try: 
                     valid_datetime = datetime.strptime(request.POST['datetimepicker4'], '%m/%d/%Y %I:%M %p')
                     print valid_datetime
+                    company = Company.objects.get(name=company_name)
+                    company.conflicts_due = valid_datetime.replace(tzinfo=timezone.now().tzinfo)
+                    company.save()
+                    return redirect('profiles:profile', company_name=company_name, member_name=member_name)
                 except ValueError:
                     return HttpResponse('You did not enter a valid date and time. So the information was not saved.')
 
