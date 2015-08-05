@@ -109,6 +109,14 @@
         </div>
     </div>    
 
+    <!-- Modal for Updating Conflict Due Date -->
+    <div class="modal fade" id="conflict_due_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+
     <!-- Main Content -->
     <div class="content-wrapper">
         <div class="container">
@@ -123,15 +131,7 @@
                                 View / manage the members and admins of {{ company.name }}
                             </h3>
                         </a>
-                        <p class="post-meta"><a data-toggle="modal" href="{% url 'profiles:testing' company.name member.username %}" data-target="#conflict_due-modal">Set the date by which company members must post their conflicts</a></p>
-
-                        <!-- Modal for Updating Conflict Due Date -->
-                        <div class="modal fade" id="conflict_due-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                </div>
-                            </div>
-                        </div>
+                        <p class="post-meta"><a data-toggle="modal" href="{% url 'profiles:testing' company.name member.username %}" data-target="#conflict_due_modal">Set the date by which company members must post their conflicts</a></p>
                     </div>
                     <hr>
                     <div class="post-preview">
@@ -284,6 +284,11 @@
                 $(".navbar-brand").css('color', 'grey');
             }      
         });
+
+        // $("#set_conflict_due_date").click(function() {
+        //     $("#datetimepicker").toggleClass('hidden');
+        //     $("#set_conflict_due_date").toggleClass('hidden')
+        // });
     </script>
 
 </body>
