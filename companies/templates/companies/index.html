@@ -67,11 +67,17 @@
                         <a class="page-scroll" href="#portfolio">Company Login</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#join">Join Us</a>
-                    </li>
-                    <li>
                         <a class="page-scroll" href="#contact">Contact</a>
                     </li>
+                    {% if request.user.is_authenticated %}
+                    <li>
+                        <a class="page-scroll" href="logout/">Logout</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a class="page-scroll" href="signup/">Register</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -196,10 +202,10 @@
             </section>
             
             <!--- banner -->
-                <a class="banner-link" id="join" href="mailto:nokafor@princeton.edu?Subject=PRISM"><div class="jumbotron banner">
-                    <h1>Don't See Your Company?</h1>
-                    <p>Shoot us an email, and we will help get you on your way.</p>
-                </div></a>
+            <div class="jumbotron banner">
+                <h1>Don't See Your Company?</h1>
+                <p>Contact us via the contact form below, and we will help get you on your way.</p>
+            </div>
 
             <!-- contact section -->
             <section id="contact">
