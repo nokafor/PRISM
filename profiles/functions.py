@@ -17,6 +17,17 @@ def memberAuth(request, company_name, member_name):
             return Member.objects.get(username=member_name)
     return None
 
+def adminAuth(request, company_name, member_name):
+    company = get_object_or_404(Company, name=company_name)
+
+    # if the user is authenticated, then the member exists in the system
+    if request.user.is_authenticated() and member_name == request.user.username:
+        if Admin.objects.filter(member__username=member_name, company=company).exists():
+            return Admin.objects.get(member__username=member_name, company=company)
+    
+    return None
+
+
 @login_required
 def profileAuth(request, company_name, member_name):
     company = get_object_or_404(Company, name=company_name)
@@ -29,25 +40,5 @@ def profileAuth(request, company_name, member_name):
             return redirect('profiles:profile', company_name, member_name,)
         else:
             pass
-    else:
-        return redirect('profiles:profile', company_name, member_name,)
-
-@login_required
-def adminAuth(request, company_name, member_name):
-    company = get_object_or_404(Company, name=company_name)
-
-    # user must come from profile page to get here... don't need to reauthenticate
-    if request.user.is_authenticated() and member_name == request.user.username:
-        try:
-            member = company.member_set.get(netid=member_name)
-        except (KeyError, Member.DoesNotExist):
-            return redirect('profiles:profile', company_name, member_name,)
-        else:
-            try:
-                admin = Admin.objects.get(member=member)
-            except (KeyError, Admin.DoesNotExist):
-                return redirect('profiles:profile', company_name, member_name,)
-            else:
-                pass
     else:
         return redirect('profiles:profile', company_name, member_name,)

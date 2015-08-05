@@ -4,22 +4,34 @@ from django.http import HttpResponse, HttpResponseRedirect
 from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock
 from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, MemberNameForm, AdminForm, ChoreographerForm
 
-from profiles.functions import memberAuth
+from profiles.functions import memberAuth, adminAuth
 from django.contrib.auth.models import User, Group
 
 from datetime import datetime
 
 # Create your views here.
 def testing(request, company_name, member_name):
-    # ADD AUTHENTICATION 
-    if request.method == 'POST':
-        try: 
-            valid_datetime = datetime.strptime(request.POST['datetimepicker4'], '%m/%d/%Y %I:%M %p')
-            print valid_datetime
-        except ValueError:
-            return HttpResponse('You did not enter a valid date and time. So the information was not saved.')
+    # make sure member is logged in and has access to this page
+    member = memberAuth(request, company_name, member_name)
 
-    return render(request, 'profiles/test.html', {'company_name':company_name, 'member_name':member_name})
+    if member:
+        # make sure member is an admin and has the right to access this information
+        admin = adminAuth(request, company_name, member_name)
+
+        if admin:
+            if request.method == 'POST':
+                try: 
+                    valid_datetime = datetime.strptime(request.POST['datetimepicker4'], '%m/%d/%Y %I:%M %p')
+                    print valid_datetime
+                except ValueError:
+                    return HttpResponse('You did not enter a valid date and time. So the information was not saved.')
+
+            return render(request, 'profiles/test.html', {'company_name':company_name, 'member_name':member_name})
+
+    # admins and members logged in under the wrong name cannot access this page
+    return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')
+
+    
 
 def profile(request, company_name, member_name):
     # make sure member has access to this profile
