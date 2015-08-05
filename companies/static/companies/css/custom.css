@@ -178,6 +178,7 @@ ul.social-buttons li a:active {
 }
 
 .banner {
+    text-align: center;
     margin: 0;
     background-color: white;
     color: #FFA534;
