@@ -66,7 +66,7 @@
                     <h4>Sign In</h4>
                     <a href="#" class="signin-muted text-muted">or create an account</a>
                 </div>
-                <form id="loginForm" onsubmit="return validateLogin()" method="post" action="{% url 'companies:login' company_name %}">
+                <form id="loginForm" method="post" action="{% url 'companies:login' company_name %}">
                 {% csrf_token %}
                     <div class="form-group">
                         <input type="email" class="form-control" placeholder="Email" name="loginEmail" id="loginEmail" required data-validation-required-message="Please enter your email address.">

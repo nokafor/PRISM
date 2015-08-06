@@ -14,7 +14,33 @@ def index(request):
 
 def signup(request):
     return render(request, 'companies/test.html')
-    
+
+def create_new(request):
+    # get POST data
+    if request.method == 'POST':
+        # make sure there is no user with the same email
+        email = request.POST['email']
+        if User.objects.filter(email=email).exists():
+            return HttpResponse('There is already a user with that email address. Did you forget your password?')
+        else:
+            # make sure there is no user with the same username
+            username = email.split('@', 1)[0]
+            if User.objects.filter(username=username).exists():
+                username = "%s%s" % (username, User.objects.count())
+
+        # create the new user
+        password = request.POST['password']
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        mem = Member(username=username, email=email, first_name=first_name, last_name=last_name)
+        mem.save()
+        user = User.objects.get(username=mem.username)
+        user.set_password(member.password)
+        user.save()
+        return HttpResponse('Your account has been created.')
+
+    else:
+        return redirect('companies:index')
 def modal(request, company_name):
     # Since the template filters users logged into the company they are trying to access, if  the
     # user is logged in at this point, they are not part of the company
