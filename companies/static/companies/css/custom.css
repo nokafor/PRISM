@@ -135,7 +135,7 @@ fieldset[disabled] .btn-xl.active {
 
 header .intro-text .intro-lead-in {
     font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-    font-style: normal;
+    /*font-style: normal;*/
 }
 #portfolio .portfolio-item .portfolio-link .portfolio-hover {
     background: rgba(255,165,52,.9);
