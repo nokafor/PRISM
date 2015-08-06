@@ -23,11 +23,13 @@
                 <script type="text/javascript">
                     $(function () {
                         $('#datetimepicker4').datetimepicker();
+                        $('#datetimepicker4').data("DateTimePicker").minDate(new Date());
                     });
                 </script>
                 <div class="form-group">
                     <button class="btn btn-primary" type="submit" style="padding:0; margin:0; height: 35px; width:35px; border-radius: 5px;"><span class="fa fa-check"></span></button>
                 </div>
+                <!-- {{ date }} -->
         </form>
     </div>
     <div class="modal-footer">

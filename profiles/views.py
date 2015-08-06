@@ -32,7 +32,8 @@ def testing(request, company_name, member_name):
                 except ValueError:
                     return HttpResponse('You did not enter a valid date and time. So the information was not saved.')
 
-            return render(request, 'profiles/test.html', {'company_name':company_name, 'member_name':member_name})
+            date = timezone.now().date()
+            return render(request, 'profiles/test.html', {'company_name':company_name, 'member_name':member_name, 'date':date})
 
     # admins and members logged in under the wrong name cannot access this page
     return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')
@@ -70,6 +71,8 @@ def members(request, company_name, member_name):
         member_list = User.objects.filter(groups__name=company_name)
         admin_list = company.admin_set.all()
 
+        admin = adminAuth(request, company_name, member_name)
+
         # process the form and conflict data of the user
         if request.method == 'POST':
             member_form = MemberForm(request.POST)
@@ -82,7 +85,7 @@ def members(request, company_name, member_name):
                 return HttpResponseRedirect('')
         else:
             member_form = MemberForm()
-        return render(request, 'profiles/members.html', {'company':company, 'member':member, 'member_list':member_list, 'admin_list':admin_list, 'member_form':member_form})
+        return render(request, 'profiles/members.html', {'company':company, 'member':member, 'member_list':member_list, 'admin_list':admin_list, 'admin':admin})
 
     else:
         return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')

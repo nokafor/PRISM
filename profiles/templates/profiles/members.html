@@ -89,6 +89,7 @@
 
     
     <!-- Add Members -->
+    {% if admin %}
     <section>
         <div class="container" style="text-align:center;">
             <a data-toggle="modal" href="{% url 'updates:addMember' company.name member.username %}" data-target="#addmember-modal" class="btn btn-lg btn-default" style="text-decoration:none">Add Members</a>
@@ -96,6 +97,7 @@
     </section>
     
     <br>
+    {% endif %}
 
     <!-- List of Members -->
     <section>
@@ -114,10 +116,14 @@
                                 {% ifequal mem.id member.id %}
                                     <a href="{% url 'profiles:conflicts' company.name member.username %}"><h4>{{ mem }}</h4></a>
                                 {% else %}
-                                    <a data-toggle="modal" href="{% url 'updates:ConflictView' company.name member.username mem.id %}" data-target="#{{ mem.id }}-modal"><h4>{{ mem }}</h4></a>
+                                    {% if admin %}
+                                        <a data-toggle="modal" href="{% url 'updates:ConflictView' company.name member.username mem.id %}" data-target="#{{ mem.id }}-modal"><h4>{{ mem }}</h4></a>
+                                        <a href="#"><span class="fa fa-plus-circle" style="margin-left:5px"></span></a>
+                                        <a href="{% url 'updates:deleteMember' company.name member.username mem.id %}"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
+                                    {% else %}
+                                        <h4>{{ mem }}</h4>
+                                    {% endif %}
                                 {% endifequal %}
-                                <a href="#"><span class="fa fa-plus-circle" style="margin-left:5px"></span></a>
-                                <a href="{% url 'updates:deleteMember' company.name member.username mem.id %}"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
                             </div>
                         </div>
 
@@ -186,6 +192,8 @@
             </div>
         </div>
     </section>
+
+    <br>
 
     <footer>
         <div class="container">

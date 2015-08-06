@@ -13,7 +13,7 @@ def index(request):
     return render(request, 'companies/index.html', {'group_list': group_list, 'user':request.user, 'founder':founder})
 
 def signup(request):
-    return render(request, 'companies/test.html')
+    return render(request, 'companies/signup.html')
 
 def create_new(request):
     # get POST data
