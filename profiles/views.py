@@ -11,7 +11,7 @@ from datetime import datetime
 from django.utils import timezone
 
 # Create your views here.
-def testing(request, company_name, member_name):
+def updateConflictsDue(request, company_name, member_name):
     # make sure member is logged in and has access to this page
     member = memberAuth(request, company_name, member_name)
 
@@ -32,8 +32,7 @@ def testing(request, company_name, member_name):
                 except ValueError:
                     return HttpResponse('You did not enter a valid date and time. So the information was not saved.')
 
-            date = timezone.now().date()
-            return render(request, 'profiles/test.html', {'company_name':company_name, 'member_name':member_name, 'date':date})
+            return render(request, 'profiles/datetimepicker.html', {'company_name':company_name, 'member_name':member_name})
 
     # admins and members logged in under the wrong name cannot access this page
     return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')

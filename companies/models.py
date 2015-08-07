@@ -23,6 +23,10 @@ class Company(Group):
         ordering = ['name']
     def __str__(self):
         return self.name
+    def conflicts_past_due(self):
+        if self.conflicts_due <= timezone.now():
+            return True
+        return False
     def getSortedRehearsals(self):
         rehearsals = self.rehearsal_set.all()
         sortedRehearsals = sorted(rehearsals, key = lambda t : len(t.getAvailableCasts()) )

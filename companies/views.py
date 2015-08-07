@@ -76,6 +76,8 @@ def userLogin(request, company_name):
                     return redirect('profiles:profile', company_name=company_name, member_name=user.username)
                 # if account is disabled
                 else:
+                    if not user.has_usable_password():
+                        return HttpResponse('You do not have a usable password on file. Please shoot us an email.')
                     return HttpResponse('Account is disabled. Please contact an administrator')
             
             # if user password doesn't match
