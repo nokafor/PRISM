@@ -1,0 +1,47 @@
+{% load staticfiles %}
+{% load bootstrap %}
+
+<head>
+    <link href="{% static 'profiles/css/test.css' %}" rel="stylesheet">
+
+
+
+</head>
+
+    <script>
+        $(function () { $("input").not("[type=submit]").jqBootstrapValidation(); } );
+    </script>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Add Members</h4> <!-- figure out the header -->
+    </div>
+
+    <div class="modal-body">
+
+        <!-- box on the left -->
+        <div class="box">
+            <h5>Add People w/ Valid NetID</h5>
+            <p>Use the text area below to add members (who have valid NetIDs) to your company. Each line should be no more than 3 words, and consist of a NetID/Princeton email, first name, and last name.</p>
+            <textarea class="form-control" name="studentList" id="studentList" placeholder="janedoe Jane Doe"></textarea>
+        </div>  
+        
+        <!-- divider -->
+        <div style="width: 1px; height: 250px; background-color: #ccc;">&nbsp;</div>   
+
+        <!-- box on the right -->   
+        <div class="box">
+            <h5>Add People w/o Valid NetID</h5>
+            <p>User must first create a PRISM account. Then, you may search for them below. <strong>Note: </strong>Once you click a person's name, they are added to your company and given login access to your organization's site.</p>
+            <input class="form-control" type="text" placeholder="Jane Doe">
+        </div>          
+
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+
+
+
+

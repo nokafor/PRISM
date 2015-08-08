@@ -1,21 +1,21 @@
 {% load staticfiles %}
 {% load bootstrap %}
 
-<!-- <head>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<head>
+    <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
     <script src="{% static 'profiles/js/moment.min.js' %}"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <!-- <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> -->
     <script src="{% static 'profiles/js/bootstrap-datetimepicker.min.js' %}"></script>
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"> -->
     <link rel="stylesheet" href="{% static 'profiles/css/bootstrap-datetimepicker.min.css' %}">
 </head>
-<body> -->
+
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title">Conflicts Due Date</h4>
     </div>
     <div id="form-modal-body" class="modal-body">
-        <form class="form-inline" id="conflicts_due_form" action="{% url 'profiles:testing' company_name member_name %}" method="post" style="text-align:center">
+        <form class="form-inline" id="conflicts_due_form" action="{% url 'profiles:updateConflictsDue' company_name member_name %}" method="post" style="text-align:center">
         {% csrf_token %}
                 <div class="form-group">
                     <input type='text' class="form-control" id='datetimepicker4' name="datetimepicker4">
@@ -34,4 +34,3 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
     </div>
-<!-- </body> -->

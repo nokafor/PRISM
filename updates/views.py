@@ -1,15 +1,17 @@
-from django.core.files import File
+# from django.core.files import File
 
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 
 from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer
-from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, MemberNameForm, AdminForm, ChoreographerForm
+# from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, MemberNameForm, ChoreographerForm
 
 from django.views.generic import DetailView
 from django.template.loader import render_to_string
 
 from profiles.functions import memberAuth, profileAuth, adminAuth
+
+from django.contrib.auth.models import Group, User
 
 # Create your views here.
 class ConflictView(DetailView):
@@ -174,31 +176,26 @@ def deleteCastMem(request, company_name, member_name, cast_id, mem_id):
 
         return redirect('profiles:casts', company_name, member_name,)
 
-def addAdmin(request, company_name, member_name):
-    name = 'updates:addAdmin'
-
+def addAdmin(request, company_name, member_name, member_id):
     # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
+    admin = adminAuth(request, company_name, member_name)
+    if admin:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
+        member = Member.objects.get(username=member_name)
+        
+        # get post data if available
+        mem = Member.objects.get(id=member_id)
 
-        admin = Admin(company=company)
+        if not Admin.objects.filter(member=mem, company=company).exists():
+            new_admin = Admin(member=mem, company=company)
+            new_admin.save()
 
-        # process the form and add new admin
-        if request.method == 'POST':
-            form = AdminForm(request.POST, instance=admin)
-            if form.is_valid():
-                form.save()
+        return redirect('profiles:members', company_name, member_name,)
 
-                return redirect('profiles:members', company_name, member_name,)
-        else:
-            form = AdminForm(instance=admin)
-        return render(request, 'updates/add.html', {'company':company, 'member':member, 'form':form, 'redirect_name':name})
+    else:
+        return HttpResponse('You do not have access to this page')
+        
 
-    # check if valid admin
 def addMember(request, company_name, member_name):
     name = 'updates:addMember'
     
@@ -224,21 +221,31 @@ def addMember(request, company_name, member_name):
 
 def deleteMember(request, company_name, member_name, member_id):
     # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
-        company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
+    admin = adminAuth(request, company_name, member_name)
+    if admin:
+        old_member = Member.objects.get(id=member_id)
 
-        old_member = company.member_set.get(id=member_id)
+        # make sure you can only delete people who are in your company
+        if old_member.groups.filter(name=company_name).exists() and admin.member != old_member:
+            # delete any admin models associated with this organization
+            if Admin.objects.filter(member=old_member, company__name=company_name).exists():
+                old_admin = Admin.objects.get(member=old_member, company__name=company_name)
+                old_admin.delete()
 
-        if member == old_member:
-            pass
-        else:
-            old_member.delete()
+            # delete person from company set
+            company = Company.objects.get(name='BAC')
+            company.user_set.remove(old_member)
+
+            # if user is a student and is no longer associated with any companies, remove them from system to clear space
+            if not old_member.has_usable_password() and old_member.groups.all().count() == 0:
+                old_member.delete()
 
         return redirect('profiles:members', company_name, member_name,)
+
+    else:
+        return HttpResponse('You do not have access to this page')
+
+        
 
 def deleteCast(request, company_name, member_name, cast_id):
     # check if valid admin
@@ -264,17 +271,13 @@ def deleteChoreographer(request, company_name, member_name, choreographer_id):
 
 def deleteAdmin(request, company_name, member_name):
     # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
-        company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
-        
-        admin = Admin.objects.get(member=member)
+    admin = adminAuth(request, company_name, member_name)
+    if admin:
         admin.delete()
 
         return redirect('profiles:profile', company_name, member_name,)
+    else:
+        return HttpResponse('You do not have access to this page')
 
 def updateName(request, company_name, member_name):
     # make sure member has access to this profile

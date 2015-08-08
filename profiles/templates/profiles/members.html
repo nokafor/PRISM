@@ -92,9 +92,16 @@
     {% if admin %}
     <section>
         <div class="container" style="text-align:center;">
-            <a data-toggle="modal" href="{% url 'updates:addMember' company.name member.username %}" data-target="#addmember-modal" class="btn btn-lg btn-default" style="text-decoration:none">Add Members</a>
+            <a data-toggle="modal" href="{% url 'profiles:testing' company.name member.username %}" data-target="#addmember" class="btn btn-lg btn-default" style="text-decoration:none">Add Members</a>
         </div>
     </section>
+    <!-- Add Member Modal -->
+    <div class="modal fade" id="addmember" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div> 
     
     <br>
     {% endif %}
@@ -118,8 +125,8 @@
                                 {% else %}
                                     {% if admin %}
                                         <a data-toggle="modal" href="{% url 'updates:ConflictView' company.name member.username mem.id %}" data-target="#{{ mem.id }}-modal"><h4>{{ mem }}</h4></a>
-                                        <a href="#"><span class="fa fa-plus-circle" style="margin-left:5px"></span></a>
-                                        <a href="{% url 'updates:deleteMember' company.name member.username mem.id %}"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
+                                        <a onclick="return confirm('Are you sure you want to make {{ mem }} an admin?')" href="{% url 'updates:addAdmin' company.name member.username mem.id %}"><span class="fa fa-plus-circle" style="margin-left:5px"></span></a>
+                                        <a onclick="return confirm('Are you sure you want to remove {{ mem }} from {{company.name}}?')"href="{% url 'updates:deleteMember' company.name member.username mem.id %}"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
                                     {% else %}
                                         <h4>{{ mem }}</h4>
                                     {% endif %}
@@ -145,22 +152,6 @@
     <br>
     <br>
 
-    
-
-    <!-- Form Modals -->
-    <div class="modal fade" id="addmember-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-            </div>
-        </div>
-    </div> 
-    <div class="modal fade" id="addadmin-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-            </div>
-        </div>
-    </div> 
-
     <!-- List of Admins -->
     <section>
         <div class="container">
@@ -177,7 +168,7 @@
                             {% ifequal admin.member member%}
                                 <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
                                     <h4> {{ member }}</h4>
-                                    <a href="{% url 'updates:deleteAdmin' company.name member.username %}"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
+                                    <a onclick="return confirm('Are you sure you want to remove your {{company.name}} admin access?')"href="{% url 'updates:deleteAdmin' company.name member.username %}"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
                                 </div>
                             {% else %}
                                 <div class="portfolio-caption">

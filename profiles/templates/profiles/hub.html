@@ -22,7 +22,7 @@
     <!-- Custom CSS -->
     <link href="{% static 'profiles/css/clean-blog.min.css' %}" rel="stylesheet">
     <link href="{% static 'profiles/css/custom.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'profiles/css/bootstrap-datetimepicker.min.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'profiles/css/bootstrap-datetimepicker.min.css' %}"> -->
 
     <!-- Custom Fonts -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -42,9 +42,9 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <!-- DateTimePicker JavaScript -->
+    <!-- DateTimePicker JavaScript 
     <script src="{% static 'profiles/js/moment.min.js' %}"></script>
-    <script src="{% static 'profiles/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'profiles/js/bootstrap-datetimepicker.min.js' %}"></script> -->
 
 </head>
 
@@ -131,7 +131,13 @@
                                 View / manage the members of {{ company.name }}
                             </h3>
                         </a>
-                        <p class="post-meta"><a data-toggle="modal" href="{% url 'profiles:testing' company.name member.username %}" data-target="#conflict_due_modal">Change the date conflicts are due (currently set to: {{ company.conflicts_due |default:"none"}}).</a></p>
+                        <p class="post-meta">
+                        {% if admin %} 
+                        <a data-toggle="modal" href="{% url 'profiles:updateConflictsDue' company.name member.username %}" data-target="#conflict_due_modal">Change the date conflicts are due (currently set to: {{ company.conflicts_due |default:"none" }}).</a>
+                        {% else %}
+                        Current due date for conflicts: {{ company.conflicts_due |default:"none" }}
+                        {% endif %}
+                        </p>
                     </div>
                     <hr>
                     <div class="post-preview">

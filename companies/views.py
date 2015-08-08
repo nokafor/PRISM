@@ -35,7 +35,7 @@ def create_new(request):
         mem = Member(username=username, email=email, first_name=first_name, last_name=last_name)
         mem.save()
         user = User.objects.get(username=mem.username)
-        user.set_password(member.password)
+        user.set_password(mem.password)
         user.save()
         return HttpResponse('Your account has been created.')
 
@@ -45,7 +45,7 @@ def modal(request, company_name):
     # Since the template filters users logged into the company they are trying to access, if  the
     # user is logged in at this point, they are not part of the company
     if request.user.is_authenticated():
-        return render(request, 'companies/otheruser.html', {'company_name': company_name, 'user':request.user})
+        return render(request, 'companies/wronguser.html', {'company_name': company_name, 'user':request.user})
     
     # If no user is logged in
     else:
@@ -77,7 +77,7 @@ def userLogin(request, company_name):
                 # if account is disabled
                 else:
                     if not user.has_usable_password():
-                        return HttpResponse('You do not have a usable password on file. Please shoot us an email.')
+                        return HttpResponse('You do not have a usable password on file. Please contact us at nokafor@princeton.edu.')
                     return HttpResponse('Account is disabled. Please contact an administrator')
             
             # if user password doesn't match

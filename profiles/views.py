@@ -11,6 +11,9 @@ from datetime import datetime
 from django.utils import timezone
 
 # Create your views here.
+def testing(request, company_name, member_name):
+    return render(request, 'profiles/test.html', {'netid':member_name})
+
 def updateConflictsDue(request, company_name, member_name):
     # make sure member is logged in and has access to this page
     member = memberAuth(request, company_name, member_name)
@@ -42,6 +45,7 @@ def updateConflictsDue(request, company_name, member_name):
 def profile(request, company_name, member_name):
     # make sure member has access to this profile
     member = memberAuth(request, company_name, member_name)
+    admin = adminAuth(request, company_name, member_name)
 
     if member:
         company = Company.objects.get(name=company_name)
@@ -56,7 +60,7 @@ def profile(request, company_name, member_name):
         else:
             form = MemberNameForm(instance=member)
 
-        return render(request, 'profiles/hub.html', {'member':member, 'company':company, 'form':form})
+        return render(request, 'profiles/hub.html', {'member':member, 'company':company, 'form':form, 'admin':admin})
 
     else:
         return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')
@@ -67,7 +71,7 @@ def members(request, company_name, member_name):
 
     if member:
         company = Company.objects.get(name=company_name)
-        member_list = User.objects.filter(groups__name=company_name)
+        member_list = company.user_set.all()
         admin_list = company.admin_set.all()
 
         admin = adminAuth(request, company_name, member_name)
