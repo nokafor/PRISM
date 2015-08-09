@@ -9,7 +9,7 @@ from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreograp
 from django.views.generic import DetailView
 from django.template.loader import render_to_string
 
-from profiles.functions import memberAuth, profileAuth, adminAuth
+from profiles.functions import memberAuth, adminAuth
 
 from django.contrib.auth.models import Group, User
 

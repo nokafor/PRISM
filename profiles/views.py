@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 
 from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock
-from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, MemberNameForm, AdminForm, ChoreographerForm
+from updates.forms import MemberNameForm
 
 from profiles.functions import memberAuth, adminAuth
 from django.contrib.auth.models import User, Group
@@ -12,7 +12,13 @@ from django.utils import timezone
 
 # Create your views here.
 def testing(request, company_name, member_name):
-    return render(request, 'profiles/test.html', {'netid':member_name})
+    # create dataset for users (w/o valid netid)
+    dataset = []
+    results = User.objects.filter(groups__isnull=True).exclude(username='admin')
+    for user in results:
+        dataset.append("%s %s (%s)" % (user.first_name, user.last_name, user.email))
+    print dataset
+    return render(request, 'profiles/test.html', {'dataset':dataset})
 
 def updateConflictsDue(request, company_name, member_name):
     # make sure member is logged in and has access to this page
@@ -76,18 +82,6 @@ def members(request, company_name, member_name):
 
         admin = adminAuth(request, company_name, member_name)
 
-        # process the form and conflict data of the user
-        if request.method == 'POST':
-            member_form = MemberForm(request.POST)
-            if member_form.is_valid():
-                new_member = member_form.save(commit=False)
-                new_member.company = company
-                new_member.save()
-                member_form.save_m2m()
-
-                return HttpResponseRedirect('')
-        else:
-            member_form = MemberForm()
         return render(request, 'profiles/members.html', {'company':company, 'member':member, 'member_list':member_list, 'admin_list':admin_list, 'admin':admin})
 
     else:
