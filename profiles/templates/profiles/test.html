@@ -27,12 +27,18 @@
     align-items: center;
     width: 100%;">
 {% csrf_token %}
+{{ form.non_field_errors }}
 
     <!-- box on the left -->
     <div class="box">
         <h5>Add People w/ Valid NetID</h5>
         <p>Use the text area below to add members (who have valid NetIDs) to your company. Each line should be no more than 3 words, and consist of a NetID/Princeton email, first name, and last name.</p>
-        <textarea class="form-control" name="studentList" id="studentList" placeholder="janedoe Jane Doe"></textarea>
+        <textarea class="form-control" name="studentList" id="studentList" placeholder="janedoe Jane Doe"></textarea> 
+       
+        <!-- <div class="fieldWrapper">
+            {{ form.students.errors }}
+            <div class="form-control" style="width:50px">{{ form.students }}</div>
+        </div> -->
     </div>  
     
     <!-- divider -->
@@ -43,12 +49,17 @@
         <h5>Add People w/o Valid NetID</h5>
         <p>User must first create a PRISM account. Then, you may search for them below. <strong>Note: </strong>Once you click a person's name, they are added to your company and given login access to your organization's site.</p>
         <!-- <input id="search" name="s" class="typeahead form-control tt-query tt-hint" autocomplete="off" type="text" placeholder="Jane Doe"> -->
-        {{ form }} {{ form.media }}
+        
+        <div class="fieldWrapper">
+            {{ form.users.errors }}
+            {{ form.users }}
+        </div>
+        {{ form.media }}
     </div>          
 </div>
 
 <div style="text-align:center">
-    <input class="btn btn-primary" type="submit" style="margin-bottom: 5%">
+    <input id="submit" class="btn btn-primary" type="submit" style="margin-bottom: 5%">
 </div>
 
 </form>

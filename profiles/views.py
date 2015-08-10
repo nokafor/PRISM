@@ -24,31 +24,31 @@ def testing(request, company_name, member_name):
         student_list = [l for l in student_list.split("\n") if l]
         print student_list
 
+        # check for any 'non-students'
+        if form.is_valid():
+            users = form.cleaned_data['users']
+            print users
+
     form = TestForm()
     return render(request, 'profiles/test.html', {'form':form, 'company_name': company_name, 'member_name':member_name})
 
 def updateConflictsDue(request, company_name, member_name):
-    # make sure member is logged in and has access to this page
-    member = memberAuth(request, company_name, member_name)
+    # make sure member is an admin and has the right to access this information
+    admin = adminAuth(request, company_name, member_name)
 
-    if member:
-        # make sure member is an admin and has the right to access this information
-        admin = adminAuth(request, company_name, member_name)
+    if admin:
+        # save posted data if available
+        if request.method == 'POST':
+            try: 
+                valid_datetime = datetime.strptime(request.POST['datetimepicker4'], '%m/%d/%Y %I:%M %p')
+                company = Company.objects.get(name=company_name)
+                company.conflicts_due = valid_datetime.replace(tzinfo=timezone.LocalTimezone())
+                company.save()
+                return redirect('profiles:profile', company_name=company_name, member_name=member_name)
+            except ValueError:
+                return HttpResponse('You did not enter a valid date and time. So the information was not saved.')
 
-        if admin:
-            # save posted data if available
-            if request.method == 'POST':
-                try: 
-                    valid_datetime = datetime.strptime(request.POST['datetimepicker4'], '%m/%d/%Y %I:%M %p')
-                    print valid_datetime
-                    company = Company.objects.get(name=company_name)
-                    company.conflicts_due = valid_datetime.replace(tzinfo=timezone.now().tzinfo)
-                    company.save()
-                    return redirect('profiles:profile', company_name=company_name, member_name=member_name)
-                except ValueError:
-                    return HttpResponse('You did not enter a valid date and time. So the information was not saved.')
-
-            return render(request, 'profiles/datetimepicker.html', {'company_name':company_name, 'member_name':member_name})
+        return render(request, 'profiles/datetimepicker.html', {'company_name':company_name, 'member_name':member_name})
 
     # admins and members logged in under the wrong name cannot access this page
     return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')
@@ -95,56 +95,32 @@ def members(request, company_name, member_name):
         return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')
 
 def conflicts(request, company_name, member_name):
-    # check if came from profile
-    not_from_profile = profileAuth(request, company_name, member_name)
-    if not_from_profile:
-        return not_from_profile
-    else:
+    member = memberAuth(request, company_name, member_name)
+
+    if member:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)    
+        admin = adminAuth(request, company_name, member_name)
 
         conflict_list = member.conflict_set.all()
 
-        # process the form and conflict data of the user
-        if request.method == 'POST':
-            form = ConflictForm(request.POST)
-            if form.is_valid():
-                new_conflict = form.save(commit=False)
-                new_conflict.member = member
-                new_conflict.save()
-                form.save_m2m()
+        return render(request, 'profiles/addconflict.html', {'company':company, 'member':member, 'conflicts':conflict_list, 'timeblock':TimeBlock})
 
-                return HttpResponseRedirect('')
-        else:
-            form = ConflictForm()
-        return render(request, 'profiles/addconflict.html', {'company':company, 'member':member, 'conflicts':conflict_list, 'form':form, 'timeblock':TimeBlock})
-    
+    else:
+        return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')          
 
 def spaces(request, company_name, member_name):
-    # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
+    member = memberAuth(request, company_name, member_name)
+
+    if member:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
+        admin = adminAuth(request, company_name, member_name)
 
         rehearsal_list = company.rehearsal_set.all()
 
-        # process the form and conflict data of the user
-        if request.method == 'POST':
-            form = RehearsalForm(request.POST)
-            if form.is_valid():
-                new_rehearsal = form.save(commit=False)
-                new_rehearsal.company = company
-                new_rehearsal.save()
-                form.save_m2m()
+        return render(request, 'profiles/addspace.html', {'company':company, 'member':member, 'rehearsals':rehearsal_list, 'timeblock':TimeBlock})
 
-                return HttpResponseRedirect('')
-        else:
-            form = RehearsalForm()
-        return render(request, 'profiles/addspace.html', {'company':company, 'member':member, 'rehearsals':rehearsal_list, 'form':form, 'timeblock':TimeBlock})
-
+    else:
+        return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')          
 
 def casts(request, company_name, member_name):
     # check if valid admin

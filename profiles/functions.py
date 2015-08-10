@@ -20,8 +20,8 @@ def memberAuth(request, company_name, member_name):
 def adminAuth(request, company_name, member_name):
     company = get_object_or_404(Company, name=company_name)
 
-    # if the user is authenticated, then the member exists in the system
     if request.user.is_authenticated() and member_name == request.user.username:
+        # make sure user is an admin of the company they are trying to access
         if Admin.objects.filter(member__username=member_name, company=company).exists():
             return Admin.objects.get(member__username=member_name, company=company)
     

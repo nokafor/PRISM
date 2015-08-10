@@ -20,13 +20,13 @@ def create_new(request):
     if request.method == 'POST':
         # make sure there is no user with the same email
         email = request.POST['email']
-        if User.objects.filter(email=email).exists():
+        if Member.objects.filter(email=email).exists():
             return HttpResponse('There is already a user with that email address. Did you forget your password?')
         else:
             # make sure there is no user with the same username
             username = email.split('@', 1)[0]
-            if User.objects.filter(username=username).exists():
-                username = "%s%s" % (username, User.objects.count())
+            if Member.objects.filter(username=username).exists():
+                username = "%s%s" % (username, Member.objects.count())
 
         # create the new user
         password = request.POST['password']
@@ -34,7 +34,7 @@ def create_new(request):
         last_name = request.POST['last_name']
         mem = Member(username=username, email=email, first_name=first_name, last_name=last_name)
         mem.save()
-        user = User.objects.get(username=mem.username)
+        user = Member.objects.get(username=mem.username)
         user.set_password(mem.password)
         user.save()
         return HttpResponse('Your account has been created.')
@@ -62,8 +62,8 @@ def userLogin(request, company_name):
         loginPwd = request.POST["loginPwd"]
 
         try:
-            user = User.objects.get(email=loginEmail)
-        except (KeyError, User.DoesNotExist):
+            user = Member.objects.get(email=loginEmail)
+        except (KeyError, Member.DoesNotExist):
             return HttpResponse('There is no user with that email')
         else:
             # if user password matches

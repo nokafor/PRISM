@@ -15,7 +15,7 @@
     <title>Conflicts</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="{% static 'profiles/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="{% static 'profiles/css/clean-blog.min.css' %}" rel="stylesheet">
@@ -53,7 +53,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="{% url 'profiles:profile' company.name member.netid %}">Hub</a>
+                        <a href="{% url 'profiles:profile' company.name member.username %}">Hub</a>
                     </li>
                     <li>
                         <a href="logout/">Logout</a>
@@ -103,8 +103,8 @@
                                 {% for conflict in con.list %}
                                 <li><div style="display:flex; flex-direction:row; align-items:center">
                                     <p>{{ conflict.description }}: {{conflict.start_time}} - {{conflict.end_time}}</p>
-                                    <div style="margin-left:5%"><a data-toggle="modal" href="{% url 'updates:updateConflict' company.name member.netid conflict.id %}" data-target="#{{ conflict.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
-                                    <div><a href="{% url 'updates:deleteConflict' company.name member.netid conflict.id %}"><span class="fa fa-minus-circle"></span></a></div> 
+                                    <div style="margin-left:5%"><a data-toggle="modal" href="{% url 'updates:updateConflict' company.name member.username conflict.id %}" data-target="#{{ conflict.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
+                                    <div><a href="{% url 'updates:deleteConflict' company.name member.username conflict.id %}"><span class="fa fa-minus-circle"></span></a></div> 
 
                                     <!-- Modal -->
                                     <div class="modal fade" id="{{ conflict.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -141,7 +141,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <p class="copyright text-muted"><a data-toggle="modal" href="{% url 'updates:addConflict' company.name member.netid %}" data-target="#form-modal" class="btn btn-lg btn-default" style="text-decoration:none">Add Conflict</a></p>
+                    <p class="copyright text-muted"><a data-toggle="modal" href="{% url 'updates:addConflict' company.name member.username %}" data-target="#form-modal" class="btn btn-lg btn-default" style="text-decoration:none">Add Conflict</a></p>
                 </div>
             </div>
         </div>
@@ -149,10 +149,10 @@
         
 
     <!-- jQuery -->
-    <script src="{% static 'profiles/js/jquery.js' %}"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'profiles/js/bootstrap.min.js' %}"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'profiles/js/clean-blog.min.js' %}"></script>

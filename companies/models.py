@@ -243,9 +243,9 @@ class Cast(models.Model):
 class Member(User):
     cast = models.ManyToManyField(Cast, blank=True)
     def __str__(self):
-        if self.first_name and self.last_name:
-            return "%s %s" % (self.first_name, self.last_name)
-        return self.username
+        # if self.first_name and self.last_name:
+        #     return "%s %s" % (self.first_name, self.last_name)
+        return "%s %s (%s)" % (self.first_name, self.last_name, self.username)
     class Meta:
         ordering = ['username', 'first_name']
 
