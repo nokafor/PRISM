@@ -2,45 +2,54 @@
 {% load bootstrap %}
 
 <head>
+    <!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"> -->
     <link href="{% static 'profiles/css/test.css' %}" rel="stylesheet">
-    <script src="//twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>
+    <!-- <link href="http://twitter.github.io/typeahead.js/css/examples.css" rel="stylesheet"> -->
+    <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+     <script src="//twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>
+    <script src="{% static 'profiles/js/typeahead.bundle.min.js' %}"></script> -->
 </head>
 
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title">Add Members</h4> <!-- figure out the header -->
+</div>
+
+<div class="modal-body">
+
+<form class="addmembers" action="" method="post" style="">
+{% csrf_token %}
+
+    <!-- box on the left -->
+    <div class="box">
+        <h5>Add People w/ Valid NetID</h5>
+        <p>Use the text area below to add members (who have valid NetIDs) to your company. Each line should be no more than 3 words, and consist of a NetID/Princeton email, first name, and last name.</p>
+        <textarea class="form-control" name="studentList" id="studentList" placeholder="janedoe Jane Doe"></textarea>
+    </div>  
     
+    <!-- divider -->
+    <div style="width: 1px; height: 250px; background-color: #ccc;">&nbsp;</div>   
 
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">Add Members</h4> <!-- figure out the header -->
-    </div>
+    <!-- box on the right -->   
+    <div class="box">
+        <h5>Add People w/o Valid NetID</h5>
+        <p>User must first create a PRISM account. Then, you may search for them below. <strong>Note: </strong>Once you click a person's name, they are added to your company and given login access to your organization's site.</p>
+        <!-- <input id="search" name="s" class="typeahead form-control tt-query tt-hint" autocomplete="off" type="text" placeholder="Jane Doe"> -->
+        {{ form }} {{ form.media }}
+    </div>          
+</div>
 
-    <div class="modal-body">
+<div style="text-align:center">
+    <button class="btn btn-primary" type="submit" style="margin-bottom: 5%">Submit</button>
+</div>
 
-        <!-- box on the left -->
-        <div class="box">
-            <h5>Add People w/ Valid NetID</h5>
-            <p>Use the text area below to add members (who have valid NetIDs) to your company. Each line should be no more than 3 words, and consist of a NetID/Princeton email, first name, and last name.</p>
-            <textarea class="form-control" name="studentList" id="studentList" placeholder="janedoe Jane Doe"></textarea>
-        </div>  
-        
-        <!-- divider -->
-        <div style="width: 1px; height: 250px; background-color: #ccc;">&nbsp;</div>   
+</form>
 
-        <!-- box on the right -->   
-        <div class="box">
-            <h5>Add People w/o Valid NetID</h5>
-            <p>User must first create a PRISM account. Then, you may search for them below. <strong>Note: </strong>Once you click a person's name, they are added to your company and given login access to your organization's site.</p>
-            <input id="search" class="typeahead form-control" type="text" placeholder="Jane Doe">
-            <script>
-                var colors = ["red", "blue", "green", "yellow", "brown", "black"];
-                $('#search').typeahead({source: colors});
-            </script>
-        </div>          
-
-    </div>
-
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-    </div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+</div>
 
 
 

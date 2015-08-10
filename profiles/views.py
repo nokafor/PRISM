@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 
 from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock
-from updates.forms import MemberNameForm
+from updates.forms import MemberNameForm, TestForm
 
 from profiles.functions import memberAuth, adminAuth
 from django.contrib.auth.models import User, Group
@@ -18,7 +18,9 @@ def testing(request, company_name, member_name):
     for user in results:
         dataset.append("%s %s (%s)" % (user.first_name, user.last_name, user.email))
     print dataset
-    return render(request, 'profiles/test.html', {'dataset':dataset})
+
+    form = TestForm(auto_id=False)
+    return render(request, 'profiles/test.html', {'dataset':dataset, 'form':form})
 
 def updateConflictsDue(request, company_name, member_name):
     # make sure member is logged in and has access to this page

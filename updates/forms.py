@@ -2,8 +2,23 @@ from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreograp
 from profiles.models import Conflict
 
 from django.forms import ModelForm
+from django import forms
+from django_bootstrap_typeahead.fields import *
+from django.contrib.auth.models import User
+import json
 
+# queryset = json.dumps([' '.join(value) for value in User.objects.filter(groups__isnull=True).exclude(username='admin').values_list('first_name', 'last_name', 'email')])
 # Create your models here.
+def get_queryset():
+    dataset = []
+    for user in User.objects.filter(groups__isnull=True).exclude(username='admin'):
+        dataset.extend("%s %s (%s)" % (user.first_name, user.last_name, user.email))
+    return dataset
+class TestForm(forms.Form):
+    users = MultipleTypeaheadField(
+        queryset = User.objects.filter(groups__isnull=True).exclude(username='admin').values_list('first_name', 'last_name', 'email'),
+        label="", help_text=""
+    )
 class MemberForm(ModelForm):
     class Meta:
         model = Member

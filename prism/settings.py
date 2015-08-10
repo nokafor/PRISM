@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'companies',
     'profiles',
     'updates',
+    'django_bootstrap_typeahead',
 )
 
 MIDDLEWARE_CLASSES = (
