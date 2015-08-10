@@ -19,7 +19,13 @@
 
 <div class="modal-body">
 
-<form class="addmembers" action="" method="post" style="">
+<form class="addmembers" action="{% url 'profiles:members' company_name member_name %}" method="post" style="display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+    width: 100%;">
 {% csrf_token %}
 
     <!-- box on the left -->
@@ -42,7 +48,7 @@
 </div>
 
 <div style="text-align:center">
-    <button class="btn btn-primary" type="submit" style="margin-bottom: 5%">Submit</button>
+    <input class="btn btn-primary" type="submit" style="margin-bottom: 5%">
 </div>
 
 </form>

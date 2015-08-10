@@ -13,14 +13,19 @@ from django.utils import timezone
 # Create your views here.
 def testing(request, company_name, member_name):
     # create dataset for users (w/o valid netid)
-    dataset = []
-    results = User.objects.filter(groups__isnull=True).exclude(username='admin')
-    for user in results:
-        dataset.append("%s %s (%s)" % (user.first_name, user.last_name, user.email))
-    print dataset
+    # dataset = []
+    # results = User.objects.filter(groups__isnull=True).exclude(username='admin')
+    # for user in results:
+    #     dataset.append("%s %s (%s)" % (user.first_name, user.last_name, user.email))
+    # print dataset
+    if request.method == 'POST':
+        # first check if there are any 'students' being inputted
+        student_list = request.POST['studentList']
+        student_list = [l for l in student_list.split("\n") if l]
+        print student_list
 
-    form = TestForm(auto_id=False)
-    return render(request, 'profiles/test.html', {'dataset':dataset, 'form':form})
+    form = TestForm()
+    return render(request, 'profiles/test.html', {'form':form, 'company_name': company_name, 'member_name':member_name})
 
 def updateConflictsDue(request, company_name, member_name):
     # make sure member is logged in and has access to this page
