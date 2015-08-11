@@ -1,5 +1,9 @@
-.form-toggle {
+button {
 	border-radius:10px;
+}
+.dropdown-menu {
+	width: 300px;
+	text-align: center;
 }
 .addmembers {
 	display: -webkit-flex;
@@ -19,14 +23,9 @@
 	margin: auto;
 	margin-top: 20px;
 	padding: 2% 3%;
-	height: 375px;
+	height: auto;
 }
 
 .form p {
 	font-size: 70%;
-}
-
-.form1 textarea {
-	width:100%;
-	border: 1px solid blue;
 }

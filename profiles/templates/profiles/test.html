@@ -17,24 +17,24 @@
     <h4 class="modal-title">Add Members</h4> <!-- figure out the header -->
 </div>
 
-<div class="modal-body addmembers" style="flex-direction:column">
+<div class="modal-body addmembers">
     <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle form-toggle" type="button" data-toggle="dropdown" style="border-radius:10px;">Choose an Upload Method
+      <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Choose an Upload Method
       <span class="caret"></span></button>
       <ul class="dropdown-menu">
-        <li id="student">Users w/ Valid NetID</li>
-        <li id="nonstudent">Users w/o Valid NetID</li>
+        <li id="student"><h5>Users w/ Valid NetID</h5></li>
+        <li id="nonstudent"><h5>Users w/o Valid NetID</h5></li>
       </ul>
     </div>  
 
     <!-- form for inputting people with valid netid -->
-    <div class="form form1 hidden addmembers" style="flex-direction:column; margin-top:20px; align-items:flex-start">
+    <div class="form form1 hidden addmembers">
         <h5>Adding People w/ Valid NetID</h5>
         <p>Use the text area below to add members (who have valid NetIDs) to your company. Each line should be no more than 3 words, and consist of a NetID/Princeton email, first name, and last name.</p>
         <form action="{% url 'profiles:testing' company_name member_name %}" method="post">
         {% csrf_token %}
-            <textarea class="form-control" name="student_list" placeholder="janedoe Jane Doe" rows="3"></textarea> 
-            <button type="submit" class="btn btn-primary" style="border-radius:10px; margin-top: 7px;">Add</button>
+            <textarea class="form-control" name="student_list" placeholder="janedoe Jane Doe" rows="5" cols="50"></textarea> 
+            <button type="submit" class="btn btn-primary" style="margin-top: 7px;">Add</button>
         </form>
     </div>  
 
@@ -43,10 +43,10 @@
         <h5>Adding People w/o Valid NetID</h5>
         <p>User must first create a PRISM account. Then, you may search for them below. <strong>Note: </strong>Once you click a person's name, they are added to your company and given login access to your organization's site.</p>
         <!-- <input id="search" name="s" class="typeahead form-control tt-query tt-hint" autocomplete="off" type="text" placeholder="Jane Doe"> -->
-        <form action="" class="addmembers">
+        <form action="" class="addmembers" style="flex-direction:row; -webkit-flex-direction:row;">
             {% csrf_token %}
             {{ form.non_field_errors }}
-            <div class="fieldWrapper">
+            <div class="fieldWrapper" style="width:75%">
                 {{ form.users.errors }}
                 {{ form.users }}
             </div>
