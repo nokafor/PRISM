@@ -18,16 +18,67 @@ def testing(request, company_name, member_name):
     # for user in results:
     #     dataset.append("%s %s (%s)" % (user.first_name, user.last_name, user.email))
     # print dataset
-    if request.method == 'POST':
-        # first check if there are any 'students' being inputted
-        student_list = request.POST['studentList']
-        student_list = [l for l in student_list.split("\n") if l]
-        print student_list
 
-        # check for any 'non-students'
-        if form.is_valid():
-            users = form.cleaned_data['users']
-            print users
+    company = Company.objects.get(name=company_name)
+
+    if request.method == 'POST':
+        # check if there are any 'students' being inputted
+        student_list = request.POST['student_list']
+        student_list = [l for l in student_list.split("\n") if l]
+
+        # initialize error message for any processing errors
+        error_message = "The following lines could not be processed:"
+
+        for line in student_list:
+            info = line.split()
+
+            # make sure line is specified length
+            if len(info) != 3:
+                error_message += "\n" + line + " (Each line should have exactly 3 words)"
+                continue
+
+            # check to see if you have email or username
+            if '@' in info[0]:
+                email = info[0].split('@')
+                if email[1] != 'princeton.edu':
+                    # print line
+                    error_message += "\n" + line + " (First word in line must be a NetID or a valid Princeton email address)"
+                    continue
+                username = email[0]
+            else:
+                username = info[0]
+
+            print username, info[1], info[2]
+
+            # check if the member already exists
+            if Member.objects.filter(username=username).exists():
+                member = Member.objects.get(username=username)
+                # if there is a  member with the same username in this group
+                if member.groups.filter(name=company_name).exists():
+                    # check if student
+                    if not member.has_usable_password():
+                        error_message += "\n" + line + " (There is already a member of this company with this username)"
+                        continue
+                    # if not student
+                    # else:
+                        # change the 'nonstudents' username
+                
+                # if member is not a part of this group
+                else:
+                    # add them to this company
+                    member.groups.add(company)
+                    member.save()
+                    continue
+
+            # add the member to the company
+            mem = Member(username=username, first_name=info[1], last_name=info[2], email="%s@princeton.edu" % username)
+            mem.set_unusable_password()
+            mem.save()
+            mem.groups.add(company)
+
+        if "\n" in error_message:
+            print error_message
+        return redirect('profiles:members', company_name=company_name, member_name=member_name)
 
     form = TestForm()
     return render(request, 'profiles/test.html', {'form':form, 'company_name': company_name, 'member_name':member_name})
