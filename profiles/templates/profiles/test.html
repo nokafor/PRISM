@@ -28,7 +28,7 @@
     </div>  
 
     <!-- form for inputting people with valid netid -->
-    <div class="form form1 hidden addmembers" style="flex-direction:column; margin-top:20px;">
+    <div class="form form1 hidden addmembers" style="flex-direction:column; margin-top:20px; align-items:flex-start">
         <h5>Adding People w/ Valid NetID</h5>
         <p>Use the text area below to add members (who have valid NetIDs) to your company. Each line should be no more than 3 words, and consist of a NetID/Princeton email, first name, and last name.</p>
         <form action="{% url 'profiles:testing' company_name member_name %}" method="post">

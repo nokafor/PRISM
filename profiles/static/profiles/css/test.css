@@ -28,4 +28,5 @@
 
 .form1 textarea {
 	width:100%;
+	border: 1px solid blue;
 }
