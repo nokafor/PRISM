@@ -17,16 +17,19 @@
     <h4 class="modal-title">Add Members</h4> <!-- figure out the header -->
 </div>
 
-<div class="modal-body addmembers" style="display: -webkit-flex;
-    display: flex;
-    -webkit-justify-content: center;
-    justify-content: center;
-    -webkit-align-items: center;
-    align-items: center;
-    width: 100%;">
-    <!-- box on the left -->
-    <div class="box" style="height:375px">
-        <h5>Add People w/ Valid NetID</h5>
+<div class="modal-body addmembers" style="flex-direction:column">
+    <div class="dropdown">
+      <button class="btn btn-primary dropdown-toggle form-toggle" type="button" data-toggle="dropdown" style="border-radius:10px;">Choose an Upload Method
+      <span class="caret"></span></button>
+      <ul class="dropdown-menu">
+        <li id="student">Users w/ Valid NetID</li>
+        <li id="nonstudent">Users w/o Valid NetID</li>
+      </ul>
+    </div>  
+
+    <!-- form for inputting people with valid netid -->
+    <div class="form form1 hidden addmembers" style="flex-direction:column; margin-top:20px;">
+        <h5>Adding People w/ Valid NetID</h5>
         <p>Use the text area below to add members (who have valid NetIDs) to your company. Each line should be no more than 3 words, and consist of a NetID/Princeton email, first name, and last name.</p>
         <form action="{% url 'profiles:testing' company_name member_name %}" method="post">
         {% csrf_token %}
@@ -34,25 +37,23 @@
             <button type="submit" class="btn btn-primary" style="border-radius:10px; margin-top: 7px;">Add</button>
         </form>
     </div>  
-    
-    <!-- divider -->
-    <div style="width: 1px; height: 325px; background-color: #ccc;">&nbsp;</div>   
 
-    <!-- box on the right -->   
-    <div class="box" style="height:375px">
-        <h5>Add People w/o Valid NetID</h5>
+    <!-- form for inputting people without valid netid -->
+    <div class="form form2 hidden addmembers">
+        <h5>Adding People w/o Valid NetID</h5>
         <p>User must first create a PRISM account. Then, you may search for them below. <strong>Note: </strong>Once you click a person's name, they are added to your company and given login access to your organization's site.</p>
         <!-- <input id="search" name="s" class="typeahead form-control tt-query tt-hint" autocomplete="off" type="text" placeholder="Jane Doe"> -->
-        <form action="">
+        <form action="" class="addmembers">
             {% csrf_token %}
             {{ form.non_field_errors }}
             <div class="fieldWrapper">
                 {{ form.users.errors }}
                 {{ form.users }}
             </div>
+            <button type="submit" class="btn btn-primary" style="border-radius:5px; padding:0; margin:0; height:35px; margin-left:5px; width:35px;"><span class="fa fa-plus"></span></button>
             {{ form.media }}
         </form>
-    </div>          
+    </div>  
 </div>
 
     <!-- <input id="submit" class="btn btn-primary" type="submit" style="margin-bottom: 5%"> -->
@@ -61,6 +62,16 @@
     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 </div>
 
+<script>
+    $('#student').click(function() {
+        $('.form1').removeClass("hidden");
+        $('.form2').addClass("hidden");
+    });
+    $('#nonstudent').click(function() {
+        $('.form1').addClass("hidden");
+        $('.form2').removeClass("hidden");
+    })
+</script>
 
 
 

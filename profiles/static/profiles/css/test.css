@@ -1,6 +1,11 @@
+.form-toggle {
+	border-radius:10px;
+}
 .addmembers {
 	display: -webkit-flex;
 	display: flex;
+	flex-direction: column;
+	-webkit-flex-direction: column;
 	-webkit-justify-content: center;
 	justify-content: center;
 	-webkit-align-items: center;
@@ -8,13 +13,19 @@
 	width: 100%;
 }
 
-.box {
+.form {
 	text-align: center;
-	margin: 0 auto;
+	width: 80%;
+	margin: auto;
+	margin-top: 20px;
 	padding: 2% 3%;
-	height: 350px;
+	height: 375px;
 }
 
-.box p {
+.form p {
 	font-size: 70%;
+}
+
+.form1 textarea {
+	width:100%;
 }
