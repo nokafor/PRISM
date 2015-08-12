@@ -3,7 +3,7 @@
 
 <head>
     <!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"> -->
-    <link href="{% static 'profiles/css/test.css' %}" rel="stylesheet">
+    <link href="{% static 'profiles/css/addmembers.css' %}" rel="stylesheet">
     <!-- <link href="http://twitter.github.io/typeahead.js/css/examples.css" rel="stylesheet"> -->
     <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
@@ -28,10 +28,10 @@
     </div>  
 
     <!-- form for inputting people with valid netid -->
-    <div class="form form1 hidden addmembers">
+    <div class="form hidden addmembers">
         <h5>Adding People w/ Valid NetID</h5>
-        <p>Use the text area below to add members (who have valid NetIDs) to your company. Each line should be no more than 3 words, and consist of a NetID/Princeton email, first name, and last name.</p>
-        <form action="{% url 'profiles:testing' company_name member_name %}" method="post">
+        <p>Use the text area below to add members (who have valid NetIDs) to your company. Each line should correspond to just one student and contain only a NetID/Princeton email, first name, and last name, in that order. If you have access to your organization's listserv, you can just copy and paste the output below (see instructions <a href="#">here</a>).</p>
+        <form action="{% url 'updates:addStudents' company_name member_name %}" method="post">
         {% csrf_token %}
             <textarea class="form-control" name="student_list" placeholder="janedoe Jane Doe" rows="5" cols="50"></textarea> 
             <button type="submit" class="btn btn-primary" style="margin-top: 7px;">Add</button>
@@ -39,11 +39,11 @@
     </div>  
 
     <!-- form for inputting people without valid netid -->
-    <div class="form form2 hidden addmembers">
+    <div class="form hidden addmembers">
         <h5>Adding People w/o Valid NetID</h5>
-        <p>User must first create a PRISM account. Then, you may search for them below. <strong>Note: </strong>Once you click a person's name, they are added to your company and given login access to your organization's site.</p>
+        <p>The user you are trying to add must first create a PRISM account. Then, you may search for them below. <strong>Note: </strong>Once you click the add button, the user is added to your company and given login access to your organization's site.</p>
         <!-- <input id="search" name="s" class="typeahead form-control tt-query tt-hint" autocomplete="off" type="text" placeholder="Jane Doe"> -->
-        <form action="" class="addmembers" style="flex-direction:row; -webkit-flex-direction:row;">
+        <form action="{% url 'profiles:addUsers' company_name member_name %}" method="post" class="addmembers" style="flex-direction:row; -webkit-flex-direction:row;">
             {% csrf_token %}
             {{ form.non_field_errors }}
             <div class="fieldWrapper" style="width:75%">

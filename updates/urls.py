@@ -5,7 +5,7 @@ from updates import views
 urlpatterns = patterns('',
 	# url(r'^(?P<pk>[0-9]+)/$', views.MemberUpdateView.as_view(), name='member_edit'),
     url(r'^m/name$', views.updateName, name='updateName'),
-    url(r'^m/add$', views.addMember, name='addMember'),
+    url(r'^m/add$', views.addStudents, name='addStudents'),
     url(r'^m/(?P<pk>\d+)$', views.ConflictView.as_view(), name='ConflictView'),
     url(r'^m/(?P<member_id>\d+)/delete$', views.deleteMember, name='deleteMember'),
     url(r'^a/(?P<member_id>\d+)/add$', views.addAdmin, name='addAdmin'),

@@ -9,6 +9,6 @@ urlpatterns = patterns('',
     url(r'^admin/spaces/$', views.spaces, name='spaces'),
     url(r'^members/$', views.members, name='members'),
     url(r'^admin/scheduling/$', views.scheduling, name='scheduling'),
-    url(r'^testing/$', views.testing, name='testing'),
+    url(r'^admin/addUsers/$', views.addUsers, name='addUsers'),
     url(r'^conflicts_due/$', views.updateConflictsDue, name='updateConflictsDue')
 )

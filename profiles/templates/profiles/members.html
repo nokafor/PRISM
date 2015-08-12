@@ -92,7 +92,7 @@
     {% if admin %}
     <section>
         <div class="container" style="text-align:center;">
-            <a data-toggle="modal" href="{% url 'profiles:testing' company.name member.username %}" data-target="#addmember" class="btn btn-lg btn-default" style="text-decoration:none">Add Members</a>
+            <a data-toggle="modal" href="{% url 'profiles:addUsers' company.name member.username %}" data-target="#addmember" class="btn btn-lg btn-default" style="text-decoration:none">Add Members</a>
         </div>
     </section>
     <!-- Add Member Modal -->

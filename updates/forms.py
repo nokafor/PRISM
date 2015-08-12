@@ -14,7 +14,7 @@ def get_queryset():
     for user in User.objects.filter(groups__isnull=True).exclude(username='admin'):
         dataset.extend("%s %s (%s)" % (user.first_name, user.last_name, user.email))
     return dataset
-class TestForm(forms.Form):
+class UserForm(forms.Form):
     users = MultipleTypeaheadField(
         queryset = Member.objects.filter(groups__isnull=True).exclude(username='admin'),
         label="", help_text=""

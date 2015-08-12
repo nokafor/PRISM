@@ -196,28 +196,72 @@ def addAdmin(request, company_name, member_name, member_id):
         return HttpResponse('You do not have access to this page')
         
 
-def addMember(request, company_name, member_name):
-    name = 'updates:addMember'
-    
-    # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
+def addStudents(request, company_name, member_name):
+    admin = adminAuth(request, company_name, member_name)
+    if admin:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
 
-        # process the form and add new member
         if request.method == 'POST':
-            form = MemberForm(request.POST)
-            if form.is_valid():
-                new_member = form.save()
-                company.member_set.add(new_member)
+            # check if there are any 'students' being inputted
+            student_list = request.POST['student_list']
+            student_list = [l for l in student_list.split("\n") if l]
 
-                return redirect('profiles:members', company_name, member_name,)
-        else:
-            form = MemberForm()
-        return render(request, 'updates/add.html', {'company':company, 'member':member, 'form':form, 'redirect_name':name})
+            # initialize error message for any processing errors
+            error_message = "The following lines could not be processed:"
+
+            for line in student_list:
+                info = line.split()
+
+                # make sure line is specified length
+                if len(info) != 3:
+                    error_message += "\n" + line + " (Each line should have exactly 3 words)"
+                    continue
+
+                # check to see if you have email or username
+                if '@' in info[0]:
+                    email = info[0].split('@')
+                    if email[1].lower() != 'princeton.edu':
+                        # print line
+                        error_message += "\n" + line + " (First word in line must be a NetID or a valid Princeton email address)"
+                        continue
+                    username = email[0]
+                else:
+                    username = info[0]
+
+                print username, info[1], info[2]
+
+                # check if the member already exists
+                if Member.objects.filter(username=username).exists():
+                    member = Member.objects.get(username=username)
+                    # if there is a  member with the same username in this group
+                    if member.groups.filter(name=company_name).exists():
+                        # check if student
+                        if not member.has_usable_password():
+                            error_message += "\n" + line + " (There is already a member of this company with this username)"
+                            continue
+                        # if not student
+                        # else:
+                            # change the 'nonstudents' username
+                    
+                    # if member is not a part of this group
+                    else:
+                        # add them to this company
+                        member.groups.add(company)
+                        member.save()
+                        continue
+
+                # add the member to the company
+                mem = Member(username=username, first_name=info[1], last_name=info[2], email="%s@princeton.edu" % username)
+                mem.set_unusable_password()
+                mem.save()
+                mem.groups.add(company)
+
+            if "\n" in error_message:
+                print error_message
+        return redirect('profiles:members', company_name=company_name, member_name=member_name)
+
+    else:
+        return HttpResponse('You do not have access to this page')
 
 def deleteMember(request, company_name, member_name, member_id):
     # check if valid admin
