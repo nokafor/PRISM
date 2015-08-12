@@ -126,7 +126,7 @@ def spaces(request, company_name, member_name):
 
         rehearsal_list = company.rehearsal_set.all()
 
-        return render(request, 'profiles/spaces.html', {'company':company, 'member':member, 'rehearsals':rehearsal_list, 'timeblock':TimeBlock})
+        return render(request, 'profiles/rehearsals.html', {'company':company, 'member':member, 'rehearsals':rehearsal_list, 'timeblock':TimeBlock})
 
     else:
         return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')          

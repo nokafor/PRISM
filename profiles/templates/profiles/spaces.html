@@ -85,9 +85,23 @@
     <div id="cal" style="width:90%; height: 400px; border:1px solid blue;"></div>
 
     <div class="addrehearsals">
-        <div class="box upload"></div>
+        <div class="box upload">
+            <form action="">
+                <div class="form-group">
+                    <label for="fileInput">Upload PAC Schedule</label>
+                    <input type="file" id="fileInput">
+                </div>
+            </form>
+        </div>
         <div class="divider"></div>
-        <div class="box manual"></div>
+        <div class="box manual">
+            <form action="">
+                <div class="form-group">
+                    <label for="manualInput">Upload Your Spaces Manually</label>
+                    <textarea class="form-control" rows="3"></textarea>
+                </div>
+            </form>
+        </div>
     </div>
     
     <!-- View Old Rehearsals -->
