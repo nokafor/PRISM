@@ -33,6 +33,22 @@
         <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <!-- Calendar Dependencies -->
+    <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.2/fullcalendar.min.css' />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="{% static 'profiles/js/moment.min.js' %}"></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.2/fullcalendar.min.js'></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#calendar').fullCalendar({
+                defaultView: 'agendaWeek',
+                allDaySlot: false
+            });
+            $('.fc-toolbar').remove();
+        });
+    </script>
+
 </head>
 <body>
 
@@ -83,18 +99,20 @@
     </header>
 
     <!-- Calendar of Events -->
-    <div id="cal" style="width:90%; height: 500px; border:1px solid black; margin:0 auto;text-align:center;">Calendar</div>
+    <!-- <div id="cal" style="width:90%; height: 500px; border:1px solid black; margin:0 auto;text-align:center;">Calendar</div> -->
+    <div id="calendar"></div>
 
     <!-- Add Rehearsals -->
     {% if admin %}
     <div class="container">
         <div class="flexbox fluid addrehearsals">
-                <div class="box upload" style="border:1px solid black;">
-                    <form action="">
+                <div class="box upload" style="border:1px solid black; margin:0">
+                    <form method="post" action="{% url 'profiles:spaces' company.name member.username %}">
+                    {% csrf_token %}
                         <h5>Upload PAC Schedule</h5>
                         <br>
                         <div class="form-group">
-                            <input type="file" id="fileInput">
+                            <input type="file" name="fileInput">
                         </div>
                         <button class="btn btn-default" type="submit">Upload</button>
                     </form>
@@ -160,8 +178,8 @@
     <!-- </section> -->
 
     
-    <!-- jQuery -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- jQuery
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>  -->
 
     <!-- Bootstrap Core JavaScript -->
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>

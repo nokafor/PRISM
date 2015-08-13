@@ -46,8 +46,12 @@
     }
 
     .box {
-        /*width: 90%;*/
-        margin: 5% auto;
+        width: 90%;
+        margin: 5% 0;
         /*border: 1px solid blue;*/
     }
+}
+
+.fc-view-agendaWeek .fc-today {
+    background-color: white !important;
 }

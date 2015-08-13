@@ -19,6 +19,9 @@ class UserForm(forms.Form):
         queryset = Member.objects.filter(groups__isnull=True).exclude(username='admin'),
         label="", help_text=""
     )
+class UploadFileForm(forms.Form):
+    file = forms.FileField(label="", help_text="")
+    
 class MemberForm(ModelForm):
     class Meta:
         model = Member

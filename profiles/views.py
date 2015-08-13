@@ -115,8 +115,10 @@ def spaces(request, company_name, member_name):
         # print TimeBlock.DAY_OF_WEEK_CHOICES
 
         for day in TimeBlock.DAY_OF_WEEK_CHOICES:
-            print day
             rehearsal_list[day[1]] = company.rehearsal_set.filter(day_of_week=day[1])
+
+        # if request.method == 'POST':
+            #asdf
 
         return render(request, 'profiles/spaces.html', {'company':company, 'member':member, 'rehearsal_list':rehearsal_list, 'admin':admin})
 
