@@ -13,6 +13,9 @@ from profiles.functions import memberAuth, adminAuth
 
 from django.contrib.auth.models import Group, User
 
+from datetime import datetime
+
+
 # Create your views here.
 class ConflictView(DetailView):
     model = Member
@@ -414,30 +417,47 @@ def deleteConflict(request, company_name, member_name, conflict_id):
 
         return redirect('profiles:conflicts', company_name, member_name,)
 
-def addRehearsal(request, company_name, member_name):
-    name = 'updates:addRehearsal'
-    
-    # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
+def addRehearsals(request, company_name, member_name):
+    admin = adminAuth(request, company_name, member_name)
+    if admin:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
 
-        # process the form and rehearsal data
         if request.method == 'POST':
-            form = RehearsalForm(request.POST)
-            if form.is_valid():
-                new_rehearsal = form.save(commit=False)
-                new_rehearsal.company = company
-                new_rehearsal.save()
-                form.save_m2m()
+            rehearsals = request.POST['rehearsals']
+            rehearsals = [l for l in rehearsals.split("\n") if l]
+            print rehearsals
 
-                return redirect('profiles:spaces', company_name, member_name,)
-        else:
-            form = RehearsalForm()
-        return render(request, 'updates/add.html', {'company':company, 'member':member, 'form':form, 'redirect_name':name})
+            # initialize error message for any processing errors
+            error_message = "The following lines could not be processed:"
+
+            for line in rehearsals:
+                info = line.split()
+                print info
+
+                # make sure line is specified length
+                if len(info) != 4:
+                    error_message += "\n" + line + " (Each line should have exactly 4 words)"
+                    continue
+
+                # check start time
+                try:
+                    start = datetime.strptime(info[2], "%I:%S%p")
+                    print start.time()
+
+                    end = datetime.strptime(info[3], "%I:%S%p")
+                    print end.time()
+                except ValueError:
+                    error_message += "\n" + line + " (Does not contain valid time parameters)"
+                    continue
+
+                rehearsal = Rehearsal(company=company, place=info[0], day_of_week=info[1], start_time=start.time(), end_time=end.time())
+                rehearsal.save()
+                # print rehearsal
+
+            print error_message
+        return redirect('profiles:spaces', company_name=company_name, member_name=member_name)
+    else:
+        return HttpResponse('You do not have access to this page')
 
 def updateRehearsal(request, company_name, member_name, rehearsal_id):
     name = 'updates:updateRehearsal'

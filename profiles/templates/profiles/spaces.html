@@ -19,6 +19,7 @@
 
     <!-- Custom CSS -->
     <link href="{% static 'profiles/css/clean-blog.min.css' %}" rel="stylesheet">
+    <link href="{% static 'profiles/css/spaces.css' %}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -84,69 +85,57 @@
     <!-- Calendar of Events -->
     <div id="cal" style="width:90%; height: 500px; border:1px solid black; margin:0 auto;text-align:center;">Calendar</div>
 
-    <div class="container"
-        <div class="flexbox addrehearsals" style="width: 90%;
-    margin: 5% auto;
-    display: flex;
-    -webkit-display: flex;
-    justify-content:center;
-    -webkit-justify-content:center;
-    align-items:center;
-    -webkit-align-items:center;">
-                <div class="box upload" style="width: 40%; text-align: center; margin-right: 5%;">
+    <!-- Add Rehearsals -->
+    {% if admin %}
+    <div class="container">
+        <div class="flexbox fluid addrehearsals">
+                <div class="box upload" style="border:1px solid black;">
                     <form action="">
                         <h5>Upload PAC Schedule</h5>
                         <br>
                         <div class="form-group">
                             <input type="file" id="fileInput">
                         </div>
+                        <button class="btn btn-default" type="submit">Upload</button>
                     </form>
                 </div>
-                <div class="flexbox divider" style="display: flex;
-            -webkit-display: flex;
-            justify-content:center;
-            -webkit-justify-content:center;
-            align-items:center;
-            -webkit-align-items:center; flex-direction: column; -webkit-flex-direction:column;">
+                <!-- <div class="flexbox fluid divider" style="flex-direction: column; -webkit-flex-direction:column;">
                     <div class="divider-line">&nbsp;</div>   
                     <h3>OR</h3>
                     <div class="divider-line">&nbsp;</div>   
-                </div>
-                <div class="box manual" style="width: 40%; text-align: center; margin-left: 5%;">
-                    <form action="">
+                </div> -->
+               <!--  <div class="box manual">
+                    <form action="{% url 'updates:addRehearsals' company.name member.username %}" method="post">
+                    {% csrf_token %}
                         <h5>Upload Your Spaces Manually</h5>
                         <br>
                         <div class="form-group">
-                            <textarea class="form-control" rows="3"></textarea>
+                            <textarea name="rehearsals" class="form-control" rows="3" placeholder="Bloomberg Friday 10:00PM 12:30AM"></textarea>
                         </div>
+                        <button class="btn btn-default" type="submit">Submit</button>
                     </form>
-                </div>
+                </div> -->
         </div>
-        
     </div>
+    {% endif %}
     
     <!-- View Old Rehearsals -->
     <!-- <section> -->
-        <div class="container">
+        <div class="container" style="">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="margin:0">
                     <h2 class="section-heading">List of Rehearsal Spaces</h2>
                     <hr>
-                    {% if rehearsals %}
-                        {% regroup rehearsals by day_of_week as rehearsal_list %}
-
-                        <ul style="list-style-type:none">
-                            {% for r in rehearsal_list %}
-                            {% for day in timeblock.DAY_OF_WEEK_CHOICES %}
-                                {% ifequal day.0 r.grouper %}
-                                    <li><h3>{{ day.1 }}</h3></li>
-                                {% endifequal %}
-                            {% endfor %}
-                            <ul style="list-style-type:none">
-                                {% for rehearsal in r.list %}
-                                <li><div style="display:flex; flex-direction:row; align-items:center">
-                                    <p>{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}}</p>
-                                    <div style="margin-left:5%"><a data-toggle="modal" href="{% url 'updates:updateRehearsal' company.name member.username rehearsal.id %}" data-target="#{{ rehearsal.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
+                    {% if rehearsal_list %}
+                    <ul style="list-style:none;">
+                        {% for day, rehearsals in rehearsal_list.items %}
+                            {% if rehearsals %}
+                            <li><h3>{{ day }}</h3></li>
+                            <ul style="list-style:none">
+                                {% for rehearsal in rehearsals %}
+                                <li><div class="flexbox" style="justify-content:flex-start; -webkit-justify-content:flex-start;">
+                                    <p style="margin:0">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}}</p>
+                                    <div class="manual"><a data-toggle="modal" href="{% url 'updates:updateRehearsal' company.name member.username rehearsal.id %}" data-target="#{{ rehearsal.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
                                     <div><a href="{% url 'updates:deleteRehearsal' company.name member.username rehearsal.id %}"><span class="fa fa-minus-circle"></span></a></div> 
 
                                     
@@ -159,9 +148,9 @@
                                 </div></li>
                                 {% endfor %}
                             </ul>
-                            <br>
-                            {% endfor %}
-                        </ul>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
                     {% else %}
                         <blockquote>You have not added any rehearsals yet.</blockquote>
                     {% endif %}
@@ -169,25 +158,6 @@
             </div>
         </div>
     <!-- </section> -->
-
-    <!-- Form Modal -->
-        <!-- <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                </div>
-            </div>
-        </div>  -->
-
-    <!-- Footer -->
-    <!-- <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <p class="copyright text-muted"><a data-toggle="modal" href="{% url 'updates:addRehearsal' company.name member.username %}" data-target="#form-modal" class="btn btn-lg btn-default" style="text-decoration:none">Add Rehearsal</a></p>
-                </div>
-            </div>
-        </div>
-    </footer> -->
 
     
     <!-- jQuery -->

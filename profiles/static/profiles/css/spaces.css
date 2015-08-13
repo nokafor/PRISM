@@ -1,6 +1,5 @@
 .box {
     width: 40%;
-    border: 1px solid red;
     text-align: center;
 }
 
@@ -31,13 +30,24 @@
     background-color: #ccc;
 }
 
-@media(max-width:768px) {
-    .addrehearsals {
+@media(max-width:600px) {
+    .fluid {
         flex-direction:column;
         -webkit-flex-direction:column;
     }
 
     .divider-line {
         display:none;
+    }
+    .divider {
+        flex-direction:row;
+        -webkit-flex-direction:row;
+        /*border: 1px solid red;*/
+    }
+
+    .box {
+        /*width: 90%;*/
+        margin: 5% auto;
+        /*border: 1px solid blue;*/
     }
 }

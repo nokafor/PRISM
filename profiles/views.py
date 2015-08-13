@@ -103,6 +103,26 @@ def members(request, company_name, member_name):
     else:
         return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')
 
+def spaces(request, company_name, member_name):
+    member = memberAuth(request, company_name, member_name)
+
+    if member:
+        company = Company.objects.get(name=company_name)
+        admin = adminAuth(request, company_name, member_name)
+
+        rehearsal_list = {}
+
+        # print TimeBlock.DAY_OF_WEEK_CHOICES
+
+        for day in TimeBlock.DAY_OF_WEEK_CHOICES:
+            print day
+            rehearsal_list[day[1]] = company.rehearsal_set.filter(day_of_week=day[1])
+
+        return render(request, 'profiles/spaces.html', {'company':company, 'member':member, 'rehearsal_list':rehearsal_list, 'admin':admin})
+
+    else:
+        return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')  
+
 def conflicts(request, company_name, member_name):
     member = memberAuth(request, company_name, member_name)
 
@@ -115,21 +135,7 @@ def conflicts(request, company_name, member_name):
         return render(request, 'profiles/conflicts.html', {'company':company, 'member':member, 'conflicts':conflict_list, 'timeblock':TimeBlock})
 
     else:
-        return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')          
-
-def spaces(request, company_name, member_name):
-    member = memberAuth(request, company_name, member_name)
-
-    if member:
-        company = Company.objects.get(name=company_name)
-        admin = adminAuth(request, company_name, member_name)
-
-        rehearsal_list = company.rehearsal_set.all()
-
-        return render(request, 'profiles/spaces.html', {'company':company, 'member':member, 'rehearsals':rehearsal_list, 'timeblock':TimeBlock})
-
-    else:
-        return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')          
+        return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')                  
 
 def casts(request, company_name, member_name):
     # check if valid admin
