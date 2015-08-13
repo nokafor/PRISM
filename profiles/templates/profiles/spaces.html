@@ -82,34 +82,55 @@
     </header>
 
     <!-- Calendar of Events -->
-    <div id="cal" style="width:90%; height: 400px; border:1px solid blue;"></div>
+    <div id="cal" style="width:90%; height: 500px; border:1px solid black; margin:0 auto;text-align:center;">Calendar</div>
 
-    <div class="addrehearsals">
-        <div class="box upload">
-            <form action="">
-                <div class="form-group">
-                    <label for="fileInput">Upload PAC Schedule</label>
-                    <input type="file" id="fileInput">
+    <div class="container"
+        <div class="flexbox addrehearsals" style="width: 90%;
+    margin: 5% auto;
+    display: flex;
+    -webkit-display: flex;
+    justify-content:center;
+    -webkit-justify-content:center;
+    align-items:center;
+    -webkit-align-items:center;">
+                <div class="box upload" style="width: 40%; text-align: center; margin-right: 5%;">
+                    <form action="">
+                        <h5>Upload PAC Schedule</h5>
+                        <br>
+                        <div class="form-group">
+                            <input type="file" id="fileInput">
+                        </div>
+                    </form>
                 </div>
-            </form>
-        </div>
-        <div class="divider"></div>
-        <div class="box manual">
-            <form action="">
-                <div class="form-group">
-                    <label for="manualInput">Upload Your Spaces Manually</label>
-                    <textarea class="form-control" rows="3"></textarea>
+                <div class="flexbox divider" style="display: flex;
+            -webkit-display: flex;
+            justify-content:center;
+            -webkit-justify-content:center;
+            align-items:center;
+            -webkit-align-items:center; flex-direction: column; -webkit-flex-direction:column;">
+                    <div class="divider-line">&nbsp;</div>   
+                    <h3>OR</h3>
+                    <div class="divider-line">&nbsp;</div>   
                 </div>
-            </form>
+                <div class="box manual" style="width: 40%; text-align: center; margin-left: 5%;">
+                    <form action="">
+                        <h5>Upload Your Spaces Manually</h5>
+                        <br>
+                        <div class="form-group">
+                            <textarea class="form-control" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
         </div>
+        
     </div>
     
     <!-- View Old Rehearsals -->
-    <!-- <section>
+    <!-- <section> -->
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <h2 class="section-heading">Current Rehearsal Spaces</h2>
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="margin:0">
+                    <h2 class="section-heading">List of Rehearsal Spaces</h2>
                     <hr>
                     {% if rehearsals %}
                         {% regroup rehearsals by day_of_week as rehearsal_list %}
@@ -147,7 +168,7 @@
                 </div>
             </div>
         </div>
-    </section> -->
+    <!-- </section> -->
 
     <!-- Form Modal -->
         <!-- <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
