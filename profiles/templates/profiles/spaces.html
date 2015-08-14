@@ -43,7 +43,27 @@
         $(document).ready(function() {
             $('#calendar').fullCalendar({
                 defaultView: 'agendaWeek',
-                allDaySlot: false
+                allDaySlot: false,
+                columnFormat : {
+                    month: 'ddd',
+                    week: 'ddd',
+                    day: 'ddd'
+                },
+                slotEventOverlap: true,
+                events: [ 
+                {% for rehearsal in company.rehearsal_set.all %}
+                {
+                    title : "{{ rehearsal.place }}",
+                    start : moment("{{ rehearsal.start_time }}", "hh:mm a").day("{{rehearsal.day_of_week}}"),
+                    allDay: false
+                },
+                {% endfor %}
+                {
+                    title : 'Today',
+                    start : moment(new Date()),
+                    allDay: true
+                }
+                ]
             });
             $('.fc-toolbar').remove();
         });
@@ -84,7 +104,7 @@
 
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header" style="background-image: url({% static 'profiles/img/header-bg.jpg' %})">
+    <header class="intro-header" style="background-image: url({% static 'profiles/img/header-bg-2.jpg' %})">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -106,7 +126,7 @@
     {% if admin %}
     <div class="container">
         <div class="flexbox fluid addrehearsals">
-                <div class="box upload" style="border:1px solid black; margin:0">
+                <div class="box upload" style="">
                     <form method="post" action="{% url 'profiles:spaces' company.name member.username %}">
                     {% csrf_token %}
                         <h5>Upload PAC Schedule</h5>
@@ -117,12 +137,12 @@
                         <button class="btn btn-default" type="submit">Upload</button>
                     </form>
                 </div>
-                <!-- <div class="flexbox fluid divider" style="flex-direction: column; -webkit-flex-direction:column;">
+                <div class="flexbox fluid divider" style="flex-direction: column; -webkit-flex-direction:column;">
                     <div class="divider-line">&nbsp;</div>   
                     <h3>OR</h3>
                     <div class="divider-line">&nbsp;</div>   
-                </div> -->
-               <!--  <div class="box manual">
+                </div>
+                <div class="box manual">
                     <form action="{% url 'updates:addRehearsals' company.name member.username %}" method="post">
                     {% csrf_token %}
                         <h5>Upload Your Spaces Manually</h5>
@@ -132,7 +152,7 @@
                         </div>
                         <button class="btn btn-default" type="submit">Submit</button>
                     </form>
-                </div> -->
+                </div>
         </div>
     </div>
     {% endif %}
@@ -153,6 +173,7 @@
                                 {% for rehearsal in rehearsals %}
                                 <li><div class="flexbox" style="justify-content:flex-start; -webkit-justify-content:flex-start;">
                                     <p style="margin:0">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}}</p>
+                                    {% if admin %}
                                     <div class="manual"><a data-toggle="modal" href="{% url 'updates:updateRehearsal' company.name member.username rehearsal.id %}" data-target="#{{ rehearsal.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
                                     <div><a href="{% url 'updates:deleteRehearsal' company.name member.username rehearsal.id %}"><span class="fa fa-minus-circle"></span></a></div> 
 
@@ -162,7 +183,8 @@
                                             <div class="modal-content">
                                             </div>
                                         </div>
-                                    </div>   
+                                    </div>
+                                    {% endif %}   
                                 </div></li>
                                 {% endfor %}
                             </ul>

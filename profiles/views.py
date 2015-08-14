@@ -112,13 +112,21 @@ def spaces(request, company_name, member_name):
 
         rehearsal_list = {}
 
-        # print TimeBlock.DAY_OF_WEEK_CHOICES
+        for rehearsal in company.rehearsal_set.all():
+            try:
+                rehearsal_list[rehearsal.day_of_week].append(rehearsal)
+            except KeyError:
+                rehearsal_list[rehearsal.day_of_week] = []
+                rehearsal_list[rehearsal.day_of_week].append(rehearsal)
+        # print rehearsal_list
 
-        for day in TimeBlock.DAY_OF_WEEK_CHOICES:
-            rehearsal_list[day[1]] = company.rehearsal_set.filter(day_of_week=day[1])
+        # events = [{
+        #     'title' : '%s' % rehearsal.place,
+        #     'start' : 'moment("%s", "hh:mm a").day("%s"),' % (rehearsal.start_time, rehearsal.day_of_week),
+        #     'allDay': 'false'
+        # }]
 
-        # if request.method == 'POST':
-            #asdf
+        print rehearsal_list
 
         return render(request, 'profiles/spaces.html', {'company':company, 'member':member, 'rehearsal_list':rehearsal_list, 'admin':admin})
 
@@ -130,11 +138,17 @@ def conflicts(request, company_name, member_name):
 
     if member:
         company = Company.objects.get(name=company_name)
-        admin = adminAuth(request, company_name, member_name)
+        # admin = adminAuth(request, company_name, member_name)
 
-        conflict_list = member.conflict_set.all()
+        conflict_list = {}
+        for conflict in member.conflict_set.all():
+            try:
+                conflict_list[conflict.day_of_week].append(conflict)
+            except KeyError:
+                conflict_list[conflict.day_of_week] = []
+                conflict_list[conflict.day_of_week].append(conflict)
 
-        return render(request, 'profiles/conflicts.html', {'company':company, 'member':member, 'conflicts':conflict_list, 'timeblock':TimeBlock})
+        return render(request, 'profiles/conflicts.html', {'company':company, 'member':member, 'conflict_list':conflict_list, 'timeblock':TimeBlock})
 
     else:
         return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')                  

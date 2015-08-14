@@ -19,6 +19,7 @@
 
     <!-- Custom CSS -->
     <link href="{% static 'profiles/css/clean-blog.min.css' %}" rel="stylesheet">
+    <link href="{% static 'profiles/css/spaces.css' %}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -31,6 +32,42 @@
         <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <!-- Calendar Dependencies -->
+    <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.2/fullcalendar.min.css' />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="{% static 'profiles/js/moment.min.js' %}"></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.2/fullcalendar.min.js'></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#calendar').fullCalendar({
+                defaultView: 'agendaWeek',
+                allDaySlot: false,
+                columnFormat : {
+                    month: 'ddd',
+                    week: 'ddd',
+                    day: 'ddd'
+                },
+                slotEventOverlap: true,
+                events: [ 
+                {% for conflict in member.conflict_set.all %}
+                {
+                    title : "{{ conflict.description }}",
+                    start : moment("{{ conflict.start_time }}", "hh:mm a").day("{{conflict.day_of_week}}"),
+                    allDay: false
+                },
+                {% endfor %}
+                {
+                    title : 'Today',
+                    start : moment(new Date()),
+                    allDay: true
+                }
+                ]
+            });
+            $('.fc-toolbar').remove();
+        });
+    </script>
 
 </head>
 <body>
@@ -67,7 +104,7 @@
 
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header" style="background-image: url({% static 'profiles/img/banner-bg.jpg' %})">
+    <header class="intro-header" style="background-image: url({% static 'profiles/img/banner-bg-2.jpg' %})">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -81,32 +118,52 @@
         </div>
     </header>
 
+    <!-- Calendar of Events -->
+    <!-- <div id="cal" style="width:90%; height: 500px; border:1px solid black; margin:0 auto;text-align:center;">Calendar</div> -->
+    <div id="calendar"></div>
 
-    <!-- View Old Conflicts -->
-    <section>
-        <div class="container">
+    <div class="container">
+        <div class="flexbox fluid addrehearsals">
+                <div class="box upload" style="">
+                    <a class="btn btn-default" href="#">Import from Google</a>
+                </div>
+                <div class="flexbox fluid divider" style="flex-direction: column; -webkit-flex-direction:column;">
+                    <div class="divider-line">&nbsp;</div>   
+                    <h3>OR</h3>
+                    <div class="divider-line">&nbsp;</div>   
+                </div>
+                <div class="box manual">
+                    <form action="{% url 'updates:addConflicts' company.name member.username %}" method="post">
+                    {% csrf_token %}
+                        <h5>Upload Your Conflicts Manually</h5>
+                        <br>
+                        <div class="form-group">
+                            <textarea name="conflicts" class="form-control" rows="3" placeholder="Work Friday 10:00PM 12:30AM"></textarea>
+                        </div>
+                        <button class="btn btn-default" type="submit">Submit</button>
+                    </form>
+                </div>
+        </div>
+    </div>
+
+    <!-- View Conflicts -->
+    <div class="container" style="">
             <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <h2 class="section-heading">Current Conflicts</h2>
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="margin:0">
+                    <h2 class="section-heading">List of Current Conflicts</h2>
                     <hr>
-                    {% if conflicts %}
-                        {% regroup conflicts by day_of_week as conflict_list %}
-
-                        <ul style="list-style-type:none">
-                            {% for con in conflict_list %}
-                            {% for day in timeblock.DAY_OF_WEEK_CHOICES %}
-                                {% ifequal day.0 con.grouper %}
-                                    <li><h3>{{ day.1 }}</h3></li>
-                                {% endifequal %}
-                            {% endfor %}
-                            <ul style="list-style-type:none">
-                                {% for conflict in con.list %}
-                                <li><div style="display:flex; flex-direction:row; align-items:center">
-                                    <p>{{ conflict.description }}: {{conflict.start_time}} - {{conflict.end_time}}</p>
+                    {% if conflict_list %}
+                    <ul style="list-style:none;">
+                        {% for day, conflicts in conflict_list.items %}
+                            {% if conflicts %}
+                            <li><h3>{{ day }}</h3></li>
+                            <ul style="list-style:none">
+                                {% for conflict in conflicts %}
+                                <li><div class="flexbox" style="justify-content:flex-start; -webkit-justify-content:flex-start;">
+                                    <p style="margin:0">{{ conflict.description }}: {{conflict.start_time}} - {{conflict.end_time}}</p>
                                     <div style="margin-left:5%"><a data-toggle="modal" href="{% url 'updates:updateConflict' company.name member.username conflict.id %}" data-target="#{{ conflict.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
                                     <div><a href="{% url 'updates:deleteConflict' company.name member.username conflict.id %}"><span class="fa fa-minus-circle"></span></a></div> 
 
-                                    <!-- Modal -->
                                     <div class="modal fade" id="{{ conflict.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -116,40 +173,16 @@
                                 </div></li>
                                 {% endfor %}
                             </ul>
-                            <br>
-                            {% endfor %}
-                        </ul>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
                     {% else %}
                         <blockquote>You have not added any conflicts yet.</blockquote>
                     {% endif %}
                 </div>
             </div>
         </div>
-    </section>
-
-
-    <!-- Form Modal -->
-    <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-            </div>
-        </div>
-    </div> 
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <p class="copyright text-muted"><a data-toggle="modal" href="{% url 'updates:addConflict' company.name member.username %}" data-target="#form-modal" class="btn btn-lg btn-default" style="text-decoration:none">Add Conflict</a></p>
-                </div>
-            </div>
-        </div>
-    </footer>
         
-
-    <!-- jQuery -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>

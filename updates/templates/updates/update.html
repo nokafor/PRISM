@@ -7,7 +7,7 @@
             <h4 class="modal-title">Edit</h4>
         </div>
         <div id="form-modal-body" class="modal-body">
-            <form class="form-horizontal" action="{% url redirect_name company.name member.netid curr.id %}" method="post">
+            <form class="form-horizontal" action="{% url redirect_name company.name member.username curr.id %}" method="post">
                 {% csrf_token %}
                 {{ form|bootstrap_horizontal }}
                 <div class="form-group">

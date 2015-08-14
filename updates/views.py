@@ -3,8 +3,10 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 
-from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer
+from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock
+from profiles.models import Conflict
 # from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, MemberNameForm, ChoreographerForm
+from updates.forms import RehearsalForm, ConflictForm
 
 from django.views.generic import DetailView
 from django.template.loader import render_to_string
@@ -14,6 +16,7 @@ from profiles.functions import memberAuth, adminAuth
 from django.contrib.auth.models import Group, User
 
 from datetime import datetime
+import time
 
 
 # Create your views here.
@@ -270,22 +273,23 @@ def deleteMember(request, company_name, member_name, member_id):
     # check if valid admin
     admin = adminAuth(request, company_name, member_name)
     if admin:
-        old_member = Member.objects.get(id=member_id)
+        if Member.objects.filter(id=member_id).exists():
+            old_member = Member.objects.get(id=member_id)
 
-        # make sure you can only delete people who are in your company
-        if old_member.groups.filter(name=company_name).exists() and admin.member != old_member:
-            # delete any admin models associated with this organization
-            if Admin.objects.filter(member=old_member, company__name=company_name).exists():
-                old_admin = Admin.objects.get(member=old_member, company__name=company_name)
-                old_admin.delete()
+            # make sure you can only delete people who are in your company
+            if old_member.groups.filter(name=company_name).exists() and admin.member != old_member:
+                # delete any admin models associated with this organization
+                if Admin.objects.filter(member=old_member, company__name=company_name).exists():
+                    old_admin = Admin.objects.get(member=old_member, company__name=company_name)
+                    old_admin.delete()
 
-            # delete person from company set
-            company = Company.objects.get(name='BAC')
-            company.user_set.remove(old_member)
+                # delete person from company set
+                company = Company.objects.get(name='BAC')
+                company.user_set.remove(old_member)
 
-            # if user is a student and is no longer associated with any companies, remove them from system to clear space
-            if not old_member.has_usable_password() and old_member.groups.all().count() == 0:
-                old_member.delete()
+                # if user is a student and is no longer associated with any companies, remove them from system to clear space
+                if not old_member.has_usable_password() and old_member.groups.all().count() == 0:
+                    old_member.delete()
 
         return redirect('profiles:members', company_name, member_name,)
 
@@ -353,69 +357,89 @@ def updateName(request, company_name, member_name):
     else:
         return redirect('profiles:profile', company_name, member_name,)
 
-def addConflict(request, company_name, member_name):
-    name = 'updates:addConflict'
-
-    # check if came from profile
-    not_from_profile = profileAuth(request, company_name, member_name)
-    if not_from_profile:
-        return not_from_profile
-    else:
+def addConflicts(request, company_name, member_name):
+    member = memberAuth(request, company_name, member_name)
+    if member:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name) 
-        
-        # process the form and conflict data of the user
+
         if request.method == 'POST':
-            form = ConflictForm(request.POST)
-            if form.is_valid():
-                new_conflict = form.save(commit=False)
-                new_conflict.member = member
-                new_conflict.save()
-                form.save_m2m()
+            conflicts = request.POST['conflicts']
+            conflicts = [l for l in conflicts.split("\n") if l]
+            print conflicts
 
-                return redirect('profiles:conflicts', company_name, member_name,)
-        else:
-            form = ConflictForm()
-        return render(request, 'updates/add.html', {'company':company, 'member':member, 'form':form, 'redirect_name':name})
+            # initialize error message for any processing errors
+            error_message = "The following lines could not be processed:"
 
+            for line in conflicts:
+                info = line.split()
+                print info
+
+                # make sure line is specified length
+                if len(info) != 4:
+                    error_message += "\n" + line + " (Each line should have exactly 4 words)"
+                    continue
+
+                # check start time
+                try:
+                    start = datetime.strptime(info[2], "%I:%M%p")
+                    print start.time()
+
+                    end = datetime.strptime(info[3], "%I:%M%p")
+                    print end.time()
+                except ValueError:
+                    error_message += "\n" + line + " (Does not contain valid time parameters)"
+                    continue
+
+                # get day of week information
+                dow = time.strptime(info[1], "%A").tm_wday
+
+                conflict = Conflict(member=member, description=info[0], day_of_week=TimeBlock.DAY_OF_WEEK_CHOICES[dow][0], start_time=start.time(), end_time=end.time())
+                conflict.save()
+                # print rehearsal
+
+            print error_message
+        return redirect('profiles:conflicts', company_name=company_name, member_name=member_name)
+    else:
+        return HttpResponse('You do not have access to this page')
 
 def updateConflict(request, company_name, member_name, conflict_id):
     name = 'updates:updateConflict'
     
-    # check if came from profile
-    not_from_profile = profileAuth(request, company_name, member_name)
-    if not_from_profile:
-        return not_from_profile
-    else:
+    # check if valid member
+    member = memberAuth(request, company_name, member_name)
+    if member:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
+        
+        if member.conflict_set.filter(id=conflict_id).exists():
+            conflict = member.conflict_set.get(id=conflict_id)
+                    
+            # process the form and rehearsal data
+            if request.method == 'POST':
+                form = ConflictForm(request.POST, instance=conflict)
+                if form.is_valid():
+                    form.save()
 
-        conflict = member.conflict_set.get(id=conflict_id)
-
-        # process the form and conflict data of the user
-        if request.method == 'POST':
-            form = ConflictForm(request.POST, instance=conflict)
-            if form.is_valid():
-                form.save()
-
-                return redirect('profiles:conflicts', company_name, member_name,)
-        else:
-            form = ConflictForm(instance=conflict)
-        return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':conflict, 'form':form, 'redirect_name':name})
+                    return redirect('profiles:conflicts', company_name, member_name,)
+            else:
+                form = ConflictForm(instance=conflict)
+            return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':conflict, 'form':form, 'redirect_name':name})
+        return redirect('profiles:conflicts', company_name, member_name,)
+    else:
+        return HttpResponse('You do not have access to this page')
 
 def deleteConflict(request, company_name, member_name, conflict_id):
     # check if came from profile
-    not_from_profile = profileAuth(request, company_name, member_name)
-    if not_from_profile:
-        return not_from_profile
-    else:
+    member = memberAuth(request, company_name, member_name)
+    if member:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
 
-        conflict = member.conflict_set.get(id=conflict_id)
-        conflict.delete()
+        if member.conflict_set.filter(id=conflict_id).exists():
+            conflict = member.conflict_set.get(id=conflict_id)
+            conflict.delete()
 
         return redirect('profiles:conflicts', company_name, member_name,)
+    else:
+        return HttpResponse('You do not have access to this page')
 
 def addRehearsals(request, company_name, member_name):
     admin = adminAuth(request, company_name, member_name)
@@ -441,16 +465,19 @@ def addRehearsals(request, company_name, member_name):
 
                 # check start time
                 try:
-                    start = datetime.strptime(info[2], "%I:%S%p")
+                    start = datetime.strptime(info[2], "%I:%M%p")
                     print start.time()
 
-                    end = datetime.strptime(info[3], "%I:%S%p")
+                    end = datetime.strptime(info[3], "%I:%M%p")
                     print end.time()
                 except ValueError:
                     error_message += "\n" + line + " (Does not contain valid time parameters)"
                     continue
 
-                rehearsal = Rehearsal(company=company, place=info[0], day_of_week=info[1], start_time=start.time(), end_time=end.time())
+                # get day of week information
+                dow = time.strptime(info[1], "%A").tm_wday
+
+                rehearsal = Rehearsal(company=company, place=info[0], day_of_week=TimeBlock.DAY_OF_WEEK_CHOICES[dow][0], start_time=start.time(), end_time=end.time())
                 rehearsal.save()
                 # print rehearsal
 
@@ -463,36 +490,38 @@ def updateRehearsal(request, company_name, member_name, rehearsal_id):
     name = 'updates:updateRehearsal'
     
     # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
+    admin = adminAuth(request, company_name, member_name)
+    if admin:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
+        member = admin.member
         
-        rehearsal = company.rehearsal_set.get(id=rehearsal_id)
-                
-        # process the form and rehearsal data
-        if request.method == 'POST':
-            form = RehearsalForm(request.POST, instance=rehearsal)
-            if form.is_valid():
-                form.save()
+        if company.rehearsal_set.get(id=rehearsal_id).exists():
+            rehearsal = company.rehearsal_set.get(id=rehearsal_id)
+                    
+            # process the form and rehearsal data
+            if request.method == 'POST':
+                form = RehearsalForm(request.POST, instance=rehearsal)
+                if form.is_valid():
+                    form.save()
 
-                return redirect('profiles:spaces', company_name, member_name,)
-        else:
-            form = RehearsalForm(instance=rehearsal)
-        return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':rehearsal, 'form':form, 'redirect_name':name})
+                    return redirect('profiles:spaces', company_name, member_name,)
+            else:
+                form = RehearsalForm(instance=rehearsal)
+            return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':rehearsal, 'form':form, 'redirect_name':name})
+        return redirect('profiles:spaces', company_name, member_name,)
+    else:
+        return HttpResponse('You do not have access to this page')
 
 def deleteRehearsal(request, company_name, member_name, rehearsal_id):
     # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
+    admin = adminAuth(request, company_name, member_name)
+    if admin:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
 
-        rehearsal = company.rehearsal_set.get(id=rehearsal_id)
-        rehearsal.delete()
+        if company.rehearsal_set.filter(id=rehearsal_id).exists():
+            rehearsal = company.rehearsal_set.get(id=rehearsal_id)
+            rehearsal.delete()
 
         return redirect('profiles:spaces', company_name, member_name,)
+    else:
+        return HttpResponse('You do not have access to this page')
