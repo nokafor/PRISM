@@ -98,6 +98,10 @@ request.execute(function(resp) {
     }
   } else {
     // appendPre('No upcoming events found.');
+    var newEvent = document.createElement('div');
+    newEvent.setAttribute('class', 'text-muted');
+    newEvent.innerHTML='No upcoming events found.';
+    div.appendChild(newEvent)
   }
 
 });

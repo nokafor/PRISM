@@ -175,9 +175,9 @@ def casts(request, company_name, member_name):
         company = Company.objects.get(name=company_name)
         admin = adminAuth(request, company_name, member_name)
 
-        total_casts = Cast.objects.filter(company=company)
+        cast_list = Cast.objects.filter(company=company)
         total_choreographers = Choreographer.objects.filter(company=company)
-        return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'total_casts':total_casts, 'total_choreographers':total_choreographers})
+        return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'admin':admin, 'cast_list':cast_list, 'total_choreographers':total_choreographers})
     else:
         return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')                  
 

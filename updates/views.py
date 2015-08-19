@@ -33,28 +33,35 @@ class CastView(DetailView):
     template_name = 'updates/available.html'
 
 def addCast(request, company_name, member_name):
-    name = 'updates:addCast'
+    admin = adminAuth(request, company_name, member_name)
 
-    # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
+    if admin:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
 
-        new_cast = Cast(company=company)
-
-        # save casting data
         if request.method == 'POST':
-            form = CastForm(request.POST, instance=new_cast)
-            if form.is_valid():
-                form.save()
+            cast_list = request.POST['cast_list']
+            cast_list = [l for l in cast_list.split("\n") if l]
 
-                return redirect('profiles:casts', company_name, member_name,)
-        else:
-            form = CastForm(instance=new_cast)
-        return render(request, 'updates/add.html', {'company':company, 'member':member, 'form':form, 'redirect_name':name})
+            # initialize error message for any processing errors
+            error_message = "The following casts could not be created:"
+
+            for name in cast_list:
+
+                # make sure there is not already a cast with that name
+                if Cast.objects.filter(name=name, company=company).exists():
+                    error = "\n" + name + " (Already a cast in this company with this title)"
+                    error_message += error
+                    continue
+                cast = Cast(company=company, name=name)
+                cast.save()
+            
+            # print any errors
+            if "\n" in error_message:
+                print error_message
+        return redirect('profiles:casts', company_name, member_name,)
+
+    else:
+        return HttpResponse('You do not have access to this page')
 
 def updateCastName(request, company_name, member_name, cast_id):
     name = 'updates:updateCastName'
@@ -271,7 +278,7 @@ def addStudents(request, company_name, member_name):
 
             if "\n" in error_message:
                 print error_message
-        return redirect('profiles:members', company_name=company_name, member_name=member_name)
+        return redirect('profiles:members', company_name, member_name,)
 
     else:
         return HttpResponse('You do not have access to this page')
@@ -306,15 +313,14 @@ def deleteMember(request, company_name, member_name, member_id):
         
 
 def deleteCast(request, company_name, member_name, cast_id):
-    # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
-        cast = Cast.objects.get(id=cast_id)
-        cast.delete()
-
+    admin = adminAuth(request, company_name, member_name)
+    if admin:
+        if Cast.objects.filter(id=cast_id).exists():
+            cast = Cast.objects.get(id=cast_id)
+            cast.delete()
         return redirect('profiles:casts', company_name, member_name,)
+    else:
+        return HttpResponse('You do not have access to this page')
 
 def deleteChoreographer(request, company_name, member_name, choreographer_id):
     # check if valid admin
@@ -375,7 +381,7 @@ def addConflicts(request, company_name, member_name):
             print conflicts
 
             # initialize error message for any processing errors
-            error_message = "The following lines could not be processed:"
+            error_message = "The following conflicts could not be processed:"
 
             for line in conflicts:
                 info = line.split()
@@ -408,7 +414,7 @@ def addConflicts(request, company_name, member_name):
                 # print rehearsal
             if "\n" in error_message:
                 print error_message
-        return redirect('profiles:conflicts', company_name=company_name, member_name=member_name)
+        return redirect('profiles:conflicts', company_name, member_name,)
     else:
         return HttpResponse('You do not have access to this page')
 
@@ -462,7 +468,7 @@ def addRehearsals(request, company_name, member_name):
             print rehearsals
 
             # initialize error message for any processing errors
-            error_message = "The following lines could not be processed:"
+            error_message = "The following rehearsals could not be processed:"
 
             for line in rehearsals:
                 info = line.split()
@@ -494,7 +500,7 @@ def addRehearsals(request, company_name, member_name):
                 # print rehearsal
             if "\n" in error_message:
                 print error_message
-        return redirect('profiles:spaces', company_name=company_name, member_name=member_name)
+        return redirect('profiles:spaces', company_name, member_name,)
     else:
         return HttpResponse('You do not have access to this page')
 
