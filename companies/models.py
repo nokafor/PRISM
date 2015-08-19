@@ -14,6 +14,7 @@ class Founder(models.Model):
     api_user = models.CharField(max_length=255)
     api_key = models.CharField(max_length=255)
     email = models.EmailField(max_length=255)
+    client_id = models.CharField(max_length=255)
 
 class Company(Group):
     logo = models.ImageField(upload_to='companies')

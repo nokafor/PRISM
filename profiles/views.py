@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 
-from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock
+from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock, Founder
 from updates.forms import MemberNameForm, UserForm
 
 from profiles.functions import memberAuth, adminAuth
@@ -151,6 +151,8 @@ def conflicts(request, company_name, member_name):
 
     if member:
         company = Company.objects.get(name=company_name)
+        founder = Founder.objects.get(id=1)
+
         # admin = adminAuth(request, company_name, member_name)
 
         conflict_list = {}
@@ -161,7 +163,7 @@ def conflicts(request, company_name, member_name):
                 conflict_list[conflict.day_of_week] = []
                 conflict_list[conflict.day_of_week].append(conflict)
 
-        return render(request, 'profiles/conflicts.html', {'company':company, 'member':member, 'conflict_list':conflict_list, 'timeblock':TimeBlock})
+        return render(request, 'profiles/conflicts.html', {'company':company, 'member':member, 'conflict_list':conflict_list, 'timeblock':TimeBlock, 'founder':founder})
 
     else:
         return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')                  
