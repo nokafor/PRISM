@@ -503,7 +503,7 @@ def updateRehearsal(request, company_name, member_name, rehearsal_id):
         company = Company.objects.get(name=company_name)
         member = admin.member
         
-        if company.rehearsal_set.get(id=rehearsal_id).exists():
+        if company.rehearsal_set.filter(id=rehearsal_id).exists():
             rehearsal = company.rehearsal_set.get(id=rehearsal_id)
                     
             # process the form and rehearsal data
