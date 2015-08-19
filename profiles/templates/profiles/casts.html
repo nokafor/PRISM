@@ -10,12 +10,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="author" content="Sylvia Okafor">
 
     <title>Casting</title>
 
+    <!-- Favicon Icon -->
+    <link rel="shortcut icon" href="http://faviconist.com/icons/de3e284ee55ce978c399cd74f2eab5df/favicon.ico">
+
     <!-- Bootstrap Core CSS -->
-    <link href="{% static 'profiles/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="{% static 'profiles/css/clean-blog.min.css' %}" rel="stylesheet">
@@ -53,7 +56,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="{% url 'profiles:profile' company.name member.netid %}">Hub</a>
+                        <a href="{% url 'profiles:profile' company.name member.username %}">Hub</a>
                     </li>
                     <li>
                         <a href="logout/">Logout</a>
@@ -91,10 +94,10 @@
                     {% if total_casts %}
                         {% for cast in total_casts %}
                             <div style="display:flex; flex-direction:row; align-items:center">
-                                <a data-toggle="modal" href="{% url 'updates:updateCastName' company.name member.netid cast.id %}" data-target="#cast-{{ cast.id }}-modal" style="text-decoration:none">
+                                <a data-toggle="modal" href="{% url 'updates:updateCastName' company.name member.username cast.id %}" data-target="#cast-{{ cast.id }}-modal" style="text-decoration:none">
                                     <h2>{{ cast.name }}</h2>
                                 </a>
-                                <a href="{% url 'updates:deleteCast' company.name member.netid cast.id %}"><span class="fa fa-minus-circle"></span></a>
+                                <a href="{% url 'updates:deleteCast' company.name member.username cast.id %}"><span class="fa fa-minus-circle"></span></a>
                             </div>
 
                             <!-- Cast Modal -->
@@ -110,7 +113,7 @@
                             <p><ul style="list-style:none">
                                 {% for choreographer in total_choreographers %}
                                     {% ifequal choreographer.cast cast%}
-                                        <li><a data-toggle="modal" href="{% url 'updates:updateChoreographer' company.name member.netid choreographer.id %}" data-target="#ch-{{ choreographer.id }}-modal" style="text-decoration:none">{{ choreographer.member }}</a></li>
+                                        <li><a data-toggle="modal" href="{% url 'updates:updateChoreographer' company.name member.username choreographer.id %}" data-target="#ch-{{ choreographer.id }}-modal" style="text-decoration:none">{{ choreographer.member }}</a></li>
                                         
                                         <!-- Choreographer Modal -->
                                         <div class="modal fade" id="ch-{{ choreographer.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -127,7 +130,7 @@
                             <p><ul style="list-style:none">
                                 {% for mem in cast.member_set.all %}
                                     <li>
-                                        <a data-toggle="modal" href="{% url 'updates:updateCastMem' company.name member.netid cast.id mem.id %}" data-target="#{{ cast.id }}-{{ mem.id }}-modal" style="text-decoration:none">{{ mem }}</a>
+                                        <a data-toggle="modal" href="{% url 'updates:updateCastMem' company.name member.username cast.id mem.id %}" data-target="#{{ cast.id }}-{{ mem.id }}-modal" style="text-decoration:none">{{ mem }}</a>
                                     </li>
 
                                     <!-- Member Modal -->
@@ -140,7 +143,7 @@
                                 {% endfor %}
                             </ul></p>
 
-                            <a data-toggle="modal" href="{% url 'updates:addCastMem' company.name member.netid cast.id %}" data-target="#mem-{{ cast.id }}-modal" style="text-decoration:none" class="btn btn-primary">Add Cast Member</a>
+                            <a data-toggle="modal" href="{% url 'updates:addCastMem' company.name member.username cast.id %}" data-target="#mem-{{ cast.id }}-modal" style="text-decoration:none" class="btn btn-primary">Add Cast Member</a>
 
                             <!-- Add Cast Mem Modal -->
                             <div class="modal fade" id="mem-{{ cast.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -150,7 +153,7 @@
                                 </div>
                             </div> 
 
-                            <a data-toggle="modal" href="{% url 'updates:addChoreographer' company.name member.netid cast.id %}" data-target="#{{ cast.id }}-modal" style="text-decoration:none" class="btn btn-primary">Add Choreographer</a>
+                            <a data-toggle="modal" href="{% url 'updates:addChoreographer' company.name member.username cast.id %}" data-target="#{{ cast.id }}-modal" style="text-decoration:none" class="btn btn-primary">Add Choreographer</a>
 
                             <!-- Add Choreographer Modal -->
                             <div class="modal fade" id="{{ cast.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -185,7 +188,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <p class="copyright text-muted"><a data-toggle="modal" href="{% url 'updates:addCast' company.name member.netid %}" data-target="#form-modal" class="btn btn-lg btn-default" style="text-decoration:none">Add New Cast</a></p>
+                    <p class="copyright text-muted"><a data-toggle="modal" href="{% url 'updates:addCast' company.name member.username %}" data-target="#form-modal" class="btn btn-lg btn-default" style="text-decoration:none">Add New Cast</a></p>
                 </div>
             </div>
         </div>
@@ -193,13 +196,10 @@
     
 
     <!-- jQuery -->
-    <script src="{% static 'profiles/js/jquery.js' %}"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'profiles/js/bootstrap.min.js' %}"></script>
-
-    <!-- Custom Theme JavaScript -->
-    <script src="{% static 'profiles/js/clean-blog.min.js' %}"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 </body>
 

@@ -167,23 +167,17 @@ def conflicts(request, company_name, member_name):
         return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')                  
 
 def casts(request, company_name, member_name):
-    # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
+    member = memberAuth(request, company_name, member_name)
 
-    company = Company.objects.get(name=company_name)
-    member = company.member_set.get(username=member_name)
+    if member:
+        company = Company.objects.get(name=company_name)
+        admin = adminAuth(request, company_name, member_name)
 
-    total_casts = Cast.objects.filter(company=company)
-    total_choreographers = Choreographer.objects.filter(company=company)
-
-    if not_valid_admin:
-        not_valid_member = memberAuth(request, company_name, member_name)
-        if not_valid_member:
-            return not_valid_member
-        else:
-            return render(request, 'profiles/viewcasts.html', {'company':company, 'member':member, 'total_casts':total_casts, 'total_choreographers':total_choreographers})
-    else:
+        total_casts = Cast.objects.filter(company=company)
+        total_choreographers = Choreographer.objects.filter(company=company)
         return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'total_casts':total_casts, 'total_choreographers':total_choreographers})
+    else:
+        return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')                  
 
 def scheduling(request, company_name, member_name):
     # check if valid admin

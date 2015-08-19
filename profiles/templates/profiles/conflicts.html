@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="author" content="Sylvia Okafor">
 
     <title>Conflicts</title>
 
@@ -62,6 +62,7 @@
                 {
                     title : "{{ conflict.description }}",
                     start : moment("{{ conflict.start_time }}", "hh:mm a").day("{{conflict.day_of_week}}"),
+                    end   : moment("{{ conflict.end_time }}", "hh:mm a").day("{{conflict.end_day}}"),
                     allDay: false
                 },
                 {% endfor %}
