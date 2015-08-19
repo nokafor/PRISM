@@ -37,6 +37,25 @@
     <![endif]-->
     
     <!-- Google API Dependencies -->
+    <script type="text/javascript">
+        // Your Client ID can be retrieved from your project in the Google
+        // Developer Console, https://console.developers.google.com
+        var CLIENT_ID = {{founder.client_id}};
+
+        var SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
+        /**
+        * Check if current user has authorized this application.
+        */
+        function checkAuth() {
+        gapi.auth.authorize(
+          {
+            'client_id': CLIENT_ID,
+            'scope': SCOPES,
+            'immediate': true
+          }, handleAuthResult);
+        }
+
+    </script>
     <script src="{% static 'profiles/js/conflicts.js' %}"></script>
     <script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
 
