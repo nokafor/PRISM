@@ -5,7 +5,7 @@
     <!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"> -->
     <link href="{% static 'profiles/css/addmembers.css' %}" rel="stylesheet">
     <!-- <link href="http://twitter.github.io/typeahead.js/css/examples.css" rel="stylesheet"> -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
     <!-- <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> -->
 
      <!--<script src="//twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>-->
@@ -22,13 +22,13 @@
       <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Choose an Upload Method
       <span class="caret"></span></button>
       <ul class="dropdown-menu">
-        <li id="student"><h5>Users w/ Valid NetID</h5></li>
-        <li id="nonstudent"><h5>Users w/o Valid NetID</h5></li>
+        <li id="student" style="cursor:pointer; cursor:hand;"><h5>Users w/ Valid NetID</h5></li>
+        <li id="nonstudent" style="cursor:pointer; cursor:hand;"><h5>Users w/o Valid NetID</h5></li>
       </ul>
     </div>  
 
     <!-- form for inputting people with valid netid -->
-    <div class="form hidden addmembers">
+    <div id="form1" class="form hidden addmembers">
         <h5>Adding People w/ Valid NetID</h5>
         <p>Use the text area below to add members (who have valid NetIDs) to your company. Each line should correspond to just one student and contain only a NetID/Princeton email, first name, and last name, in that order. If you have access to your organization's listserv, you can just copy and paste the output below (see instructions <a href="#">here</a>).</p>
         <form action="{% url 'updates:addStudents' company_name member_name %}" method="post">
@@ -39,7 +39,7 @@
     </div>  
 
     <!-- form for inputting people without valid netid -->
-    <div class="form hidden addmembers">
+    <div id="form2" class="form hidden addmembers">
         <h5>Adding People w/o Valid NetID</h5>
         <p>The user you are trying to add must first create a PRISM account. Then, you may search for them below. <strong>Note: </strong>Once you click the add button, the user is added to your company and given login access to your organization's site.</p>
         <!-- <input id="search" name="s" class="typeahead form-control tt-query tt-hint" autocomplete="off" type="text" placeholder="Jane Doe"> -->
@@ -64,12 +64,12 @@
 
 <script>
     $('#student').click(function() {
-        $('.form1').removeClass("hidden");
-        $('.form2').addClass("hidden");
+        $('#form1').removeClass("hidden");
+        $('#form2').addClass("hidden");
     });
     $('#nonstudent').click(function() {
-        $('.form1').addClass("hidden");
-        $('.form2').removeClass("hidden");
+        $('#form1').addClass("hidden");
+        $('#form2').removeClass("hidden");
     })
 </script>
 
