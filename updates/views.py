@@ -241,9 +241,9 @@ def addStudents(request, company_name, member_name):
                 # check if the member already exists
                 if Member.objects.filter(username=username).exists():
                     member = Member.objects.get(username=username)
-                    # if there is a  member with the same username in this group
+                    # check if there is a  member with the same username in this group
                     if member.groups.filter(name=company_name).exists():
-                        # check if student
+                        # if student
                         if not member.has_usable_password():
                             error = "\n" + line + " (There is already a member of this company with this username)"
                             error_message += error
@@ -251,6 +251,8 @@ def addStudents(request, company_name, member_name):
                         # if not student
                         # else:
                             # change the 'nonstudents' username
+                            member.username = "%s%s" % (username, Member.objects.count())
+                            member.save()
                     
                     # if member is not a part of this group
                     else:
