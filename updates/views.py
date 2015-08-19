@@ -220,7 +220,8 @@ def addStudents(request, company_name, member_name):
 
                 # make sure line is specified length
                 if len(info) != 3:
-                    error_message += "\n" + line + " (Each line should have exactly 3 words)"
+                    error = "\n" + line + " (Each line should have exactly 3 words)"
+                    error_message += error
                     continue
 
                 # check to see if you have email or username
@@ -228,7 +229,8 @@ def addStudents(request, company_name, member_name):
                     email = info[0].split('@')
                     if email[1].lower() != 'princeton.edu':
                         # print line
-                        error_message += "\n" + line + " (First word in line must be a NetID or a valid Princeton email address)"
+                        error = "\n" + line + " (First word in line must be a NetID or a valid Princeton email address)"
+                        error_message += error
                         continue
                     username = email[0]
                 else:
@@ -243,7 +245,8 @@ def addStudents(request, company_name, member_name):
                     if member.groups.filter(name=company_name).exists():
                         # check if student
                         if not member.has_usable_password():
-                            error_message += "\n" + line + " (There is already a member of this company with this username)"
+                            error = "\n" + line + " (There is already a member of this company with this username)"
+                            error_message += error
                             continue
                         # if not student
                         # else:
@@ -376,7 +379,9 @@ def addConflicts(request, company_name, member_name):
 
                 # make sure line is specified length
                 if len(info) != 4:
-                    error_message += "\n" + line + " (Each line should have exactly 4 words)"
+                    error = "\n" + line +  " (Each line should have exactly 4 words)"
+                    # print error
+                    error_message += error
                     continue
 
                 # check start time
@@ -387,7 +392,8 @@ def addConflicts(request, company_name, member_name):
                     end = datetime.strptime(info[3], "%I:%M%p")
                     print end.time()
                 except ValueError:
-                    error_message += "\n" + line + " (Does not contain valid time parameters)"
+                    error = "\n" + line + " (Does not contain valid time parameters)"
+                    error_message += error
                     continue
 
                 # get day of week information
@@ -396,8 +402,8 @@ def addConflicts(request, company_name, member_name):
                 conflict = Conflict(member=member, description=info[0], day_of_week=TimeBlock.DAY_OF_WEEK_CHOICES[dow][0], start_time=start.time(), end_time=end.time())
                 conflict.save()
                 # print rehearsal
-
-            print error_message
+            if "\n" in error_message:
+                print error_message
         return redirect('profiles:conflicts', company_name=company_name, member_name=member_name)
     else:
         return HttpResponse('You do not have access to this page')
@@ -460,7 +466,8 @@ def addRehearsals(request, company_name, member_name):
 
                 # make sure line is specified length
                 if len(info) != 4:
-                    error_message += "\n" + line + " (Each line should have exactly 4 words)"
+                    error = "\n" + line + " (Each line should have exactly 4 words)"
+                    error_message += error
                     continue
 
                 # check start time
@@ -471,7 +478,8 @@ def addRehearsals(request, company_name, member_name):
                     end = datetime.strptime(info[3], "%I:%M%p")
                     print end.time()
                 except ValueError:
-                    error_message += "\n" + line + " (Does not contain valid time parameters)"
+                    error = "\n" + line + " (Does not contain valid time parameters)"
+                    error_message += error
                     continue
 
                 # get day of week information
@@ -480,8 +488,8 @@ def addRehearsals(request, company_name, member_name):
                 rehearsal = Rehearsal(company=company, place=info[0], day_of_week=TimeBlock.DAY_OF_WEEK_CHOICES[dow][0], start_time=start.time(), end_time=end.time())
                 rehearsal.save()
                 # print rehearsal
-
-            print error_message
+            if "\n" in error_message:
+                print error_message
         return redirect('profiles:spaces', company_name=company_name, member_name=member_name)
     else:
         return HttpResponse('You do not have access to this page')

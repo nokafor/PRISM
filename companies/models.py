@@ -145,13 +145,13 @@ class Company(Group):
 class TimeBlock(models.Model):
     start_time = models.TimeField('Start Time')
     end_time = models.TimeField('End Time')
-    MONDAY = 'MON'
-    TUESDAY = 'TUE'
-    WEDNESDAY = 'WED'
-    THURSDAY = 'THU'
-    FRIDAY = 'FRI'
-    SATURDAY = 'SAT'
-    SUNDAY = 'SUN'
+    MONDAY = 'Mon'
+    TUESDAY = 'Tue'
+    WEDNESDAY = 'Wed'
+    THURSDAY = 'Thu'
+    FRIDAY = 'Fri'
+    SATURDAY = 'Sat'
+    SUNDAY = 'Sun'
     DAY_OF_WEEK_CHOICES = (
         (MONDAY, 'Monday'),
         (TUESDAY, 'Tuesday'),

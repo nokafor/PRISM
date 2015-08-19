@@ -6,6 +6,25 @@ from django.http import HttpResponse
 from companies.models import Company, Member, Admin
 from django.contrib.auth.models import User, Group
 
+# Google Sheets API Dependencies
+# from oauth2client.client import OAuth2WebServerFlow
+# from oauth2client.tools import run
+# from oauth2client.file import Storage
+
+# def get_oauth2_token(request):
+#     CLIENT_ID = '926398386913-osgjnrb1p57m28rtqmrc0oeru2jmm2u2.apps.googleusercontent.com'
+#     CLIENT_SECRET = 'nhB0NqaKQd8N4jmUP4wEihGB'
+
+#     flow = OAuth2WebServerFlow(
+#         client_id = CLIENT_ID,
+#         client_secret = CLIENT_SECRET,
+#         scope = 'https://spreadsheets.google.com/feeds https://docs.google.com/feeds',
+#         redirect_uri = 'http://localhost:8000/'
+#         )
+#     storage = Storage('creds.data')
+#     credentials = run(flow, storage)
+#     print "access_token: %s" % credentials.access_token
+
 # Function to make sure user has access to the company and profile they are trying to access
 def memberAuth(request, company_name, member_name):
     # make sure group exists
@@ -28,6 +47,7 @@ def adminAuth(request, company_name, member_name):
     return None
 
 
+# -----------------------------------------
 @login_required
 def profileAuth(request, company_name, member_name):
     company = get_object_or_404(Company, name=company_name)

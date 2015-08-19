@@ -7,10 +7,23 @@ from updates.forms import MemberNameForm, UserForm
 from profiles.functions import memberAuth, adminAuth
 from django.contrib.auth.models import User, Group
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.utils import timezone
 
 # Create your views here.
+def testing(request, company_name, member_name, date_string):
+    event = date_string.split('-')
+    try:
+        start_time1 = datetime.fromtimestamp(float(event[2])/1000.0) - timedelta(minutes=float(event[3]))
+        start_time2 = datetime.fromtimestamp(float(event[2])/1000.0) + timedelta(minutes=float(event[3]))
+        end_time1 = datetime.fromtimestamp(float(event[4])/1000.0) - timedelta(minutes=float(event[5]))
+        end_time2 = datetime.fromtimestamp(float(event[4])/1000.0) + timedelta(minutes=float(event[5]))
+        # print day_of_week, start_time, end_time
+
+        return render(request, 'profiles/testing.html', {'company_name':company_name, 'member_name':member_name, 'start_time1':start_time1, 'start_time2':start_time2, 'end_time1':end_time1, 'end_time2':end_time2, 'dow':event[1], 'description':event[0]})
+    except:
+        return HttpResponse("Could not process your request")
+
 def addUsers(request, company_name, member_name):
     # create dataset for users (w/o valid netid)
     # dataset = []
