@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 
 from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock, Founder
+from profiles.models import Conflict
 from updates.forms import MemberNameForm, UserForm
 
 from profiles.functions import memberAuth, adminAuth
@@ -12,17 +13,44 @@ from django.utils import timezone
 
 # Create your views here.
 def testing(request, company_name, member_name, date_string):
-    event = date_string.split('-')
-    try:
-        start_time1 = datetime.fromtimestamp(float(event[2])/1000.0) - timedelta(minutes=float(event[3]))
-        start_time2 = datetime.fromtimestamp(float(event[2])/1000.0) + timedelta(minutes=float(event[3]))
-        end_time1 = datetime.fromtimestamp(float(event[4])/1000.0) - timedelta(minutes=float(event[5]))
-        end_time2 = datetime.fromtimestamp(float(event[4])/1000.0) + timedelta(minutes=float(event[5]))
-        # print day_of_week, start_time, end_time
+    member = memberAuth(request, company_name, member_name)
+    if member:
+        if request.method == 'POST':
+            #
+            description = request.POST['description']
+            day_of_week = request.POST['dow']
 
-        return render(request, 'profiles/testing.html', {'company_name':company_name, 'member_name':member_name, 'start_time1':start_time1, 'start_time2':start_time2, 'end_time1':end_time1, 'end_time2':end_time2, 'dow':event[1], 'description':event[0]})
-    except:
-        return HttpResponse("Could not process your request")
+            start = request.POST['startOptions'].split(", ")[2].replace(".", "")
+            if ':' not in start:
+                start = start.replace(" ", ":00 ")
+            start_time = datetime.strptime(start, "%I:%M %p")
+            # print start, start_time
+
+            end = request.POST['endOptions'].split(", ")[2].replace(".", "")
+            if ':' not in end:
+                end = end.replace(" ", ":00 ")
+            
+            end_time = datetime.strptime(end, "%I:%M %p")
+
+            conflict = Conflict(member=member, description=description, day_of_week=day_of_week, start_time=start_time.time(), end_time=end_time.time())
+            conflict.save()
+
+            # print description, day_of_week
+            return redirect('profiles:conflicts', company_name, member_name,)
+        else:
+            event = date_string.replace("%20", " ").split('-')
+            try:
+                start_time1 = datetime.fromtimestamp(float(event[2])/1000.0) - timedelta(minutes=float(event[3]))
+                start_time2 = datetime.fromtimestamp(float(event[2])/1000.0) + timedelta(minutes=float(event[3]))
+                end_time1 = datetime.fromtimestamp(float(event[4])/1000.0) - timedelta(minutes=float(event[5]))
+                end_time2 = datetime.fromtimestamp(float(event[4])/1000.0) + timedelta(minutes=float(event[5]))
+                # print day_of_week, start_time, end_time
+
+                return render(request, 'profiles/testing.html', {'company_name':company_name, 'member_name':member_name, 'start_time1':start_time1, 'start_time2':start_time2, 'end_time1':end_time1, 'end_time2':end_time2, 'dow':event[1], 'description':event[0]})
+            except:
+                return HttpResponse("Could not process your request")
+    else:
+        HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')        
 
 def addUsers(request, company_name, member_name):
     # create dataset for users (w/o valid netid)
