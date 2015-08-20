@@ -43,7 +43,7 @@ return false;
 * once client library is loaded.
 */
 function loadCalendarApi() {
-gapi.client.load('calendar', 'v3', listUpcomingEvents);
+gapi.client.load('calendar', 'v3', listCalendars);
 }
 
 /**
@@ -101,6 +101,38 @@ request.execute(function(resp) {
     var newEvent = document.createElement('div');
     newEvent.setAttribute('class', 'text-muted');
     newEvent.innerHTML='No upcoming events found.';
+    div.appendChild(newEvent)
+  }
+
+});
+}
+
+function listCalendars() {
+var request = gapi.client.calendar.calendarlist.list({
+  'showHidden': true,
+  'maxResults': 10
+});
+
+request.execute(function(resp) {
+  var calendars = resp.items;
+  var div = document.getElementById('output');
+
+  if (calendars.length > 0) {
+    for (i = 0; i < calendars.length; i++) {
+      var calendar = calendars[i];
+
+      var newEvent = document.createElement('div');
+      var divIdName = 'calendar'+i;
+      newEvent.setAttribute('id', divIdName);
+      newEvent.innerHTML = calendar.summary;
+      div.appendChild(newEvent);
+      // appendPre(event.summary + ' (' + end_date.toLocaleString() + ')');
+    }
+  } else {
+    // appendPre('No upcoming events found.');
+    var newEvent = document.createElement('div');
+    newEvent.setAttribute('class', 'text-muted');
+    newEvent.innerHTML='No calendars found.';
     div.appendChild(newEvent)
   }
 
