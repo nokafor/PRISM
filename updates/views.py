@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock
 from profiles.models import Conflict
 # from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, MemberNameForm, ChoreographerForm
-from updates.forms import RehearsalForm, ConflictForm
+from updates.forms import RehearsalForm, ConflictForm, CastForm
 
 from django.views.generic import DetailView
 from django.template.loader import render_to_string
@@ -67,24 +67,28 @@ def updateCastName(request, company_name, member_name, cast_id):
     name = 'updates:updateCastName'
 
     # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
+    admin = adminAuth(request, company_name, member_name)
+    if admin:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
-        cast = Cast.objects.get(id=cast_id)
+        member = admin.member
 
-        # save casting data
-        if request.method == 'POST':
-            form = CastForm(request.POST, instance=cast)
-            if form.is_valid():
-                form.save()
+        if Cast.objects.filter(id=cast_id).exists():
+            cast = Cast.objects.get(id=cast_id)
 
-                return redirect('profiles:casts', company_name, member_name,)
-        else:
-            form = CastForm(instance=cast)
-        return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':cast, 'form':form, 'redirect_name':name})
+            # save casting data
+            if request.method == 'POST':
+                form = CastForm(request.POST, instance=cast)
+                if form.is_valid():
+                    form.save()
+                    return redirect('profiles:casts', company_name, member_name,)
+            else:
+                form = CastForm(instance=cast)
+            return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':cast, 'form':form, 'redirect_name':name})
+
+        return redirect('profiles:casts', company_name, member_name,)
+
+    else:
+        return HttpResponse('You do not have access to this page')
 
 def addChoreographer(request, company_name, member_name, cast_id):
     name = 'updates:addChoreographer'
