@@ -21,12 +21,17 @@ class Company(Group):
     short_description = models.CharField(max_length=255)
     has_schedule = models.BooleanField(default=False)
     conflicts_due = models.DateTimeField(blank=True, null=True)
+    casting_due = models.DateTimeField(blank=True, null=True)
     class Meta:
         ordering = ['name']
     def __str__(self):
         return self.name
     def conflicts_past_due(self):
         if self.conflicts_due <= timezone.now():
+            return True
+        return False
+    def casting_past_due(self):
+        if self.casting_due <= timezone.now():
             return True
         return False
     def getSortedRehearsals(self):
@@ -249,7 +254,7 @@ class Cast(models.Model):
 
 class Member(User):
     cast = models.ManyToManyField(Cast, blank=True)
-    def __str__(self):
+    def __unicode__(self):
         # if self.first_name and self.last_name:
         #     return "%s %s" % (self.first_name, self.last_name)
         return "%s %s (%s)" % (self.first_name, self.last_name, self.username)
@@ -271,7 +276,7 @@ class Choreographer(models.Model):
     cast = models.ForeignKey(Cast)
 
     def __str__(self):
-        return self.member
+        return self.member.get_full_name()
         
     class Meta:
         ordering = ['member']

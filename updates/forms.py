@@ -9,16 +9,23 @@ import json
 
 # queryset = json.dumps([' '.join(value) for value in User.objects.filter(groups__isnull=True).exclude(username='admin').values_list('first_name', 'last_name', 'email')])
 # Create your models here.
-def get_queryset():
-    dataset = []
-    for user in User.objects.filter(groups__isnull=True).exclude(username='admin'):
-        dataset.extend("%s %s (%s)" % (user.first_name, user.last_name, user.email))
-    return dataset
 class UserForm(forms.Form):
     users = MultipleTypeaheadField(
         queryset = Member.objects.filter(groups__isnull=True).exclude(username='admin'),
         label="", help_text=""
     )
+class CastingForm(forms.Form):
+    members = MultipleTypeaheadField(
+        queryset = Member.objects.all(),
+        label="", help_text=""
+    ) 
+    def __init__(self, *args, **kwargs):
+        company_name = kwargs.pop('company_name', None)
+        super(CastingForm, self).__init__(*args, **kwargs)
+
+        if company_name:
+            self.fields['members'].queryset = Member.objects.filter(groups__name=company_name)
+
 class UploadFileForm(forms.Form):
     file = forms.FileField(label="", help_text="")
     

@@ -11,5 +11,5 @@ urlpatterns = patterns('',
     url(r'^members/$', views.members, name='members'),
     url(r'^admin/scheduling/$', views.scheduling, name='scheduling'),
     url(r'^admin/addUsers/$', views.addUsers, name='addUsers'),
-    url(r'^conflicts_due/$', views.updateConflictsDue, name='updateConflictsDue')
+    url(r'^due_dates/(?P<option>[\w|\W]+)/$', views.updateDueDate, name='updateDueDate')
 )

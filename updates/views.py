@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock
 from profiles.models import Conflict
 # from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, MemberNameForm, ChoreographerForm
-from updates.forms import RehearsalForm, ConflictForm, CastForm
+from updates.forms import RehearsalForm, ConflictForm, CastForm, CastingForm
 
 from django.views.generic import DetailView
 from django.template.loader import render_to_string
@@ -91,29 +91,24 @@ def updateCastName(request, company_name, member_name, cast_id):
         return HttpResponse('You do not have access to this page')
 
 def addChoreographer(request, company_name, member_name, cast_id):
-    name = 'updates:addChoreographer'
-
-    # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
+    admin = adminAuth(request, company_name, member_name)
+    if admin:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
-        cast = Cast.objects.get(id=cast_id)
+        if Cast.objects.filter(id=cast_id).exists():
+            cast = Cast.objects.get(id=cast_id)
 
-        new_choreographer = Choreographer(company=company, cast=cast)
+            if request.method == 'POST':
+                form = CastingForm(request.POST, company_name=company_name)
+                if form.is_valid():
+                    members = form.cleaned_data['members']
+                    for member in members:
+                        new_choreographer = Choreographer(company=company, cast=cast, member=member)
+                        new_choreographer.save()
 
-        # save choreographer data
-        if request.method == 'POST':
-            form = ChoreographerForm(request.POST, instance=new_choreographer)
-            if form.is_valid():
-                form.save()
+        return redirect('profiles:casts', company_name, member_name,)
 
-                return redirect('profiles:casts', company_name, member_name,)
-        else:
-            form = ChoreographerForm(instance=new_choreographer)
-        return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':cast, 'form':form, 'redirect_name':name})
+    else:
+        return HttpResponse('You do not have access to this page')
 
 def updateChoreographer(request, company_name, member_name, choreographer_id):
     name = 'updates:updateChoreographer'
@@ -141,30 +136,23 @@ def updateChoreographer(request, company_name, member_name, choreographer_id):
 
 
 def addCastMem(request, company_name, member_name, cast_id):
-    name = 'updates:addCastMem'
-
-    # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
+    admin = adminAuth(request, company_name, member_name)
+    if admin:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
-        cast = Cast.objects.get(id=cast_id)
+        if Cast.objects.filter(id=cast_id).exists():
+            cast = Cast.objects.get(id=cast_id)
 
-        new_choreographer = Choreographer(company=company, cast=cast)
+            if request.method == 'POST':
+                form = CastingForm(request.POST, company_name=company_name)
+                if form.is_valid():
+                    members = form.cleaned_data['members']
+                    for member in members:
+                        cast.member_set.add(member)
 
-        # save casting data
-        if request.method == 'POST':
-            form = ChoreographerForm(request.POST, instance=new_choreographer)
-            if form.is_valid():
-                false_choreographer = form.save(commit=False)
-                cast.member_set.add(false_choreographer.member)
+        return redirect('profiles:casts', company_name, member_name,)
 
-                return redirect('profiles:casts', company_name, member_name,)
-        else:
-            form = ChoreographerForm(instance=new_choreographer)
-        return render(request, 'updates/update.html', {'company':company, 'member':member, 'curr':cast, 'form':form, 'redirect_name':name})
+    else:
+        return HttpResponse('You do not have access to this page')
 
 def updateCastMem(request, company_name, member_name, cast_id, mem_id):
     # check if valid admin
@@ -182,16 +170,16 @@ def updateCastMem(request, company_name, member_name, cast_id, mem_id):
 
 def deleteCastMem(request, company_name, member_name, cast_id, mem_id):
     # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
-        cast = Cast.objects.get(id=cast_id)
-        mem = Member.objects.get(id=mem_id)
-        # mem = cast.member_set.get(id=mem_id)
-        cast.member_set.remove(mem)
+    admin = adminAuth(request, company_name, member_name)
+    if admin:
+        if Cast.objects.filter(id=cast_id).exists() and Member.objects.filter(id=mem_id).exists():
+            cast = Cast.objects.get(id=cast_id)
+            mem = Member.objects.get(id=mem_id)
+            cast.member_set.remove(mem)
 
         return redirect('profiles:casts', company_name, member_name,)
+    else:
+        return HttpResponse('You do not have access to this page')
 
 def addAdmin(request, company_name, member_name, member_id):
     # check if valid admin
@@ -327,15 +315,15 @@ def deleteCast(request, company_name, member_name, cast_id):
         return HttpResponse('You do not have access to this page')
 
 def deleteChoreographer(request, company_name, member_name, choreographer_id):
-    # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
-        choreographer = Choreographer.objects.get(id=choreographer_id)
-        choreographer.delete()
+    admin = adminAuth(request, company_name, member_name)
+    if admin:
+        if Choreographer.objects.filter(id=choreographer_id).exists():
+            choreographer = Choreographer.objects.get(id=choreographer_id)
+            choreographer.delete()
 
         return redirect('profiles:casts', company_name, member_name,)
+    else:
+        return HttpResponse('You do not have access to this page')
 
 def deleteAdmin(request, company_name, member_name):
     # check if valid admin

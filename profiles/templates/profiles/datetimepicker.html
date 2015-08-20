@@ -15,7 +15,7 @@
         <h4 class="modal-title">Conflicts Due Date</h4>
     </div>
     <div id="form-modal-body" class="modal-body">
-        <form class="form-inline" id="conflicts_due_form" action="{% url 'profiles:updateConflictsDue' company_name member_name %}" method="post" style="text-align:center">
+        <form class="form-inline" action="{% url 'profiles:updateDueDate' company_name member_name option %}" method="post" style="text-align:center">
         {% csrf_token %}
                 <div class="form-group">
                     <input type='text' class="form-control" id='datetimepicker4' name="datetimepicker4">

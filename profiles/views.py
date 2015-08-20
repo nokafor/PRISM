@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock, Founder
 from profiles.models import Conflict
-from updates.forms import MemberNameForm, UserForm
+from updates.forms import MemberNameForm, UserForm, CastingForm
 
 from profiles.functions import memberAuth, adminAuth
 from django.contrib.auth.models import User, Group
@@ -82,23 +82,33 @@ def addUsers(request, company_name, member_name):
     else:
         HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')
 
-def updateConflictsDue(request, company_name, member_name):
+def updateDueDate(request, company_name, member_name, option):
     # make sure member is an admin and has the right to access this information
     admin = adminAuth(request, company_name, member_name)
-
+    print option
     if admin:
         # save posted data if available
         if request.method == 'POST':
-            try: 
-                valid_datetime = datetime.strptime(request.POST['datetimepicker4'], '%m/%d/%Y %I:%M %p')
-                company = Company.objects.get(name=company_name)
-                company.conflicts_due = valid_datetime.replace(tzinfo=timezone.LocalTimezone())
-                company.save()
-                return redirect('profiles:profile', company_name=company_name, member_name=member_name)
-            except ValueError:
-                return HttpResponse('You did not enter a valid date and time. So the information was not saved.')
+            company = Company.objects.get(name=company_name)
+            if option == 'conflicts':
+                try: 
+                    valid_datetime = datetime.strptime(request.POST['datetimepicker4'], '%m/%d/%Y %I:%M %p')
+                    company.conflicts_due = valid_datetime.replace(tzinfo=timezone.LocalTimezone())
+                    company.save()
+                    return redirect('profiles:profile', company_name=company_name, member_name=member_name)
+                except ValueError:
+                    return HttpResponse('You did not enter a valid date and time. So the information was not saved.')
+            if option == 'casting':
+                try: 
+                    valid_datetime = datetime.strptime(request.POST['datetimepicker4'], '%m/%d/%Y %I:%M %p')
+                    company.casting_due = valid_datetime.replace(tzinfo=timezone.LocalTimezone())
+                    company.save()
+                    return redirect('profiles:profile', company_name=company_name, member_name=member_name)
+                except ValueError:
+                    return HttpResponse('You did not enter a valid date and time. So the information was not saved.')
+            return redirect('profiles:profile', company_name, member_name,)
 
-        return render(request, 'profiles/datetimepicker.html', {'company_name':company_name, 'member_name':member_name})
+        return render(request, 'profiles/datetimepicker.html', {'company_name':company_name, 'member_name':member_name, 'option':option})
 
     # admins and members logged in under the wrong name cannot access this page
     return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')
@@ -204,8 +214,14 @@ def casts(request, company_name, member_name):
         admin = adminAuth(request, company_name, member_name)
 
         cast_list = Cast.objects.filter(company=company)
-        total_choreographers = Choreographer.objects.filter(company=company)
-        return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'admin':admin, 'cast_list':cast_list, 'total_choreographers':total_choreographers})
+        choreographer_list = Choreographer.objects.filter(company=company)
+        my_cast_list = Choreographer.objects.filter(company=company, member=member)
+        print my_cast_list
+        my_piece_list = member.cast.all()
+
+        form = CastingForm(company_name=company_name)
+        # form = UserForm()
+        return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'admin':admin, 'cast_list':cast_list, 'choreographer_list':choreographer_list, 'my_cast_list':my_cast_list, 'my_piece_list':my_piece_list, 'form':form})
     else:
         return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')                  
 
