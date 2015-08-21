@@ -205,7 +205,7 @@
                                 <li><div class="flexbox" style="justify-content:flex-start; -webkit-justify-content:flex-start;">
                                     <p style="margin:0">{{ conflict.description }}: {{conflict.start_time}} - {{conflict.end_time}}</p>
                                     <div style="margin-left:5%"><a data-toggle="modal" href="{% url 'updates:updateConflict' company.name member.username conflict.id %}" data-target="#{{ conflict.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
-                                    <div><a href="{% url 'updates:deleteConflict' company.name member.username conflict.id %}"><span class="fa fa-minus-circle"></span></a></div> 
+                                    <div><a href="{% url 'updates:deleteConflict' company.name member.username conflict.id %}" onclick="return confirm('Are you sure you want to delete the following conflict: {{conflict}}')"><span class="fa fa-minus-circle"></span></a></div> 
 
                                     <div class="modal fade" id="{{ conflict.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">

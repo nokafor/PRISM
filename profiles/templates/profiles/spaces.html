@@ -179,7 +179,7 @@
                                     <p style="margin:0">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}}</p>
                                     {% if admin %}
                                     <div class="manual"><a data-toggle="modal" href="{% url 'updates:updateRehearsal' company.name member.username rehearsal.id %}" data-target="#{{ rehearsal.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
-                                    <div><a href="{% url 'updates:deleteRehearsal' company.name member.username rehearsal.id %}"><span class="fa fa-minus-circle"></span></a></div> 
+                                    <div><a href="{% url 'updates:deleteRehearsal' company.name member.username rehearsal.id %}" onclick="return confirm('Are you sure you want to delete the following rehearsal: {{rehearsal}}?')"><span class="fa fa-minus-circle"></span></a></div> 
 
                                     
                                     <div class="modal fade" id="{{ rehearsal.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
