@@ -40,7 +40,7 @@
     <!-- Javascript for Form -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="{% static 'companies/js/jqBootstrapValidation.js' %}"></script>
-    <script src="{% static 'companies/js/signup.js' %}"></script>
+    <script src="{% static 'companies/js/form.js' %}"></script>
 
 </head>
 <body>
@@ -54,7 +54,7 @@
                 <h3>Start Scheduling Better</h3>
                 <h6>Get started now. It's free!</h6>
             </div>
-            <form id="signupForm" method="post" action="{% url 'companies:create_new' %}">
+            <form id="form" method="post" action="{% url 'companies:create_new' %}">
             {% csrf_token %}
                 <div class="form-group">
                     <label for="first_name">First Name</label>

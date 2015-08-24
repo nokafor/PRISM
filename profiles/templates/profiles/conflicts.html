@@ -22,7 +22,7 @@
 
     <!-- Custom CSS -->
     <link href="{% static 'profiles/css/clean-blog.min.css' %}" rel="stylesheet">
-    <link href="{% static 'profiles/css/spaces.css' %}" rel="stylesheet">
+    <link href="{% static 'profiles/css/flex.css' %}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -36,6 +36,7 @@
         <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     
+
     <!-- Google API Dependencies -->
     <script type="text/javascript">
         // Your Client ID can be retrieved from your project in the Google
@@ -64,7 +65,6 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="{% static 'profiles/js/moment.min.js' %}"></script>
     <script src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.2/fullcalendar.min.js'></script>
-
     <script>
         $(document).ready(function() {
             $('#calendar').fullCalendar({
@@ -150,9 +150,9 @@
     <div id="calendar"></div>
 
     <div class="container">
-        <div class="flexbox fluid addrehearsals">
-                <div class="box upload" style="">
-                    <div id="authorize-div" style="">
+        <div class="flexbox fluid" style="margin:5% auto;">
+                <div class="box center flexbox" style="padding-right:7%; flex-direction: column; -webkit-flex-direction:column;">
+                    <div id="authorize-div">
                         <button class="btn btn-default" id="authorize-button" onclick="handleAuthClick(event, '{{founder.client_id}}')">Import from Google</button>
                     </div>
                     <!-- <pre id="output"></pre> -->
@@ -163,17 +163,16 @@
                         <h5>Upcoming Events in Google Calendar</h5>
                     </div>
                 </div>
-                <div class="flexbox fluid divider" style="flex-direction: column; -webkit-flex-direction:column;">
-                    <div class="divider-line">&nbsp;</div>   
+                <div class="flexbox fluid box-divider" style="flex-direction: column; -webkit-flex-direction:column;">
+                    <div class="box-divider-line">&nbsp;</div>   
                     <h3>OR</h3>
-                    <div class="divider-line">&nbsp;</div>   
+                    <div class="box-divider-line">&nbsp;</div>   
                 </div>
-                <div class="box manual">
-                    <form action="{% url 'updates:addConflicts' company.name member.username %}" method="post">
+                <div class="box center flexbox" style="padding-left:7%;flex-direction: column; -webkit-flex-direction:column;">
+                    <form action="{% url 'updates:addConflicts' company.name member.username %}" method="post" style="width:90%;">
                     {% csrf_token %}
                         <h5>Upload Your Conflicts Manually</h5>
-                        <br>
-                        <div class="form-group">
+                        <div class="form-group" style="margin:5% auto; margin-top: 8%;">
                             <textarea name="conflicts" class="form-control" rows="3" placeholder="Work Friday 10:00PM 12:30AM"></textarea>
                         </div>
                         <button class="btn btn-default" type="submit">Submit</button>
@@ -190,20 +189,23 @@
     </div> -->
     <!-- <pre id="output"></pre> -->
     <!-- View Conflicts -->
-    <div class="container" style="">
+    <br>
+    <hr>
+    <br>
+    <div class="container" style="text-align:center">
             <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="margin:0">
-                    <h2 class="section-heading">List of Current Conflicts</h2>
-                    <hr>
+                <!-- <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="margin:0"> -->
+                    <!-- <h2 class="section-heading">Saved Conflicts</h2> -->
+                    <!-- <hr> -->
                     {% if conflict_list %}
-                    <ul style="list-style:none;">
+                    <ul style="list-style:none;" style="border:1px solid red">
                         {% for day, conflicts in conflict_list.items %}
                             {% if conflicts %}
                             <li><h3>{{ day }}</h3></li>
                             <ul style="list-style:none">
                                 {% for conflict in conflicts %}
-                                <li><div class="flexbox" style="justify-content:flex-start; -webkit-justify-content:flex-start;">
-                                    <p style="margin:0">{{ conflict.description }}: {{conflict.start_time}} - {{conflict.end_time}}</p>
+                                <li><div class="flexbox" style="">
+                                    <p style="margin:0;">{{ conflict.description }}: {{conflict.start_time}} - {{conflict.end_time}}</p>
                                     <div style="margin-left:5%"><a data-toggle="modal" href="{% url 'updates:updateConflict' company.name member.username conflict.id %}" data-target="#{{ conflict.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
                                     <div><a href="{% url 'updates:deleteConflict' company.name member.username conflict.id %}" onclick="return confirm('Are you sure you want to delete the following conflict: {{conflict}}')"><span class="fa fa-minus-circle"></span></a></div> 
 
@@ -217,14 +219,25 @@
                                 {% endfor %}
                             </ul>
                             {% endif %}
+                            <br>
                         {% endfor %}
                     </ul>
                     {% else %}
                         <blockquote>You have not added any conflicts yet.</blockquote>
                     {% endif %}
-                </div>
+                <!-- </div> -->
             </div>
         </div>
+
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                        <p class="copyright text-muted">Copyright &copy; Princeton University</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
         
 
     <!-- Bootstrap Core JavaScript -->

@@ -19,3 +19,39 @@
 .modal-font-size {
 	font-size: 70%;
 }
+
+.box {
+	width:50%;
+	height:250px; 
+	overflow:auto;
+}
+
+.box-divider-line {
+    width: 1px; 
+    height: 100px; 
+    background-color: #ccc;
+}
+
+@media(max-width:600px) {
+    .fluid {
+        flex-direction:column;
+        -webkit-flex-direction:column;
+    }
+
+    .box-divider-line {
+        display:none;
+    }
+    .box-divider {
+        flex-direction:row;
+        -webkit-flex-direction:row;
+        /*border: 1px solid red;*/
+    }
+
+    .box {
+        width: 100%;
+        /*margin: 5% 0;*/
+        height:auto;
+        padding: 5%;
+        /*border: 1px solid blue;*/
+    }
+}

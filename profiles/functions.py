@@ -6,6 +6,10 @@ from django.http import HttpResponse
 from companies.models import Company, Member, Admin
 from django.contrib.auth.models import User, Group
 
+import urllib2
+import json
+
+from string import ascii_uppercase
 # Google Sheets API Dependencies
 # from oauth2client.client import OAuth2WebServerFlow
 # from oauth2client.tools import run
@@ -46,6 +50,55 @@ def adminAuth(request, company_name, member_name):
     
     return None
 
+def get_json(format, calID, day):
+    #Adsf
+    url = 'https://spreadsheets.google.com/feeds/%s/%s/%d/public/basic?prettyprint=true&alt=json' % (format, calID, day);
+    response = urllib2.urlopen(url)
+    html = response.read()
+    return json.loads(html)
+
+def get_col_headers(html):
+    COL_MAX = 'J'
+    ROW_MAX = '31'
+    columns = ascii_uppercase.split(chr(ord(COL_MAX)+1))[0]
+
+    format = []
+    for entry in html['feed']['entry']:
+        # print entry['title']['$t'].encode('utf-8').strip()
+        if len(entry['title']['$t'].encode('utf-8').strip()) == 2 and entry['title']['$t'].encode('utf-8').strip().endswith('1'):
+            format.append(entry['content']['$t'].encode('utf-8').strip())
+
+    return format
+
+def getRowValue(row, format, column_name):
+    # change column name to match name in json representation
+    column_name = column_name.lower().replace(' ', '')
+    
+    if str(column_name) == '':
+        raise ValueError('column_name must not empty')
+        
+    begin = row.find('%s:' % column_name)
+           
+    if begin == -1:
+        return ''
+
+    # get the beginning index for the resulting value
+    begin = begin + len(column_name) + 1
+    
+    # get the ending index for the resulting value
+    end = -1
+    split_line = row.split(column_name)
+    end_val = split_line[1].split(",", 1) 
+    end += len(end_val[0])
+
+    if end == -1:
+        end = len(row)
+    else:
+        end = end + begin
+        
+    value = row[begin: end].strip()    
+
+    return value
 
 # -----------------------------------------
 @login_required

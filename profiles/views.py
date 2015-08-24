@@ -5,13 +5,91 @@ from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreograp
 from profiles.models import Conflict
 from updates.forms import MemberNameForm, UserForm, CastingForm
 
-from profiles.functions import memberAuth, adminAuth
+from profiles.functions import memberAuth, adminAuth, getRowValue, get_json, get_col_headers
 from django.contrib.auth.models import User, Group
 
 from datetime import datetime, timedelta
 from django.utils import timezone
 
 # Create your views here.
+def parsePAC(request, company_name, member_name):
+    if request.method == 'POST':
+        admin = adminAuth(request, company_name, member_name)
+        if admin:
+            company = Company.objects.get(name=company_name)
+            pub_url = request.POST['url']
+            # print pub_url
+
+            split_string = pub_url.split("d/")
+            # print split_string
+
+            calID = split_string[1].split('/')[0]
+            # print calID
+
+            # get info for each day of the week
+            for day in range(1,8):
+            # day = 6
+                # JSON Representation to get headers
+                html = get_json('cells', calID, day)
+                format = get_col_headers(html)
+
+                # JSON Representation to get data
+                html = get_json('list', calID, day)
+
+                dow = html['feed']['title']['$t'].encode('utf-8').strip()
+                print dow[0:3]
+                print '========================='
+                last_company = {}
+                for name in format:
+                    last_company[name] = ['', -1]
+
+                rehearsals = []
+                rehearsals_index = 0
+
+                for entry in html['feed']['entry']:
+                    row = entry['content']['$t'].encode('utf-8').strip()
+                    time = entry['title']['$t'].encode('utf-8').strip()
+
+                    for name in format:
+                        result = getRowValue(row, format, name)
+                        # print "%s, %s:%s" % (time, name, result)
+                        # print result
+                        # print result, last_company[name]
+                        if result != last_company[name][0]:
+                            index = last_company[name][1]
+                            if index != -1:
+                                t = time.split('-')[0]
+                                end = datetime.strptime(t, "%I:%M%p")
+                                rehearsals[index].end_time = end.time()
+                                last_company[name][1] = -1
+                                # print 'add end time to rehearsal in %s' % name
+
+                            if company_name in result:
+                                #create new rehearsal
+                                t = time.split('-')[0]
+                                start = datetime.strptime(t, "%I:%M%p")
+                                rehearsal = Rehearsal(company=company, day_of_week=dow[0:3], place=name, start_time=start.time())
+                                # print rehearsal, rehearsals_index
+                                #append to rehearsals
+                                rehearsals.append(rehearsal)
+                                last_company[name][1] = rehearsals_index
+                                rehearsals_index += 1
+                                
+                                # print "create rehearsal"
+                                # print start.time()
+
+                            # print "Time:%s %s:%s" % (time, name, result)
+                            last_company[name][0] = result
+
+                # print rehearsals
+                for rehearsal in rehearsals:
+                    if rehearsal.end_time == None:
+                        rehearsal.end_time = datetime.strptime('1:00am', "%I:%M%p").time()
+                    print rehearsal
+                    rehearsal.save()
+
+    return redirect('profiles:spaces', company_name, member_name,)
+
 def testing(request, company_name, member_name, date_string):
     member = memberAuth(request, company_name, member_name)
     if member:
@@ -169,15 +247,8 @@ def spaces(request, company_name, member_name):
             except KeyError:
                 rehearsal_list[rehearsal.day_of_week] = []
                 rehearsal_list[rehearsal.day_of_week].append(rehearsal)
+
         # print rehearsal_list
-
-        # events = [{
-        #     'title' : '%s' % rehearsal.place,
-        #     'start' : 'moment("%s", "hh:mm a").day("%s"),' % (rehearsal.start_time, rehearsal.day_of_week),
-        #     'allDay': 'false'
-        # }]
-
-        print rehearsal_list
 
         return render(request, 'profiles/spaces.html', {'company':company, 'member':member, 'rehearsal_list':rehearsal_list, 'admin':admin})
 

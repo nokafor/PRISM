@@ -58,7 +58,7 @@
                 {
                     title : "{{ rehearsal.place }}",
                     start : moment("{{ rehearsal.start_time }}", "hh:mm a").day("{{rehearsal.day_of_week}}"),
-                    end   : moment("{{ conflict.end_time }}", "hh:mm a").day("{{conflict.end_day}}"),
+                    end   : moment("{{ rehearsal.end_time }}", "hh:mm a").day("{{rehearsal.end_day}}"),
                     allDay: false
                 },
                 {% endfor %}
@@ -131,12 +131,12 @@
     <div class="container">
         <div class="flexbox fluid addrehearsals">
                 <div class="box upload" style="">
-                    <form method="post" action="{% url 'profiles:spaces' company.name member.username %}">
+                    <form method="post" action="{% url 'profiles:parsePAC' company.name member.username %}">
                     {% csrf_token %}
                         <h5>Upload PAC Schedule</h5>
                         <br>
                         <div class="form-group">
-                            <input type="file" name="fileInput">
+                            <input type="text" class="form-control" name="url" placeholder="PAC Schedule URL">
                         </div>
                         <button class="btn btn-default" type="submit">Upload</button>
                     </form>

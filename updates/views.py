@@ -284,13 +284,8 @@ def deleteMember(request, company_name, member_name, member_id):
 
             # make sure you can only delete people who are in your company
             if old_member.groups.filter(name=company_name).exists() and admin.member != old_member:
-                # delete any admin models associated with this organization
-                if Admin.objects.filter(member=old_member, company__name=company_name).exists():
-                    old_admin = Admin.objects.get(member=old_member, company__name=company_name)
-                    old_admin.delete()
-
                 # delete person from company set
-                company = Company.objects.get(name='BAC')
+                company = Company.objects.get(name=company_name)
                 company.user_set.remove(old_member)
 
                 # if user is a student and is no longer associated with any companies, remove them from system to clear space

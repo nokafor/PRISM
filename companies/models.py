@@ -175,7 +175,10 @@ class TimeBlock(models.Model):
     def end_day(self):
         dow = time.strptime(self.day_of_week, "%a").tm_wday
         if self.end_time < self.start_time:
-            return self.DAY_OF_WEEK_CHOICES[dow+1][0]
+            try:
+                return self.DAY_OF_WEEK_CHOICES[dow+1][0]
+            except IndexError:
+                return self.DAY_OF_WEEK_CHOICES[0][0]
         return self.DAY_OF_WEEK_CHOICES[dow][0]
 
 class Rehearsal(TimeBlock):

@@ -58,7 +58,7 @@ def detail(request, company_name):
 def userLogin(request, company_name):
     # get POST data
     if request.method == 'POST':
-        loginEmail = request.POST["loginEmail"]
+        loginEmail = request.POST["email"]
         loginPwd = request.POST["loginPwd"]
 
         try:
