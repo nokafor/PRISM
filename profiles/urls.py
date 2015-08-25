@@ -4,6 +4,7 @@ from profiles import views
 
 urlpatterns = patterns('',
     url(r'^$', views.profile, name='profile'),
+    url(r'^settings/$', views.settings, name='settings'),
     url(r'^conflicts/$', views.conflicts, name='conflicts'),
     url(r'^conflicts/add/(?P<date_string>[\w|\W\-\d\%]+)/$', views.testing, name='testing'),
     url(r'^casts/$', views.casts, name='casts'),

@@ -12,6 +12,9 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 
 # Create your views here.
+def settings(request, company_name, member_name):
+    return render(request, 'profiles/settings.html')
+
 def parsePAC(request, company_name, member_name):
     if request.method == 'POST':
         admin = adminAuth(request, company_name, member_name)

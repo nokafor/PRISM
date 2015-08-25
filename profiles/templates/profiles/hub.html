@@ -78,18 +78,17 @@
                     </li>
                     <li class="dropdown">
                         <!-- <a data-toggle="modal" href="{% url 'updates:updateName' company.name member.username %}" data-target="#form-modal"><span class="fa fa-cog fa-lg"></span></a> -->
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="fa fa-cog fa-lg"></span></a>
-                        <ul class="dropdown-menu" style="background-color:transparent;">
+                        <a href="{% url 'profiles:settings' company.name member.username %}"><span class="fa fa-cog fa-lg"></span></a>
+                        <!-- <ul class="dropdown-menu" style="background-color:transparent;">
                             <li><a href="#">Edit Personal Info</a></li>
                             <li><a href="#">Contact Admins</a></li>
                             {% if admin %}
                             <li role="separator" class="divider"></li>
-                            <!-- <li class="dropdown-header">Admins</li> -->
                             <li><a href="#">Edit Company Info</a></li>
                             <li><a href="#">Company Reminders</a></li>
                             <li><a href="#">Contact Company</a></li>
                             {% endif %}
-                        </ul>
+                        </ul> -->
                     </li>
                 </ul>
             </div>
