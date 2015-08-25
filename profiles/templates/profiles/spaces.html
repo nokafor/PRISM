@@ -22,7 +22,7 @@
 
     <!-- Custom CSS -->
     <link href="{% static 'profiles/css/clean-blog.min.css' %}" rel="stylesheet">
-    <link href="{% static 'profiles/css/spaces.css' %}" rel="stylesheet">
+    <link href="{% static 'profiles/css/flex.css' %}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -129,46 +129,78 @@
     <!-- Add Rehearsals -->
     {% if admin %}
     <div class="container">
-        <div class="flexbox fluid addrehearsals">
-                <div class="box upload" style="">
-                    <form method="post" action="{% url 'profiles:parsePAC' company.name member.username %}">
-                    {% csrf_token %}
-                        <h5>Upload PAC Schedule</h5>
-                        <br>
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="url" placeholder="PAC Schedule URL">
-                        </div>
-                        <button class="btn btn-default" type="submit">Upload</button>
-                    </form>
-                </div>
-                <div class="flexbox fluid divider" style="flex-direction: column; -webkit-flex-direction:column;">
-                    <div class="divider-line">&nbsp;</div>   
-                    <h3>OR</h3>
-                    <div class="divider-line">&nbsp;</div>   
-                </div>
-                <div class="box manual">
-                    <form action="{% url 'updates:addRehearsals' company.name member.username %}" method="post">
-                    {% csrf_token %}
-                        <h5>Upload Your Spaces Manually</h5>
-                        <br>
-                        <div class="form-group">
-                            <textarea name="rehearsals" class="form-control" rows="3" placeholder="Bloomberg Friday 10:00PM 12:30AM"></textarea>
-                        </div>
-                        <button class="btn btn-default" type="submit">Submit</button>
-                    </form>
-                </div>
+        <div class="flexbox fluid" style="margin:5% auto;">
+            <div class="box center flexbox" style="padding-right:7%; flex-direction: column; -webkit-flex-direction:column;">
+                <form method="post" action="{% url 'profiles:parsePAC' company.name member.username %}" style="width:90%;">
+                {% csrf_token %}
+                    <h5>Upload PAC Schedule</h5>
+                    <br>
+                    <div class="form-group" style="margin:5% auto; margin-top: 8%;">
+                        <input type="text" class="form-control" name="url" placeholder="PAC Schedule URL">
+                    </div>
+                    <button class="btn btn-default" type="submit">Upload</button>
+                </form>
+            </div>
+            <div class="flexbox fluid box-divider" style="flex-direction: column; -webkit-flex-direction:column;">
+                <div class="box-divider-line">&nbsp;</div>   
+                <h3>OR</h3>
+                <div class="box-divider-line">&nbsp;</div>   
+            </div>
+            <div class="box center flexbox" style="padding-left:7%;flex-direction: column; -webkit-flex-direction:column;">
+                <form action="{% url 'updates:addRehearsals' company.name member.username %}" method="post" style="width:90%;">
+                {% csrf_token %}
+                    <h5>Upload Your Spaces Manually</h5>
+                    <br>
+                    <div class="form-group" style="margin:5% auto; margin-top: 8%;">
+                        <textarea name="rehearsals" class="form-control" rows="3" placeholder="Bloomberg Friday 10:00PM 12:30AM"></textarea>
+                    </div>
+                    <button class="btn btn-default" type="submit">Submit</button>
+                </form>
+            </div>
         </div>
     </div>
+    <br>
+    <hr>
+    <br>
     {% endif %}
+
     
     <!-- View Old Rehearsals -->
     <!-- <section> -->
-        <div class="container" style="">
+        <div class="container" style="text-align:center">
             <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="margin:0">
-                    <h2 class="section-heading">List of Rehearsal Spaces</h2>
-                    <hr>
+
                     {% if rehearsal_list %}
+                    <ul style="list-style:none;" style="border:1px solid red">
+                        {% for day, rehearsals in rehearsal_list.items %}
+                            {% if rehearsals %}
+                            <li><h3>{{ day }}</h3></li>
+                            <ul style="list-style:none">
+                                {% for rehearsal in rehearsals %}
+                                <li><div class="flexbox" style="">
+                                    <p style="margin:0">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}}</p>
+                                    {% if admin %}
+                                    <div style="margin-left:5%"><a data-toggle="modal" href="{% url 'updates:updateRehearsal' company.name member.username rehearsal.id %}" data-target="#{{ rehearsal.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
+                                    <div><a href="{% url 'updates:deleteRehearsal' company.name member.username rehearsal.id %}" onclick="return confirm('Are you sure you want to delete the following rehearsal: {{rehearsal}}?')"><span class="fa fa-minus-circle"></span></a></div> 
+
+                                    
+                                    <div class="modal fade" id="{{ rehearsal.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                            <br>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                        <blockquote>You have not added any conflicts yet.</blockquote>
+                    {% endif %}
+                    <!-- {% if rehearsal_list %}
                     <ul style="list-style:none;">
                         {% for day, rehearsals in rehearsal_list.items %}
                             {% if rehearsals %}
@@ -197,12 +229,20 @@
                     </ul>
                     {% else %}
                         <blockquote>You have not added any rehearsals yet.</blockquote>
-                    {% endif %}
+                    {% endif %} -->
+                </div>
+        </div>
+    <!-- </section> -->
+    
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <p class="copyright text-muted">Copyright &copy; Princeton University</p>
                 </div>
             </div>
         </div>
-    <!-- </section> -->
-
+    </footer>
     
     <!-- jQuery
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>  -->

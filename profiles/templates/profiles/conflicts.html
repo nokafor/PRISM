@@ -151,33 +151,33 @@
 
     <div class="container">
         <div class="flexbox fluid" style="margin:5% auto;">
-                <div class="box center flexbox" style="padding-right:7%; flex-direction: column; -webkit-flex-direction:column;">
-                    <div id="authorize-div">
-                        <button class="btn btn-default" id="authorize-button" onclick="handleAuthClick(event, '{{founder.client_id}}')">Import from Google</button>
-                    </div>
-                    <!-- <pre id="output"></pre> -->
-                    <div id="calendars">
-                        <h5>Import from Google Calendars</h5>
-                    </div>
-                    <div id="output">
-                        <h5>Upcoming Events in Google Calendar</h5>
-                    </div>
+            <div class="box center flexbox" style="padding-right:7%; flex-direction: column; -webkit-flex-direction:column;">
+                <div id="authorize-div">
+                    <button class="btn btn-default" id="authorize-button" onclick="handleAuthClick(event, '{{founder.client_id}}')">Import from Google</button>
                 </div>
-                <div class="flexbox fluid box-divider" style="flex-direction: column; -webkit-flex-direction:column;">
-                    <div class="box-divider-line">&nbsp;</div>   
-                    <h3>OR</h3>
-                    <div class="box-divider-line">&nbsp;</div>   
+                <!-- <pre id="output"></pre> -->
+                <div id="calendars">
+                    <h5>Import from Google Calendars</h5>
                 </div>
-                <div class="box center flexbox" style="padding-left:7%;flex-direction: column; -webkit-flex-direction:column;">
-                    <form action="{% url 'updates:addConflicts' company.name member.username %}" method="post" style="width:90%;">
-                    {% csrf_token %}
-                        <h5>Upload Your Conflicts Manually</h5>
-                        <div class="form-group" style="margin:5% auto; margin-top: 8%;">
-                            <textarea name="conflicts" class="form-control" rows="3" placeholder="Work Friday 10:00PM 12:30AM"></textarea>
-                        </div>
-                        <button class="btn btn-default" type="submit">Submit</button>
-                    </form>
+                <div id="output">
+                    <h5>Upcoming Events in Google Calendar</h5>
                 </div>
+            </div>
+            <div class="flexbox fluid box-divider" style="flex-direction: column; -webkit-flex-direction:column;">
+                <div class="box-divider-line">&nbsp;</div>   
+                <h3>OR</h3>
+                <div class="box-divider-line">&nbsp;</div>   
+            </div>
+            <div class="box center flexbox" style="padding-left:7%;flex-direction: column; -webkit-flex-direction:column;">
+                <form action="{% url 'updates:addConflicts' company.name member.username %}" method="post" style="width:90%;">
+                {% csrf_token %}
+                    <h5>Upload Your Conflicts Manually</h5>
+                    <div class="form-group" style="margin:5% auto; margin-top: 8%;">
+                        <textarea name="conflicts" class="form-control" rows="3" placeholder="Work Friday 10:00PM 12:30AM"></textarea>
+                    </div>
+                    <button class="btn btn-default" type="submit">Submit</button>
+                </form>
+            </div>
         </div>
     </div>
     <!-- <div id="authorize-div" style="display: none">
