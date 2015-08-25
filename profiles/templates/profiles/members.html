@@ -76,13 +76,15 @@
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
                         <h1>Members and Conflicts</h1>
-                        <h2 class="subheading">View / manage the members of {{ company.name }}. Admins can also view the conflicts of individual members.</h2>
+                        <h2 class="subheading">View / manage the members of {{ company.name }}. {% if admin %} Admins can also view the conflicts of individual members. {% endif %}</h2>
                         <span class="meta">
+                        {% if admin %}
                             {% if not company.conflicts_past_due %}
                                 Changes to conflicts allowed until {{ company.conflicts_due }}
                             {% else %}
                                 Return to your hub to set a new due date for conflicts.
                             {% endif %}
+                        {% endif %}
                         </span>
                     </div>
                 </div>

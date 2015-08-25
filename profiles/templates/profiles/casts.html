@@ -91,6 +91,7 @@
                     <div class="post-heading">
                         <h1>Casting</h1>
                         <h2 class="subheading">Manage casting list for the upcoming shows and/or performances</h2>
+                        {% if admin%}
                         <span class="meta">
                             {% if not company.casting_past_due %}
                                 Casting will be public from {{ company.casting_due }}
@@ -98,6 +99,7 @@
                                 Return to your hub to set a new release date for casting.
                             {% endif %}
                         </span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -181,17 +183,24 @@
             <div class="container" style="">
                 <div class="row" style="">
                     <!-- <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"> -->
-                        <h2 id="list" class="section-heading">All Casts</h2>
-                        <div class="flexbox" style="justify-content:space-around"><h5><a class="btn btn-default" style="color:white;background-color:black" href="#list" title="Pieces with {{member.get_full_name}}" data-toggle="popover" data-placement="bottom" data-content="{% for cast in member.cast.all %} <a href='#{{cast.name}}'>{{cast.name}}</a><br> {% empty %} None {% endfor %}">My Pieces</a></h5><h5><a class="btn btn-default" style="color:white;background-color:black" href="#list" data-toggle="popover" title="{{member.get_full_name}}'s pieces" data-content="{% for item in my_cast_list %} <a href='#{{item.cast.name}}'>{{item.cast.name}}</a> {% empty %} None {% endfor %}" data-placement="bottom">My Casts</a></h5></div>
+                        <h2 class="section-heading">All Casts</h2>
+                        <div class="flexbox" style="justify-content:space-around">
+                            <h5><button class="btn btn-default" style="color:white;background-color:black" title="Pieces with {{member.get_full_name}}" data-toggle="popover" data-placement="bottom" data-content="{% for cast in member.cast.all %} <a href='#{{cast.name}}'>{{cast.name}}</a><br> {% empty %} None {% endfor %}">My Pieces</button></h5>
+                            <h5><button class="btn btn-default" style="color:white;background-color:black" data-toggle="popover" title="{{member.get_full_name}}'s pieces" data-content="{% for item in my_cast_list %} <a href='#{{item.cast.name}}'>{{item.cast.name}}</a> {% empty %} None {% endfor %}" data-placement="bottom">My Casts</button></h5>
+                        </div>
                         <hr style="width:70%">
                         <!-- <hr style="width:40%; margin:0"> -->
                         {% if cast_list %}
                             {% for cast in cast_list %}
                                 <div id="{{cast.name}}" class="flexbox">
+                                {% if admin %}
                                     <a data-toggle="modal" href="{% url 'updates:updateCastName' company.name member.username cast.id %}" data-target="#cast-{{ cast.id }}-modal" style="text-decoration:none">
                                         <h2 style="margin-right:7px;">{{ cast.name }}</h2>
                                     </a>
                                     <a onclick="return confirm('Are you sure you want to delete {{cast.name}} and all its related information?')" href="{% url 'updates:deleteCast' company.name member.username cast.id %}"><span class="fa fa-minus-circle"></span></a>
+                                {% else %}
+                                <h2>{{ cast.name }}</h2>
+                                {% endif %}
                                 </div>
 
                                 <!-- Cast Modal -->
@@ -203,20 +212,30 @@
                                 </div>    
 
                                 <br>
-                                <strong>Choreographer(s):</strong> <a href="#" data-toggle="modal" data-target="#{{ cast.id }}-modal"><span class="fa fa-plus-circle"></span></a>
+                                <strong>Choreographer(s):</strong> {% if admin %} <a href="#" data-toggle="modal" data-target="#{{ cast.id }}-modal"><span class="fa fa-plus-circle"></span></a>{% endif %}
                                 <p><ul style="list-style:none">
                                     {% for choreographer in choreographer_list %}
                                         {% ifequal choreographer.cast cast%}
-                                            <li><a href="{% url 'updates:deleteChoreographer' company.name member.username choreographer.id %}" onclick="return confirm('Are you sure you want to delete {{choreographer.member}} from the list of choreographers for {{ choreographer.cast.name }}?')">{{ choreographer.member }}</a></li>
+                                            <li>
+                                            {% if admin %}
+                                                <a href="{% url 'updates:deleteChoreographer' company.name member.username choreographer.id %}" onclick="return confirm('Are you sure you want to delete {{choreographer.member}} from the list of choreographers for {{ choreographer.cast.name }}?')">{{ choreographer.member }}</a>
+                                            {% else %}
+                                                {{ choreographer.member }}
+                                            {% endif %}
+                                            </li>
                                         {% endifequal %}
                                     {% endfor %}
                                 </ul></p>
 
-                                <strong>Dancer(s):</strong> <a href="#" data-toggle="modal" data-target="#mem-{{ cast.id }}-modal"><span class="fa fa-plus-circle"></span></a>
+                                <strong>Dancer(s):</strong> {% if admin %} <a href="#" data-toggle="modal" data-target="#mem-{{ cast.id }}-modal"><span class="fa fa-plus-circle"></span></a> {% endif %}
                                 <p><ul style="list-style:none">
                                     {% for mem in cast.member_set.all %}
                                         <li>
+                                        {% if admin %}
                                             <a href="{% url 'updates:deleteCastMem' company.name member.username cast.id mem.id %}" onclick="return confirm('Are you sure you want to delete {{mem}} from the list of dancers in {{cast.name }}?')">{{ mem }}</a>
+                                        {% else %}
+                                            {{ mem }}
+                                        {% endif %}
                                         </li> 
                                     {% endfor %}
                                 </ul></p>

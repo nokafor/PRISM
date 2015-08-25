@@ -184,7 +184,7 @@
                             {% if admin %} 
                             <a data-toggle="modal" href="{% url 'profiles:updateDueDate' company.name member.username 'casting' %}" data-target="#casting_due_modal">Change the release date for casting (currently set to: {{ company.casting_due |default:"none" }}).</a>
                             {% else %}
-                            Current release date for conflicts: {{ company.casting_due |default:"none" }}
+                            Current release date for casting: {{ company.casting_due |default:"none" }}
                             {% endif %}
                         </p>
                     </div>
