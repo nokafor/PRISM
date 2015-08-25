@@ -9,9 +9,9 @@ urlpatterns = patterns('',
     url(r'^conflicts/add/(?P<date_string>[\w|\W\-\d\%]+)/$', views.testing, name='testing'),
     url(r'^casts/$', views.casts, name='casts'),
     url(r'^spaces/$', views.spaces, name='spaces'),
-    url(r'^spaces/parsePAC$', views.parsePAC, name='parsePAC'),
+    url(r'^spaces/admin/parsePAC$', views.parsePAC, name='parsePAC'),
     url(r'^members/$', views.members, name='members'),
-    url(r'^admin/scheduling/$', views.scheduling, name='scheduling'),
+    url(r'^schedule/$', views.scheduling, name='scheduling'),
     url(r'^admin/addUsers/$', views.addUsers, name='addUsers'),
     url(r'^due_dates/(?P<option>[\w|\W]+)/$', views.updateDueDate, name='updateDueDate')
 )

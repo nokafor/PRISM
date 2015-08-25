@@ -14,8 +14,11 @@
 
     <title>Scheduling</title>
 
+    <!-- Favicon Icon -->
+    <link rel="shortcut icon" href="http://faviconist.com/icons/de3e284ee55ce978c399cd74f2eab5df/favicon.ico">
+
     <!-- Bootstrap Core CSS -->
-    <link href="{% static 'profiles/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="{% static 'profiles/css/clean-blog.min.css' %}" rel="stylesheet">
@@ -57,7 +60,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="{% url 'profiles:profile' company.name member.netid %}">Hub</a>
+                        <a href="{% url 'profiles:profile' company.name member.username %}">Hub</a>
                     </li>
                     <li>
                         <a href="logout/">Logout</a>
@@ -102,12 +105,12 @@
                         <div class="col-md-4 col-sm-6 portfolio-item">
                             <div class="checkbox" style="display:flex; flex-direction:row; align-items:center">
                                 <label>
-                                    <input type="checkbox"> <a data-toggle="modal" href="{% url 'updates:CastView' company.name member.netid rehearsal.id %}" data-target="#r-{{ rehearsal.id }}-modal">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</a>
+                                    <input type="checkbox"> <a data-toggle="modal" href="{% url 'updates:CastView' company.name member.username rehearsal.id %}" data-target="#r-{{ rehearsal.id }}-modal">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</a>
                                 </label>
                             </div>
 
                             <!-- <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
-                                <a data-toggle="modal" href="{% url 'updates:CastView' company.name member.netid rehearsal.id %}" data-target="#r-{{ rehearsal.id }}-modal"><h4>{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</h4></a>
+                                <a data-toggle="modal" href="{% url 'updates:CastView' company.name member.username rehearsal.id %}" data-target="#r-{{ rehearsal.id }}-modal"><h4>{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</h4></a>
                             </div> -->
                         </div>
                         
@@ -142,11 +145,11 @@
                             <div class="col-md-4 col-sm-6 portfolio-item">
                                 <div class="checkbox" style="display:flex; flex-direction:row; align-items:center">
                                     <label>
-                                        <input type="checkbox"> <a data-toggle="modal" href="{% url 'updates:RehearsalView' company.name member.netid cast.id %}" data-target="#{{ cast.id }}-modal">{{ cast.name }}</a>
+                                        <input type="checkbox"> <a data-toggle="modal" href="{% url 'updates:RehearsalView' company.name member.username cast.id %}" data-target="#{{ cast.id }}-modal">{{ cast.name }}</a>
                                     </label>
                                 </div>
                                 <!-- <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
-                                    <a data-toggle="modal" href="{% url 'updates:RehearsalView' company.name member.netid cast.id %}" data-target="#{{ cast.id }}-modal"><h4>{{ cast.name }}</h4></a>
+                                    <a data-toggle="modal" href="{% url 'updates:RehearsalView' company.name member.username cast.id %}" data-target="#{{ cast.id }}-modal"><h4>{{ cast.name }}</h4></a>
                                 </div> -->
                             </div>
 
@@ -172,14 +175,14 @@
         <div class="container">
             <div class="row">
                 <!-- <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <p class="copyright text-muted"><a href="{% url 'profiles:casts' company.name member.netid %}" class="btn btn-lg btn-default" style="text-decoration:none">Manage Casts</a></p>
+                    <p class="copyright text-muted"><a href="{% url 'profiles:casts' company.name member.username %}" class="btn btn-lg btn-default" style="text-decoration:none">Manage Casts</a></p>
                 </div> -->
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <p class="copyright text-muted"><button type="submit" class="btn btn-lg btn-default" onclick="return validateForm()">Make Rehearsal Schedule</button></p>
                 </div>
                 
                 <!-- <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <p class="copyright text-muted"><a href="{% url 'profiles:spaces' company.name member.netid %}" class="btn btn-lg btn-default" style="text-decoration:none">Manage Rehearsals</a></p>
+                    <p class="copyright text-muted"><a href="{% url 'profiles:spaces' company.name member.username %}" class="btn btn-lg btn-default" style="text-decoration:none">Manage Rehearsals</a></p>
                 </div> -->
             </div>
         </div>
@@ -197,10 +200,10 @@
     {% endif %}
 
     <!-- jQuery -->
-    <script src="{% static 'profiles/js/jquery.js' %}"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="{% static 'profiles/js/bootstrap.min.js' %}"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'profiles/js/clean-blog.min.js' %}"></script>

@@ -301,14 +301,14 @@ def casts(request, company_name, member_name):
 
 def scheduling(request, company_name, member_name):
     # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
+    member = memberAuth(request, company_name, member_name)
+    if member:
         company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
-        rehearsals = company.getSortedRehearsals()
+        admin = adminAuth(request, company_name, member_name)
+        # rehearsals = company.getSortedRehearsals()
 
         casts = Cast.objects.filter(company=company)
 
-        return render(request, 'profiles/schedule.html', {'company':company, 'member':member, 'cast_list':casts, 'rehearsal_list':rehearsals})
+        return render(request, 'profiles/schedule.html', {'company':company, 'member':member, 'admin':admin, 'cast_list':casts, 'rehearsal_list':None})
+    else:
+        return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')                  
