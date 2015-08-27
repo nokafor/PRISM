@@ -111,6 +111,31 @@ def addChoreographer(request, company_name, member_name, cast_id):
     else:
         raise PermissionDenied
 
+def updateChoreographer(request, company_name, member_name, choreographer_id):
+    name = 'updates:updateChoreographer'
+
+    # check if valid admin
+    not_valid_admin = adminAuth(request, company_name, member_name)
+    if not_valid_admin:
+        return not_valid_admin
+    else:
+        company = Company.objects.get(name=company_name)
+        member = company.member_set.get(username=member_name)
+        
+        choreographer = Choreographer.objects.get(id=choreographer_id)
+
+        # save choreographer data
+        if request.method == 'POST':
+            form = ChoreographerForm(request.POST, instance=choreographer)
+            if form.is_valid():
+                form.save()
+
+                return redirect('profiles:casts', company_name, member_name,)
+        else:
+            form = ChoreographerForm(instance=choreographer)
+        return render(request, 'updates/updateChoreographer.html', {'company':company, 'member':member, 'curr':choreographer, 'form':form, 'redirect_name':name})
+
+
 def addCastMem(request, company_name, member_name, cast_id):
     admin = adminAuth(request, company_name, member_name)
     if admin:
@@ -129,6 +154,20 @@ def addCastMem(request, company_name, member_name, cast_id):
 
     else:
         raise PermissionDenied
+
+def updateCastMem(request, company_name, member_name, cast_id, mem_id):
+    # check if valid admin
+    not_valid_admin = adminAuth(request, company_name, member_name)
+    if not_valid_admin:
+        return not_valid_admin
+    else:
+        company = Company.objects.get(name=company_name)
+        member = company.member_set.get(username=member_name)
+
+        cast = Cast.objects.get(id=cast_id)
+        mem = Member.objects.get(id=mem_id)
+
+        return render(request, 'updates/updateCastMem.html', {'company':company, 'member':member, 'cast':cast, 'mem':mem})
 
 def deleteCastMem(request, company_name, member_name, cast_id, mem_id):
     # check if valid admin
