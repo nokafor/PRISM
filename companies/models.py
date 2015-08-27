@@ -19,6 +19,7 @@ class Founder(models.Model):
 class Company(Group):
     logo = models.ImageField(upload_to='companies')
     short_description = models.CharField(max_length=255)
+    listserv = models.EmailField(max_length=254, blank=True)
     has_schedule = models.BooleanField(default=False)
     conflicts_due = models.DateTimeField(blank=True, null=True)
     casting_due = models.DateTimeField(blank=True, null=True)

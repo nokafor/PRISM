@@ -154,6 +154,7 @@
                         <p class="post-meta">
                         {% if admin %} 
                         <a data-toggle="modal" href="{% url 'profiles:updateDueDate' company.name member.username 'conflicts' %}" data-target="#conflict_due_modal">Change the date conflicts are due (currently set to: {{ company.conflicts_due |default:"none" }}).</a>
+                        {{ today }}
                         {% else %}
                         Current due date for conflicts: {{ company.conflicts_due |default:"none" }}
                         {% endif %}

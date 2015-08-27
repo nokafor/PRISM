@@ -19,6 +19,7 @@
 
     <!-- Custom CSS -->
     <link href="{% static 'profiles/css/simple-sidebar.css' %}" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -36,31 +37,16 @@
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
-                <li class="sidebar-brand">
-                    <a href="#">
-                        Start Bootstrap
+                <li>
+                    <a href="{% url 'profiles:profile' company.name member.username %}">
+                        <span class="fa fa-arrow-circle-o-left fa-5x"></span>
                     </a>
                 </li>
                 <li>
                     <a href="#">Dashboard</a>
                 </li>
                 <li>
-                    <a href="#">Shortcuts</a>
-                </li>
-                <li>
-                    <a href="#">Overview</a>
-                </li>
-                <li>
-                    <a href="#">Events</a>
-                </li>
-                <li>
-                    <a href="#">About</a>
-                </li>
-                <li>
-                    <a href="#">Services</a>
-                </li>
-                <li>
-                    <a href="#">Contact</a>
+                    <a href="#">Logout</a>
                 </li>
             </ul>
         </div>
@@ -72,7 +58,62 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1>General Settings</h1>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque dolores earum a consequuntur aut, minima alias adipisci, ad, tempora, possimus doloremque. Consectetur illum, quam accusantium, nesciunt excepturi reiciendis amet hic! <code>#page-content-wrapper</code>.</p>
+                        <br>
+                        <!-- <i style="border:1px solid blue; color:red" class="fa fa-arrow-circle-o-right"></i> -->
+                        <h4>Companies You Are In</h4>
+                        <ul>
+                        {% for group in member.groups.all %}
+                            <li>{{ group }}</li>
+                        {% endfor %}
+                        </ul>
+                        <br>
+                        <h4>Personal Info</h4>
+                        <form action="" method="post">
+                            <div class="form-group">
+                                <label for="first_name">First Name</label>
+                                <input type="text" class="form-control" id="first_name" placeholder="{{ member.first_name }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="last_name">Last Name</label>
+                                <input type="text" class="form-control" id="last_name" placeholder="{{ member.last_name }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" placeholder="{{ member.email }}">
+                            </div>
+                            {% if member.has_usable_password %}
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password" placeholder="{{ member.password }}">
+                            </div>
+                            {% endif %}
+                            <button type="submit" class="btn btn-default">Save Changes</button>
+                        </form>
+                        <br>
+                        {% if admin %}
+                        <h4>Company Info</h4>
+                        <form action="" method="post">
+                            <div class="form-group">
+                                <label for="company-name">Company Name</label>
+                                <input type="text" class="form-control" id="company-name" placeholder="{{ company.name }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="company-listserv">Company Listserv Email</label>
+                                <input type="email" class="form-control" id="company-listserv" placeholder="{{ company.listserv|default:'None' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="company-short_description">Company Short Description</label>
+                                <textarea class="form-control" name="company-short_description" id="company-short_description" rows="3" placeholder="{{ company.short_description }}"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-default">Save Changes</button>
+                            <h4>Stuff to add</h4>
+                            <p>Company logo</p>
+                            <p>Company reminders</p>
+                        </form>
+                        <br>
+                        {% endif %}
+                        <!-- <h4>Choreographer Settings</h4> -->
+                        <br>
                         <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
                     </div>
                 </div>

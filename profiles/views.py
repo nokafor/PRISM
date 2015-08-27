@@ -13,7 +13,15 @@ from django.utils import timezone
 
 # Create your views here.
 def settings(request, company_name, member_name):
-    return render(request, 'profiles/settings.html')
+    return render(request, '404.html')
+    member = memberAuth(request, company_name, member_name)
+    if member:
+        company = Company.objects.get(name=company_name)
+        admin = adminAuth(request, company_name, member_name)
+        choreographer = Choreographer.objects.filter(member=member, company=company).exists()
+        return render(request, 'profiles/settings.html', {'company': company, 'member':member, 'admin':admin})
+    else:
+        return redirect('profiles:profile', company_name, member_name,)
 
 def parsePAC(request, company_name, member_name):
     if request.method == 'POST':
@@ -203,6 +211,7 @@ def profile(request, company_name, member_name):
 
     if member:
         company = Company.objects.get(name=company_name)
+        today = timezone.now()
 
         # process the form and conflict data of the user
         if request.method == 'POST':
@@ -214,7 +223,7 @@ def profile(request, company_name, member_name):
         else:
             form = MemberNameForm(instance=member)
 
-        return render(request, 'profiles/hub.html', {'member':member, 'company':company, 'form':form, 'admin':admin})
+        return render(request, 'profiles/hub.html', {'member':member, 'company':company, 'form':form, 'admin':admin,'today':today})
 
     else:
         return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')
@@ -290,12 +299,12 @@ def casts(request, company_name, member_name):
         cast_list = Cast.objects.filter(company=company)
         choreographer_list = Choreographer.objects.filter(company=company)
         my_cast_list = Choreographer.objects.filter(company=company, member=member)
-        print my_cast_list
-        my_piece_list = member.cast.all()
+        # print my_cast_list
+        # my_piece_list = member.cast.all()
 
         form = CastingForm(company_name=company_name)
         # form = UserForm()
-        return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'admin':admin, 'cast_list':cast_list, 'choreographer_list':choreographer_list, 'my_cast_list':my_cast_list, 'my_piece_list':my_piece_list, 'form':form})
+        return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'admin':None, 'cast_list':cast_list, 'choreographer_list':choreographer_list, 'my_cast_list':my_cast_list, 'form':form})
     else:
         return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')                  
 
