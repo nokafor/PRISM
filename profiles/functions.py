@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.http import HttpResponse
+from django.core.exceptions import SuspiciousOperation
 
 from companies.models import Company, Member, Admin
 from django.contrib.auth.models import User, Group
@@ -34,21 +35,28 @@ def memberAuth(request, company_name, member_name):
     # make sure group exists
     company = get_object_or_404(Company, name=company_name)
 
-    if request.user.is_authenticated() and member_name == request.user.username:
-        # make sure user is a part of the group they are trying to access
-        if request.user.groups.filter(name=company_name).exists():
-            return Member.objects.get(username=member_name)
-    return None
+    if request.user.is_authenticated():
+        if member_name == request.user.username:
+            # make sure user is a part of the group they are trying to access
+            if request.user.groups.filter(name=company_name).exists():
+                return Member.objects.get(username=member_name)
+        return None
+    else:
+        raise SuspiciousOperation
+
 
 def adminAuth(request, company_name, member_name):
     company = get_object_or_404(Company, name=company_name)
 
-    if request.user.is_authenticated() and member_name == request.user.username:
-        # make sure user is an admin of the company they are trying to access
-        if Admin.objects.filter(member__username=member_name, company=company).exists():
-            return Admin.objects.get(member__username=member_name, company=company)
-    
-    return None
+    if request.user.is_authenticated(): 
+        if member_name == request.user.username:
+            # make sure user is an admin of the company they are trying to access
+            if Admin.objects.filter(member__username=member_name, company=company).exists():
+                return Admin.objects.get(member__username=member_name, company=company)
+        
+        return None
+    else:
+        raise SuspiciousOperation
 
 def get_json(format, calID, day):
     #Adsf
