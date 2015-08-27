@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
+from django.core.exceptions import PermissionDenied
 
 from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock, Founder
 from profiles.models import Conflict
@@ -13,7 +14,7 @@ from django.utils import timezone
 
 # Create your views here.
 def settings(request, company_name, member_name):
-    return render(request, '404.html')
+    # return render(request, '404.html')
     member = memberAuth(request, company_name, member_name)
     if member:
         company = Company.objects.get(name=company_name)
@@ -139,7 +140,7 @@ def testing(request, company_name, member_name, date_string):
             except:
                 return HttpResponse("Could not process your request")
     else:
-        HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')        
+        raise PermissionDenied
 
 def addUsers(request, company_name, member_name):
     # create dataset for users (w/o valid netid)
@@ -169,7 +170,7 @@ def addUsers(request, company_name, member_name):
         form = UserForm()
         return render(request, 'profiles/addmembers.html', {'form':form, 'company_name': company_name, 'member_name':member_name})
     else:
-        HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')
+        raise PermissionDenied
 
 def updateDueDate(request, company_name, member_name, option):
     # make sure member is an admin and has the right to access this information
@@ -200,8 +201,7 @@ def updateDueDate(request, company_name, member_name, option):
         return render(request, 'profiles/datetimepicker.html', {'company_name':company_name, 'member_name':member_name, 'option':option})
 
     # admins and members logged in under the wrong name cannot access this page
-    return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')
-
+    raise PermissionDenied
     
 
 def profile(request, company_name, member_name):
@@ -226,7 +226,7 @@ def profile(request, company_name, member_name):
         return render(request, 'profiles/hub.html', {'member':member, 'company':company, 'form':form, 'admin':admin,'today':today})
 
     else:
-        return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')
+        raise PermissionDenied
 
 def members(request, company_name, member_name):
     # make sure member has access to this profile
@@ -242,7 +242,7 @@ def members(request, company_name, member_name):
         return render(request, 'profiles/members.html', {'company':company, 'member':member, 'member_list':member_list, 'admin_list':admin_list, 'admin':admin})
 
     else:
-        return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')
+        raise PermissionDenied
 
 def spaces(request, company_name, member_name):
     member = memberAuth(request, company_name, member_name)
@@ -265,7 +265,7 @@ def spaces(request, company_name, member_name):
         return render(request, 'profiles/spaces.html', {'company':company, 'member':member, 'rehearsal_list':rehearsal_list, 'admin':admin})
 
     else:
-        return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')  
+        raise PermissionDenied
 
 def conflicts(request, company_name, member_name):
     member = memberAuth(request, company_name, member_name)
@@ -287,7 +287,7 @@ def conflicts(request, company_name, member_name):
         return render(request, 'profiles/conflicts.html', {'company':company, 'member':member, 'conflict_list':conflict_list, 'timeblock':TimeBlock, 'founder':founder})
 
     else:
-        return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')                  
+        raise PermissionDenied
 
 def casts(request, company_name, member_name):
     member = memberAuth(request, company_name, member_name)
@@ -306,7 +306,7 @@ def casts(request, company_name, member_name):
         # form = UserForm()
         return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'admin':None, 'cast_list':cast_list, 'choreographer_list':choreographer_list, 'my_cast_list':my_cast_list, 'form':form})
     else:
-        return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')                  
+        raise PermissionDenied
 
 def scheduling(request, company_name, member_name):
     # check if valid admin
@@ -320,4 +320,4 @@ def scheduling(request, company_name, member_name):
 
         return render(request, 'profiles/schedule.html', {'company':company, 'member':member, 'admin':admin, 'cast_list':casts, 'rehearsal_list':None})
     else:
-        return HttpResponse('Hello____, You do not have access to this page. Please log into the appropriate company, or sign out here.')                  
+        raise PermissionDenied
