@@ -3,6 +3,11 @@
     src: url('../fonts/EvolutionTrueTypeFont.ttf');
 }
 
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
 .text-primary {
     color: #FFA534;
 }
