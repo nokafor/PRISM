@@ -11,16 +11,16 @@ html, body {
 }
 
 header, section, footer, .container  {
-    width: inherit;
+    width: 100%;
 }
 
-.container {
+/*.container {
     border:2px solid red;
 }
 
 .row {
     border: 2px solid green;
-}
+}*/
 .text-primary {
     color: #FFA534;
 }
