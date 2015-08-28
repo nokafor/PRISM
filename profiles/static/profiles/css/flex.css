@@ -39,6 +39,10 @@
     padding-right: 6%;
 }
 
+.login-button {
+    width: 44%;
+}
+
 .fluid-text {
     display: none;
 }
@@ -72,7 +76,7 @@
         height: auto;
     }
 
-    .box {
+    .box, .login-button {
         width: 100%;
         /*margin: 5% 0;*/
         height:auto;
