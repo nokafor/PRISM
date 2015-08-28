@@ -3,16 +3,11 @@
     src: url('../fonts/EvolutionTrueTypeFont.ttf');
 }
 
-@font-face {
-    font-family: 'Walkway';
-    src: url('../fonts/WalkwayBlack.ttf');
-}
-
 .text-primary {
     color: #FFA534;
 }
 
-a, section#services .section-heading {
+a, section#services .section-heading, section#portfolio .section-heading {
     color: #FF8F00;
 }
 
@@ -165,11 +160,6 @@ header .intro-text .intro-lead-in {
     width: 100%;
 }
 
-.timeline>li .timeline-image {
-    background-color: #FFA534;
-}
-
-
 section#contact .form-control:focus {
     border-color: #FFA534;
  }
@@ -196,7 +186,7 @@ a.banner-link:active {
 }
 
 .banner p {
-    color: #c8c8c8;
+    color: #a0a0a0;
 }
 
 ::-moz-selection {
