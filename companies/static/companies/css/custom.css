@@ -7,10 +7,10 @@ html, body {
     width: 100%;
     margin: 0px;
     padding: 0px;
-    overflow-x: hidden;
+    /*overflow-x: hidden;*/
 }
 
-header, section, footer {
+header, section, footer, .container  {
     width: inherit;
 }
 .text-primary {
