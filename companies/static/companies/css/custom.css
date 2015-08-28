@@ -8,6 +8,10 @@ html, body {
     margin: 0px;
     padding: 0px;
 }
+
+header, section, footer {
+    width: inherit;
+}
 .text-primary {
     color: #FFA534;
 }
