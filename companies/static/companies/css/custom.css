@@ -133,6 +133,10 @@ fieldset[disabled] .btn-xl.active {
     background-color: #FF8F00;
 }
 
+header .intro-text .intro-lead-in {
+    color: #FFA534;
+}
+
 #portfolio .portfolio-item .portfolio-link .portfolio-hover {
     background: rgba(255,165,52,.9);
 }
