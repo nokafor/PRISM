@@ -26,6 +26,23 @@
 	overflow:auto;
 }
 
+.box-login {
+    height: 80%;
+}
+
+.login-box {
+    flex-direction:column; 
+    -webkit-flex-direction: column; 
+    width:56%; 
+    height:300px; 
+    padding-left: 5%; 
+    padding-right: 6%;
+}
+
+.fluid-text {
+    display: none;
+}
+
 .box-divider-line {
     width: 1px; 
     height: 100px; 
@@ -38,6 +55,10 @@
         -webkit-flex-direction:column;
     }
 
+    .fluid-text {
+        display: block;
+    }
+
     .box-divider-line {
         display:none;
     }
@@ -45,6 +66,10 @@
         flex-direction:row;
         -webkit-flex-direction:row;
         /*border: 1px solid red;*/
+    }
+
+    .box-login {
+        height: auto;
     }
 
     .box {

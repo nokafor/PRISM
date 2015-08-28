@@ -17,7 +17,7 @@
     <!-- Custom CSS -->
     <link href="{% static 'companies/css/agency.css' %}" rel="stylesheet">
     <link href="{% static 'companies/css/custom.css' %}" rel="stylesheet">
-    <link href="{% static 'companies/css/login.css' %}" rel="stylesheet">
+    <link href="{% static 'profiles/css/flex.css' %}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -49,20 +49,21 @@
         <h4 class="modal-title">Choose a sign in option</h4> <!-- figure out the header -->
     </div>
 
-    <div class="modal-body flexbox">
+    <div class="modal-body flexbox fluid" style="margin:5% auto;">
         <!-- box on the left -->
-        <div class="signin-box netid-signin" style="width: 44%">
-            <div class="flexbox">
+        <div class="box" style="width: 44%; height:100px;" >
+            <div class="flexbox" style="height:100%; width:100%;">
                 <a href="{% url 'companies:detail' company_name %}" class="btn btn-warning btn-lg" style="margin: 0 auto;">Sign in with NetID</a>
             </div>
         </div>  
         
-        <div style="width: 1px; height: 250px; background-color: #ccc;">&nbsp;</div>   
+        <div class="box-divider-line" style="height: 250px;">&nbsp;</div>  
+        <h3 class="fluid-text" style="padding-bottom: 5%">OR</h3> 
 
         <!-- box on the right -->           
-        <div class="signin-box normal-signin flexbox" style="flex-direction:column; -webkit-flex-direction: column;">
-            <div style="width: 100%; height: 80%;">
-                <div class="flex-inline">
+        <div class="flexbox box login-box">
+            <div class="box-login" style="width: 100%">
+                <div class="flexbox" style="justify-content: space-between; -webkit-justify-content: space-between; align-items: baseline; -webkit-align-items: baseline;">
                     <h4>Sign In</h4>
                     <a href="{% url 'companies:signup' %}" class="signin-muted text-muted">or create an account</a>
                 </div>
@@ -77,7 +78,7 @@
                         <p class="help-block text-danger"></p>
                     </div>
 
-                    <div class="flex-inline">
+                    <div class="flexbox" style="justify-content: space-between; -webkit-justify-content: space-between; align-items: baseline; -webkit-align-items: baseline;">
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox">Remember Me
