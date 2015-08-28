@@ -284,8 +284,10 @@ header .intro-text .intro-lead-in {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 22px;
     /*font-style: italic;*/
-    font-weight: lighter;
+    /*font-weight: lighter;*/
+    font-weight: 400;
     line-height: 22px;
+    color: #fed136;
 }
 
 header .intro-text .intro-heading {
@@ -308,8 +310,10 @@ header .intro-text .intro-heading {
         font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
         font-size: 40px;
         /*font-style: italic;*/
-        font-weight: lighter;
+        /*font-weight: lighter;*/
+        font-weight: 400;
         line-height: 40px;
+        color: #fed136;
     }
 
     header .intro-text .intro-heading {
