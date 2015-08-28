@@ -315,9 +315,10 @@ def scheduling(request, company_name, member_name):
         company = Company.objects.get(name=company_name)
         admin = adminAuth(request, company_name, member_name)
         # rehearsals = company.getSortedRehearsals()
+        rehearsals = Rehearsal.objects.filter(company=company)
 
         casts = Cast.objects.filter(company=company)
 
-        return render(request, 'profiles/schedule.html', {'company':company, 'member':member, 'admin':admin, 'cast_list':casts, 'rehearsal_list':None})
+        return render(request, 'profiles/schedule.html', {'company':company, 'member':member, 'admin':admin, 'cast_list':casts, 'rehearsal_list':rehearsals})
     else:
         raise PermissionDenied

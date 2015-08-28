@@ -193,6 +193,28 @@ class Rehearsal(TimeBlock):
     class Meta:
         ordering = ['day_of_week', 'start_time']
 
+    def getCasts(self):
+        casts = Cast.objects.filter(company = self.company)
+
+        cast_list = []
+        for cast in casts:
+            print cast
+            members = cast.member_set.all()
+            available = True
+            for member in members:
+                print member
+                available = True
+                for conflict in member.conflict_set.all():
+                    if conflict.conflictsWith(self):
+                        available == False
+                        break
+                if available == False:
+                    break
+            if available == True:
+                cast_list.append(cast)
+
+        return list(cast_list)
+
     def getAvailableCasts(self):
         casts = Cast.objects.filter(company=self.company)
 
@@ -242,8 +264,10 @@ class Cast(models.Model):
 
         rehearsal_list = []
         for rehearsal in rehearsals:
+            print rehearsal
             available = True
             for member in members:
+                print member
                 for conflict in member.conflict_set.all():
                     if conflict.description != 'Rehearsal':
                         if conflict.conflictsWith(rehearsal):

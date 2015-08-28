@@ -8,9 +8,9 @@
         </div>
         <div id="display-modal-body" class="modal-body">
             {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-            {% if rehearsal.getAvailableCasts %}
+            {% if rehearsal.getCasts %}
                 <ul>
-                    {% for cast in rehearsal.getAvailableCasts %}
+                    {% for cast in rehearsal.getCasts %}
                         <li>{{ cast.name }}</li>
                     {% endfor %}
                 </ul>
