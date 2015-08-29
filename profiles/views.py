@@ -4,7 +4,7 @@ from django.core.exceptions import PermissionDenied
 
 from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock, Founder
 from profiles.models import Conflict
-from updates.forms import MemberNameForm, UserForm, CastingForm
+from updates.forms import PersonalForm, UserForm, CastingForm, CompanyForm
 
 from profiles.functions import memberAuth, adminAuth, getRowValue, get_json, get_col_headers
 from django.contrib.auth.models import User, Group
@@ -20,7 +20,10 @@ def settings(request, company_name, member_name):
         company = Company.objects.get(name=company_name)
         admin = adminAuth(request, company_name, member_name)
         choreographer = Choreographer.objects.filter(member=member, company=company).exists()
-        return render(request, 'profiles/settings.html', {'company': company, 'member':member, 'admin':admin})
+
+        personal_form = PersonalForm(instance=member)
+        company_form = CompanyForm(instance=company)
+        return render(request, 'profiles/settings.html', {'company': company, 'member':member, 'admin':admin, 'personal_form':personal_form, 'company_form':company_form})
     else:
         return redirect('profiles:profile', company_name, member_name,)
 
@@ -207,23 +210,12 @@ def updateDueDate(request, company_name, member_name, option):
 def profile(request, company_name, member_name):
     # make sure member has access to this profile
     member = memberAuth(request, company_name, member_name)
-    admin = adminAuth(request, company_name, member_name)
 
     if member:
         company = Company.objects.get(name=company_name)
-        today = timezone.now()
-
-        # process the form and conflict data of the user
-        if request.method == 'POST':
-            form = MemberNameForm(request.POST, instance=member)
-            if form.is_valid():
-                form.save()
-
-                return redirect('profiles:profile', company_name, member_name,)
-        else:
-            form = MemberNameForm(instance=member)
-
-        return render(request, 'profiles/hub.html', {'member':member, 'company':company, 'form':form, 'admin':admin,'today':today})
+        admin = adminAuth(request, company_name, member_name)
+    
+        return render(request, 'profiles/hub.html', {'member':member, 'company':company, 'admin':admin})
 
     else:
         raise PermissionDenied
@@ -251,16 +243,26 @@ def spaces(request, company_name, member_name):
         company = Company.objects.get(name=company_name)
         admin = adminAuth(request, company_name, member_name)
 
+        dows = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        print dows
         rehearsal_list = {}
+        for day in dows:
+            # print day
+            # print "%d" % dows.index(day)
+            rehearsal_list[day] = []
+        print rehearsal_list
 
         for rehearsal in company.rehearsal_set.all():
-            try:
-                rehearsal_list[rehearsal.day_of_week].append(rehearsal)
-            except KeyError:
-                rehearsal_list[rehearsal.day_of_week] = []
-                rehearsal_list[rehearsal.day_of_week].append(rehearsal)
+            # try:
+            rehearsal_list[rehearsal.day_of_week].append(rehearsal)
+            print rehearsal.day_of_week
+            # except KeyError:
+            #     rehearsal_list[rehearsal.day_of_week] = []
+            #     rehearsal_list[rehearsal.day_of_week].append(rehearsal)
 
-        # print rehearsal_list
+        # sorted(rehearsal_list.keys(), key=lambda x: dows.index(x))
+        print sorted(rehearsal_list.keys(), key=lambda x: dows.index(x))
+        print rehearsal_list
 
         return render(request, 'profiles/spaces.html', {'company':company, 'member':member, 'rehearsal_list':rehearsal_list, 'admin':admin})
 

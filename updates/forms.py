@@ -29,15 +29,15 @@ class CastingForm(forms.Form):
 class UploadFileForm(forms.Form):
     file = forms.FileField(label="", help_text="")
     
-class MemberForm(ModelForm):
+class CompanyForm(ModelForm):
     class Meta:
-        model = Member
-        fields = ['first_name', 'last_name', 'username']
+        model = Company
+        fields = ['name', 'listserv', 'short_description', 'logo']
 
-class MemberNameForm(ModelForm):
+class PersonalForm(ModelForm):
     class Meta:
         model = Member
-        fields = ['first_name', 'last_name']
+        fields = ['first_name', 'last_name', 'email']
 
 class AdminForm(ModelForm):
     class Meta:
