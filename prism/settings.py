@@ -115,7 +115,7 @@ AUTHENTICATION_BACKENDS = (
     'django_cas_ng.backends.CASBackend',
 )
 
-CAS_SERVER_URL = "https://fed.princeton.edu/cas/login"
+CAS_SERVER_URL = "https://fed.princeton.edu/cas/"
 CAS_LOGOUT_COMPLETELY = True
 CAS_IGNORE_REFERER = True
 

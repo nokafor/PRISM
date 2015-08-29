@@ -88,6 +88,9 @@ def userLogin(request, company_name):
         return redirect('companies:index')
 
 def logout_view(request):
-    logout(request)
-    return redirect('companies:index')
+    if request.user.has_usable_password():
+        logout(request)
+        return redirect('companies:index')
+    else:
+        return redirect('accounts/logout')
 

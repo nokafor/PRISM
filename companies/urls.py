@@ -8,6 +8,7 @@ from companies import views
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
     url(r'^accounts/login/', 'django_cas_ng.views.login'),
+    url(r'accounts/logout$', 'django_cas_ng.views.logout'),
     url(r'logout/$', views.logout_view, name='logout_view'),
     url(r'signup/$', views.signup, name='signup'),
     url(r'signup/successful/$', views.create_new, name="create_new"),
