@@ -22,6 +22,7 @@
 
     <!-- Custom CSS -->
     <link href="{% static 'profiles/css/clean-blog.min.css' %}" rel="stylesheet">
+    <link href="{% static 'profiles/css/flex.css' %}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -124,14 +125,16 @@
                 {% if member_list %}
                     {% for mem in member_list %}
                         <div class="col-md-3 col-sm-4 col-xs-6 portfolio-item">
-                            <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
+                            <div class="portfolio-caption flexbox" style="justify-content:space-between; -webkit-justify-content:space-between;">
                                 {% ifequal mem.id member.id %}
                                     <a href="{% url 'profiles:conflicts' company.name member.username %}"><h4>{{ mem }}</h4></a>
                                 {% else %}
                                     {% if admin %}
                                         <a data-toggle="modal" href="{% url 'updates:ConflictView' company.name member.username mem.id %}" data-target="#{{ mem.id }}-modal"><h4>{{ mem }}</h4></a>
-                                        <a onclick="return confirm('Are you sure you want to make {{ mem }} an admin?')" href="{% url 'updates:addAdmin' company.name member.username mem.id %}"><span class="fa fa-plus-circle" style="margin-left:5px"></span></a>
-                                        <a onclick="return confirm('Are you sure you want to remove {{ mem }} from {{company.name}}?')"href="{% url 'updates:deleteMember' company.name member.username mem.id %}"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
+                                        <div class="flexbox">
+                                            <a onclick="return confirm('Are you sure you want to make {{ mem }} an admin?')" href="{% url 'updates:addAdmin' company.name member.username mem.id %}"><span class="fa fa-plus-circle" style="margin-left:5px"></span></a>
+                                            <a onclick="return confirm('Are you sure you want to remove {{ mem }} from {{company.name}}?')"href="{% url 'updates:deleteMember' company.name member.username mem.id %}"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
+                                        </div>
                                     {% else %}
                                         <h4>{{ mem }}</h4>
                                     {% endif %}
@@ -171,12 +174,12 @@
                     {% for admin in admin_list %}
                         <div class="col-md-3 col-sm-4 col-xs-6  portfolio-item">
                             {% ifequal admin.member member%}
-                                <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
+                                <div class="portfolio-caption flexbox">
                                     <h4> {{ member }}</h4>
                                     <a onclick="return confirm('Are you sure you want to remove your {{company.name}} admin access?')"href="{% url 'updates:deleteAdmin' company.name member.username %}"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
                                 </div>
                             {% else %}
-                                <div class="portfolio-caption">
+                                <div class="portfolio-caption flexbox">
                                     <h4>{{ admin.member }}</h4>
                                 </div>
                             {% endifequal %}

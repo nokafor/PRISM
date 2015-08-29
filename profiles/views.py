@@ -234,7 +234,7 @@ def members(request, company_name, member_name):
 
     if member:
         company = Company.objects.get(name=company_name)
-        member_list = company.user_set.all()
+        member_list = Member.objects.filter(groups__name=company_name)
         admin_list = company.admin_set.all()
 
         admin = adminAuth(request, company_name, member_name)
