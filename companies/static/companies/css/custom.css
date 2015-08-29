@@ -10,6 +10,12 @@ html, body {
     overflow-x: hidden;
 }
 
+@media(max-width:375px) {
+    header .intro-text .intro-heading {
+        font-size: 25px;
+    }
+}
+
 header, section, footer, .container  {
     width: 100%;
 }
