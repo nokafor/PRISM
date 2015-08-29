@@ -12,7 +12,7 @@ html, body {
 
 @media(max-width:375px) {
     header .intro-text .intro-heading {
-        font-size: 25px;
+        font-size: 30px;
     }
 }
 
