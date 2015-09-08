@@ -7,7 +7,7 @@ from django.core.exceptions import PermissionDenied
 from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock
 from profiles.models import Conflict
 # from updates.forms import ConflictForm, RehearsalForm, CastForm, MemberForm, MemberNameForm, ChoreographerForm
-from updates.forms import RehearsalForm, ConflictForm, CastForm, CastingForm
+from updates.forms import RehearsalForm, ConflictForm, CastForm, CastingForm, PersonalForm, CompanyForm
 
 from django.views.generic import DetailView
 from django.template.loader import render_to_string
@@ -32,6 +32,33 @@ class RehearsalView(DetailView):
 class CastView(DetailView):
     model = Rehearsal
     template_name = 'updates/available.html'
+
+def updateSettings(request, company_name, member_name):
+    member = memberAuth(request, company_name, member_name)
+    if member:
+        company = Company.objects.get(name=company_name)
+        if request.method == 'POST':
+            print request.POST['form_type']
+            if request.POST['form_type'] == 'personal':
+                form = PersonalForm(request.POST, instance=member)
+                # print request.POST['old_password']
+                if member.has_usable_password():
+                    user = User.objects.get(username=member.username)
+                    if user.check_password(request.POST['old_password']):
+                        if request.POST['new_password']:
+                            print request.POST['new_password']
+                            # user.set_password(mem.password)
+                            # user.save()
+                    else:
+                        return HttpResponse('Entered an invalid password. Please go back and try again')
+
+            else:
+                form = CompanyForm(request.POST, instance=company)
+            if form.is_valid():
+                form.save()
+
+        
+    return redirect('profiles:settings', company_name, member_name,)
 
 def addCast(request, company_name, member_name):
     admin = adminAuth(request, company_name, member_name)
@@ -111,31 +138,6 @@ def addChoreographer(request, company_name, member_name, cast_id):
     else:
         raise PermissionDenied
 
-def updateChoreographer(request, company_name, member_name, choreographer_id):
-    name = 'updates:updateChoreographer'
-
-    # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
-        company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
-        
-        choreographer = Choreographer.objects.get(id=choreographer_id)
-
-        # save choreographer data
-        if request.method == 'POST':
-            form = ChoreographerForm(request.POST, instance=choreographer)
-            if form.is_valid():
-                form.save()
-
-                return redirect('profiles:casts', company_name, member_name,)
-        else:
-            form = ChoreographerForm(instance=choreographer)
-        return render(request, 'updates/updateChoreographer.html', {'company':company, 'member':member, 'curr':choreographer, 'form':form, 'redirect_name':name})
-
-
 def addCastMem(request, company_name, member_name, cast_id):
     admin = adminAuth(request, company_name, member_name)
     if admin:
@@ -154,20 +156,6 @@ def addCastMem(request, company_name, member_name, cast_id):
 
     else:
         raise PermissionDenied
-
-def updateCastMem(request, company_name, member_name, cast_id, mem_id):
-    # check if valid admin
-    not_valid_admin = adminAuth(request, company_name, member_name)
-    if not_valid_admin:
-        return not_valid_admin
-    else:
-        company = Company.objects.get(name=company_name)
-        member = company.member_set.get(username=member_name)
-
-        cast = Cast.objects.get(id=cast_id)
-        mem = Member.objects.get(id=mem_id)
-
-        return render(request, 'updates/updateCastMem.html', {'company':company, 'member':member, 'cast':cast, 'mem':mem})
 
 def deleteCastMem(request, company_name, member_name, cast_id, mem_id):
     # check if valid admin

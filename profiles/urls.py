@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r'^spaces/admin/parsePAC$', views.parsePAC, name='parsePAC'),
     url(r'^members/$', views.members, name='members'),
     url(r'^schedule/$', views.scheduling, name='scheduling'),
+    url(r'^schedule/confirm$', views.confirmSchedule, name='confirmSchedule'),
     url(r'^admin/addUsers/$', views.addUsers, name='addUsers'),
     url(r'^due_dates/(?P<option>[\w|\W]+)/$', views.updateDueDate, name='updateDueDate')
 )

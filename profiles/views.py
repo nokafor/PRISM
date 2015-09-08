@@ -12,6 +12,8 @@ from django.contrib.auth.models import User, Group
 from datetime import datetime, timedelta
 from django.utils import timezone
 
+DOWs = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
 # Create your views here.
 def settings(request, company_name, member_name):
     # return render(request, '404.html')
@@ -23,7 +25,7 @@ def settings(request, company_name, member_name):
 
         personal_form = PersonalForm(instance=member)
         company_form = CompanyForm(instance=company)
-        return render(request, 'profiles/settings.html', {'company': company, 'member':member, 'admin':admin, 'personal_form':personal_form, 'company_form':company_form})
+        return render(request, 'profiles/settings.html', {'company': company, 'member':member, 'admin':admin, 'choreographer':choreographer, 'personal_form':personal_form, 'company_form':company_form})
     else:
         return redirect('profiles:profile', company_name, member_name,)
 
@@ -243,26 +245,18 @@ def spaces(request, company_name, member_name):
         company = Company.objects.get(name=company_name)
         admin = adminAuth(request, company_name, member_name)
 
-        dows = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        print dows
         rehearsal_list = {}
-        for day in dows:
-            # print day
-            # print "%d" % dows.index(day)
-            rehearsal_list[day] = []
-        print rehearsal_list
-
         for rehearsal in company.rehearsal_set.all():
-            # try:
-            rehearsal_list[rehearsal.day_of_week].append(rehearsal)
-            print rehearsal.day_of_week
-            # except KeyError:
-            #     rehearsal_list[rehearsal.day_of_week] = []
-            #     rehearsal_list[rehearsal.day_of_week].append(rehearsal)
+            try:
+                rehearsal_list[rehearsal.day_of_week].append(rehearsal)
+            # print rehearsal.day_of_week
+            except KeyError:
+                rehearsal_list[rehearsal.day_of_week] = []
+                rehearsal_list[rehearsal.day_of_week].append(rehearsal)
 
-        # sorted(rehearsal_list.keys(), key=lambda x: dows.index(x))
-        print sorted(rehearsal_list.keys(), key=lambda x: dows.index(x))
-        print rehearsal_list
+        rehearsal_list = sorted(rehearsal_list.items(), key=lambda x: DOWs.index(x[0]))
+        # print rehearsal_list
+        # print rehearsal_list[0]
 
         return render(request, 'profiles/spaces.html', {'company':company, 'member':member, 'rehearsal_list':rehearsal_list, 'admin':admin})
 
@@ -285,6 +279,8 @@ def conflicts(request, company_name, member_name):
             except KeyError:
                 conflict_list[conflict.day_of_week] = []
                 conflict_list[conflict.day_of_week].append(conflict)
+
+        conflict_list = sorted(conflict_list.items(), key=lambda x: DOWs.index(x[0]))
 
         return render(request, 'profiles/conflicts.html', {'company':company, 'member':member, 'conflict_list':conflict_list, 'timeblock':TimeBlock, 'founder':founder})
 
@@ -320,7 +316,82 @@ def scheduling(request, company_name, member_name):
         rehearsals = Rehearsal.objects.filter(company=company)
 
         casts = Cast.objects.filter(company=company)
-
+                     
         return render(request, 'profiles/schedule.html', {'company':company, 'member':member, 'admin':admin, 'cast_list':casts, 'rehearsal_list':rehearsals})
     else:
         raise PermissionDenied
+
+def confirmSchedule(request, company_name, member_name):
+    admin = adminAuth(request, company_name, member_name)
+    if admin:
+        company = Company.objects.get(name=company_name)
+        if request.method == 'POST':
+            make_schedule = True
+            render(request, 'profiles/makeschedule.html', {'company':company, 'member':admin.member, 'make_schedule':make_schedule})
+
+            rehearsals = request.POST.getlist('rehearsals')
+            casts = request.POST.getlist('casts')
+
+            # get the associated rehearsals and casts
+            rehearsal_list = []
+            cast_list = []
+
+            for rehearsal_id in rehearsals:
+                rehearsal = Rehearsal.objects.get(id=rehearsal_id)
+                rehearsal_list.append(rehearsal)
+
+            for cast_id in casts:
+                cast = Cast.objects.get(id=cast_id)
+                cast_list.append(cast)
+
+
+            print rehearsal_list, cast_list
+            errors = ""
+
+            # check lengths
+            if len(rehearsal_list) < len(cast_list):
+                error = "In order to create a schedule, there must be at least as many rehearsals as casts.\n"
+                errors += error
+
+            # # make sure availabeRehearsals >0 for all casts
+            # cast_error = "The following casts are not available for any rehearsals and cannot be scheduled:\n"
+            # for cast in cast_list:
+            #     if cast.getAvailableRehearsals() == 0:
+            #         c = " - " + cast.name
+            #         cast_error += c
+
+            # if '-' in cast_error:
+            #     cast_error += ' -\nConsider asking members of the cast to adjust their conflicts.'
+            #     errors += cast_error
+
+            # # make sure availabeCasts >0 for all rehearsals
+            # rehearsal_error = "The following rehearsals do not work for any casts and cannot be scheduled:\n"
+            # for rehearsal in rehearsal_list:
+            #     if rehearsal.getAvailableCasts() == 0:
+            #         r = " - " + rehearsal.name
+            #         rehearsal_error += r
+
+            # if '-' in rehearsal_error:
+            #     rehearsal_error += ' -\nConsider contacting PAC or switching rehearsal spaces with another company.'
+            #     errors += rehearsal_error
+
+
+            if errors == "":
+                errors = None
+                finalDict = {}
+                finalDict["Rehearsals"] = rehearsal_list
+                finalDict['Casts'] = cast_list
+
+            else:
+                finalDict = None
+
+                
+
+
+            # return render(request, 'profiles/makeschedule.html', {'company':company, 'member':admin.member, 'make_schedule':make_schedule})
+
+    
+    # return redirect('profiles:scheduling', company_name, member_name,)
+    return render(request, 'profiles/confirmschedule.html', {'company':company, 'member':admin.member, 'make_schedule':make_schedule, 'errors':errors, 'dict':finalDict})
+
+

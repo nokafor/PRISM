@@ -172,11 +172,10 @@
 
                     {% if rehearsal_list %}
                     <ul style="list-style:none;" style="border:1px solid red">
-                        {% for day, rehearsals in rehearsal_list.items %}
-                            {% if rehearsals %}
-                            <li><h3>{{ day }}</h3></li>
+                        {% for item in rehearsal_list %}
+                            <li><h3>{{ item.0 }}</h3></li>
                             <ul style="list-style:none">
-                                {% for rehearsal in rehearsals %}
+                                {% for rehearsal in item.1 %}
                                 <li><div class="flexbox" style="">
                                     <p style="margin:0">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}}</p>
                                     {% if admin %}
@@ -193,12 +192,11 @@
                                     {% endif %}
                                 {% endfor %}
                             </ul>
-                            {% endif %}
                             <br>
                         {% endfor %}
                     </ul>
                     {% else %}
-                        <blockquote>You have not added any conflicts yet.</blockquote>
+                        <blockquote>You have not added any rehearsals yet.</blockquote>
                     {% endif %}
                     <!-- {% if rehearsal_list %}
                     <ul style="list-style:none;">

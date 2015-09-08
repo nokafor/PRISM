@@ -35,12 +35,19 @@
         <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <!-- jQuery -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
     <!-- Form Validation -->
-    <script src="{% static 'profiles/js/scheduling.js' %}"></script>
+    <script src="{% static 'companies/js/jqBootstrapValidation.js' %}"></script>
+    <!-- // <script src="{% static 'profiles/js/scheduling.js' %}"></script> -->
 
 </head>
 
 <body>
+    <script>
+        $(function () { $("input").not("[type=submit]").jqBootstrapValidation(); } );
+    </script>
 
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
@@ -89,101 +96,73 @@
     </header>
 
     <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h2 class="section-heading">Current Rehearsals</h2>
-                    <hr>
-                </div>
-            </div>
-            <div class="row">
-                {% if rehearsal_list %}
-                    {% for rehearsal in rehearsal_list %}
-                        <div class="col-md-4 col-sm-6 portfolio-item">
-                            <div class="checkbox" style="display:flex; flex-direction:row; align-items:center">
-                                <label>
-                                    <input type="checkbox"> <a data-toggle="modal" href="{% url 'updates:CastView' company.name member.username rehearsal.id %}" data-target="#r-{{ rehearsal.id }}-modal">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</a>
-                                </label>
-                            </div>
-
-                            <!-- <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
-                                <a data-toggle="modal" href="{% url 'updates:CastView' company.name member.username rehearsal.id %}" data-target="#r-{{ rehearsal.id }}-modal"><h4>{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</h4></a>
-                            </div> -->
-                        </div>
-                        
-                        <!-- Modal -->
-                        <div class="modal fade" id="r-{{ rehearsal.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                </div>
-                            </div>
-                        </div> 
-                    {% endfor %}
-                {% else %}
-                    <p>No rehearsals have been added yet.</p>
-                {% endif %}
-            </div>
-        </div>
-    </section>
-
-    <!-- List of Casts -->
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h2 class="section-heading">Current Casts</h2>
-                    <hr>
-                </div>
-            </div>
-            <div class="row">
-                {% if cast_list %}
-                        <!-- {% csrf_token %} -->
-                        {% for cast in cast_list %}
+        <div class="container" style="text-align:center">
+            <form action="{% url 'profiles:confirmSchedule' company.name member.username %}" method="post" id="scheduleForm">
+            {% csrf_token %}
+                <h2 style="margin-top:5%">Rehearsal Spaces</h2>
+                <hr>
+                <div class="row" style="text-align:left">
+                    {% if rehearsal_list %}
+                        {% for rehearsal in rehearsal_list %}
                             <div class="col-md-4 col-sm-6 portfolio-item">
-                                <div class="checkbox" style="display:flex; flex-direction:row; align-items:center">
+                                <div class="checkbox">
                                     <label>
-                                        <input type="checkbox"> <a data-toggle="modal" href="{% url 'updates:RehearsalView' company.name member.username cast.id %}" data-target="#{{ cast.id }}-modal">{{ cast.name }}</a>
+                                        <input type="checkbox" name="rehearsals" value="{{rehearsal.id}}"> <a data-toggle="popover" title="Casts Available During this Rehearsal" data-content="{% for cast in rehearsal.getCasts %} {{cast}} <br> {% empty %} None {% endfor %}" data-placement="bottom">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</a>
                                     </label>
                                 </div>
-                                <!-- <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
-                                    <a data-toggle="modal" href="{% url 'updates:RehearsalView' company.name member.username cast.id %}" data-target="#{{ cast.id }}-modal"><h4>{{ cast.name }}</h4></a>
-                                </div> -->
                             </div>
-
-                            <!-- Modal -->
-                            <div class="modal fade" id="{{ cast.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                    </div>
-                                </div>
-                            </div> 
                         {% endfor %}
-                {% else %}
-                    <p>No casts have been added yet.</p>
-                {% endif %}
-            </div>
+                        <label class="checkbox"><input type="checkbox" name="rehearsals" class="hidden" data-validation-minchecked-minchecked="1" data-validation-minchecked-message="Choose at least one"></label>
+                    {% else %}
+                        <p>No rehearsals have been added yet.</p>
+                    {% endif %}
+                </div>
+                <h2 style="margin-top:5%">Casting List</h2>
+                <hr>
+                <div class="row" style="text-align:left">
+                    {% if cast_list %}
+                            <!-- {% csrf_token %} -->
+                            {% for cast in cast_list %}
+                                <div class="col-md-3 col-sm-4 col-xs-6 portfolio-item">
+                                    <div class="checkbox">
+                                        <label style="">
+                                            <input type="checkbox" name="casts" value="{{cast.id}}"> <a data-toggle="modal" href="{% url 'updates:RehearsalView' company.name member.username cast.id %}" data-target="#{{ cast.id }}-modal">{{ cast.name }}</a>
+                                        </label>
+                                    </div>
+                                    <!-- <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
+                                        <a data-toggle="modal" href="{% url 'updates:RehearsalView' company.name member.username cast.id %}" data-target="#{{ cast.id }}-modal"><h4>{{ cast.name }}</h4></a>
+                                    </div> -->
+                                </div>
+                            {% endfor %}
+                    {% else %}
+                        <p>No casts have been added yet.</p>
+                    {% endif %}
+                </div>
+                <!-- <a href="" data-toggle="modal" data-target="#schedule-modal"></a> -->
+                <button type="submit" class="btn btn-lg btn-default" style="margin-top:10%">Make Rehearsal Schedule</button>
+            </form>
         </div>
     </section>
+
+    <!-- Confirm Schedule Modal -->
+    <div class="modal fade" id="schedule-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer>
         <div class="container">
             <div class="row">
-                <!-- <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <p class="copyright text-muted"><a href="{% url 'profiles:casts' company.name member.username %}" class="btn btn-lg btn-default" style="text-decoration:none">Manage Casts</a></p>
-                </div> -->
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <p class="copyright text-muted"><button type="submit" class="btn btn-lg btn-default" onclick="return validateForm()">Make Rehearsal Schedule</button></p>
+                    <p class="copyright text-muted">Copyright &copy; Princeton University</p>
                 </div>
-                
-                <!-- <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <p class="copyright text-muted"><a href="{% url 'profiles:spaces' company.name member.username %}" class="btn btn-lg btn-default" style="text-decoration:none">Manage Rehearsals</a></p>
-                </div> -->
             </div>
         </div>
     </footer>
 
-    <hr>
 
     {% if company.has_schedule %}
         <h2>Current Weekly Rehearsal Schedule</h2>    
@@ -194,14 +173,15 @@
         {% endfor%}
     {% endif %}
 
-    <!-- jQuery -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-
     <!-- Bootstrap Core JavaScript -->
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <!-- Custom Theme JavaScript -->
-    <script src="{% static 'profiles/js/clean-blog.min.js' %}"></script>
+    <!-- Pop Overs -->
+    <script>
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover({html:true}); 
+    });
+    </script>
 
 </body>
 

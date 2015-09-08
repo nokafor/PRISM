@@ -1,6 +1,6 @@
 function validateForm() {
     // alert("Checkpoint");
-    var form = document.getElementById('castForm');
+    var form = document.getElementById('scheduleForm');
     if (!anyChecked(form)) return false;
     // alert("Checkpoint 1");
     // var is_checked = anyChecked(form);

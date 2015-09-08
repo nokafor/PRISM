@@ -56,94 +56,97 @@ class Company(Group):
         self.save()
         return True
         
-    def scheduleRehearsals(self):
-        totalCasts = self.cast_set.all()
-        totalRehearsals = self.rehearsal_set.all()
-        # print >> sys.stderr, "Total Casts"
-        # print >> sys.stderr, totalCasts
+    def makeSchedule(self, info):
+        print info
+        return True
 
-        # print >> sys.stderr, "Total Rehearsals:"
-        # print >> sys.stderr, totalRehearsals
+        # totalCasts = self.cast_set.all()
+        # totalRehearsals = self.rehearsal_set.all()
+        # # print >> sys.stderr, "Total Casts"
+        # # print >> sys.stderr, totalCasts
 
-        for n in totalCasts:
-            minNumCasts = len(totalCasts)
+        # # print >> sys.stderr, "Total Rehearsals:"
+        # # print >> sys.stderr, totalRehearsals
 
-            # find unscheduled rehearsal with least number of available casts (greater than 0)
-            for rehearsal in totalRehearsals:
-                numCasts = len(rehearsal.getAvailableCasts())
-                if numCasts > 0 and numCasts < minNumCasts:
-                    minNumCasts = numCasts
+        # for n in totalCasts:
+        #     minNumCasts = len(totalCasts)
 
-            print "Min Number of Casts at Beginning:"
-            print minNumCasts
+        #     # find unscheduled rehearsal with least number of available casts (greater than 0)
+        #     for rehearsal in totalRehearsals:
+        #         numCasts = len(rehearsal.getAvailableCasts())
+        #         if numCasts > 0 and numCasts < minNumCasts:
+        #             minNumCasts = numCasts
 
-            # add all unscheduled rehearsals with min number to a list
-            rehearsal_list = []
-            for rehearsal in totalRehearsals:
-                if len(rehearsal.getAvailableCasts()) == minNumCasts:
-                    rehearsal_list.append(rehearsal)
+        #     print "Min Number of Casts at Beginning:"
+        #     print minNumCasts
 
-            print "Rehearsals with min number of casts:"
-            print rehearsal_list
+        #     # add all unscheduled rehearsals with min number to a list
+        #     rehearsal_list = []
+        #     for rehearsal in totalRehearsals:
+        #         if len(rehearsal.getAvailableCasts()) == minNumCasts:
+        #             rehearsal_list.append(rehearsal)
 
-            # find unscheduled cast available during rehearsals above with least number of available rehearsals
-            minNumRehearsals = len(totalRehearsals)
+        #     print "Rehearsals with min number of casts:"
+        #     print rehearsal_list
 
-            for rehearsal in rehearsal_list:
-                available_casts = rehearsal.getAvailableCasts()
-                for cast in available_casts:
-                    numRehearsals = len(cast.getAvailableRehearsals())
-                    if numRehearsals < minNumRehearsals:
-                        minNumRehearsals = numRehearsals
+        #     # find unscheduled cast available during rehearsals above with least number of available rehearsals
+        #     minNumRehearsals = len(totalRehearsals)
 
-            print "Min Number of Rehearsals for each cast:"
-            print minNumRehearsals
+        #     for rehearsal in rehearsal_list:
+        #         available_casts = rehearsal.getAvailableCasts()
+        #         for cast in available_casts:
+        #             numRehearsals = len(cast.getAvailableRehearsals())
+        #             if numRehearsals < minNumRehearsals:
+        #                 minNumRehearsals = numRehearsals
+
+        #     print "Min Number of Rehearsals for each cast:"
+        #     print minNumRehearsals
 
 
-            # add all casts with min number to a list
-            cast_list = []
-            casts = {}
-            for rehearsal in rehearsal_list:
-                available_casts = rehearsal.getAvailableCasts()
-                for cast in available_casts:
-                    if len(cast.getAvailableRehearsals()) == minNumRehearsals:
-                        cast_list.append(cast)
-                        casts[cast] = rehearsal
+        #     # add all casts with min number to a list
+        #     cast_list = []
+        #     casts = {}
+        #     for rehearsal in rehearsal_list:
+        #         available_casts = rehearsal.getAvailableCasts()
+        #         for cast in available_casts:
+        #             if len(cast.getAvailableRehearsals()) == minNumRehearsals:
+        #                 cast_list.append(cast)
+        #                 casts[cast] = rehearsal
 
-            print "Cast-rehearsal pairs where cast has min number of rehearsals:"
-            print casts
+        #     print "Cast-rehearsal pairs where cast has min number of rehearsals:"
+        #     print casts
 
-            if cast_list:
-                # randomly pick a cast from the remaining cast_list
-                # cast = random.choice(cast_list)
-                cast = random.choice(casts.keys())
+        #     if cast_list:
+        #         # randomly pick a cast from the remaining cast_list
+        #         # cast = random.choice(cast_list)
+        #         cast = random.choice(casts.keys())
 
-                print "Randomly chosen cast:"
-                print cast
-                print casts[cast]
+        #         print "Randomly chosen cast:"
+        #         print cast
+        #         print casts[cast]
 
-                # schedule the cast to its respective rehearsal
-                cast.scheduleRehearsal(casts[cast])
-                # rehearsal.is_scheduled = True
-                cast.save()
-                rehearsal.save()
+        #         # schedule the cast to its respective rehearsal
+        #         cast.scheduleRehearsal(casts[cast])
+        #         # rehearsal.is_scheduled = True
+        #         cast.save()
+        #         rehearsal.save()
 
-                print "Is cast scheduled?"
-                print cast.is_scheduled
+        #         print "Is cast scheduled?"
+        #         print cast.is_scheduled
 
-                # print >> sys.stderr, "Is rehearsal scheduled?"
-                # print >> sys.stderr, rehearsal.is_scheduled
+        #         # print >> sys.stderr, "Is rehearsal scheduled?"
+        #         # print >> sys.stderr, rehearsal.is_scheduled
 
-                #return True
+        #         #return True
 
-            else:
-                self.has_schedule = False
-                self.save()
-                return "Could not complete scheduling... Too many conflicts"
+        #     else:
+        #         self.has_schedule = False
+        #         self.save()
+        #         return "Could not complete scheduling... Too many conflicts"
 
-        self.has_schedule = True
-        self.save()
-        return "Iteration done"
+        # self.has_schedule = True
+        # self.save()
+        # return "Iteration done"
 
         
 
@@ -182,64 +185,12 @@ class TimeBlock(models.Model):
                 return self.DAY_OF_WEEK_CHOICES[0][0]
         return self.DAY_OF_WEEK_CHOICES[dow][0]
 
-class Rehearsal(TimeBlock):
-    company = models.ForeignKey(Company)
-    place = models.CharField(max_length=200)
-    # is_scheduled = models.BooleanField(default=False)
-    
-    def __str__(self):
-        return "%s: %s - %s (%s)" % (self.place, self.start_time, self.end_time, self.day_of_week)
-    
-    class Meta:
-        ordering = ['day_of_week', 'start_time']
 
-    def getCasts(self):
-        casts = Cast.objects.filter(company = self.company)
-
-        cast_list = []
-        for cast in casts:
-            print cast
-            members = cast.member_set.all()
-            available = True
-            for member in members:
-                print member
-                available = True
-                for conflict in member.conflict_set.all():
-                    if conflict.conflictsWith(self):
-                        available == False
-                        break
-                if available == False:
-                    break
-            if available == True:
-                cast_list.append(cast)
-
-        return list(cast_list)
-
-    def getAvailableCasts(self):
-        casts = Cast.objects.filter(company=self.company)
-
-        cast_list = []
-        for cast in casts:
-            if cast.is_scheduled == False:
-                members = cast.member_set.all()
-                for member in members:
-                    available = True
-                    for conflict in member.conflict_set.all():
-                        if conflict.conflictsWith(self):
-                            available = False
-                            break
-
-                    if available == False:
-                        break
-
-                if available == True:
-                    cast_list.append(cast)
-        return list(cast_list)
 
 class Cast(models.Model):
     company = models.ForeignKey(Company)
     name = models.CharField(max_length=255)
-    rehearsal = models.ForeignKey(Rehearsal, blank=True, null=True)
+    rehearsal = models.ForeignKey('Rehearsal', blank=True, null=True)
     is_scheduled = models.BooleanField(default=False)
     def __str__(self):
         return self.name
@@ -308,3 +259,73 @@ class Choreographer(models.Model):
         
     class Meta:
         ordering = ['member']
+
+class Rehearsal(TimeBlock):
+    company = models.ForeignKey(Company)
+    place = models.CharField(max_length=200)
+    # is_scheduled = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return "%s: %s - %s (%s)" % (self.place, self.start_time, self.end_time, self.day_of_week)
+    
+    class Meta:
+        ordering = ['day_of_week', 'start_time']
+
+    def getCasts(self):
+        casts = Cast.objects.filter(company = self.company)
+
+        cast_list = []
+        for cast in casts:
+
+            # check all the cast members
+            members = cast.member_set.all()
+            available = True
+            for member in members:
+                available = True
+                for conflict in member.conflict_set.all():
+                    if conflict.conflictsWith(self):
+                        available = False
+                        break
+                if available == False:
+                    break
+            # if not all the members are free, move to next cast
+            if available == False: 
+                continue       
+
+            # check all the choreographers
+            choreographers = Choreographer.objects.filter(cast=cast)
+            for choreographer in choreographers:
+                for conflict in choreographer.member.conflict_set.all():
+                    if conflict.conflictsWith(self):
+                        available = False
+                        break
+                if available == False:
+                    break
+
+            # if everyone is free
+            if available == True:
+                cast_list.append(cast)
+            # print available
+        # print cast_list
+        return list(cast_list)
+
+    def getAvailableCasts(self):
+        casts = Cast.objects.filter(company=self.company)
+
+        cast_list = []
+        for cast in casts:
+            if cast.is_scheduled == False:
+                members = cast.member_set.all()
+                for member in members:
+                    available = True
+                    for conflict in member.conflict_set.all():
+                        if conflict.conflictsWith(self):
+                            available = False
+                            break
+
+                    if available == False:
+                        break
+
+                if available == True:
+                    cast_list.append(cast)
+        return list(cast_list)

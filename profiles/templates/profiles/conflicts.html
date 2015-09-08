@@ -198,12 +198,11 @@
                     <!-- <h2 class="section-heading">Saved Conflicts</h2> -->
                     <!-- <hr> -->
                     {% if conflict_list %}
-                    <ul style="list-style:none;" style="border:1px solid red">
-                        {% for day, conflicts in conflict_list.items %}
-                            {% if conflicts %}
-                            <li><h3>{{ day }}</h3></li>
+                    <ul style="list-style:none;" style="">
+                        {% for item in conflict_list %}
+                            <li><h3>{{ item.0 }}</h3></li>
                             <ul style="list-style:none">
-                                {% for conflict in conflicts %}
+                                {% for conflict in item.1 %}
                                 <li><div class="flexbox" style="">
                                     <p style="margin:0;">{{ conflict.description }}: {{conflict.start_time}} - {{conflict.end_time}}</p>
                                     <div style="margin-left:5%"><a data-toggle="modal" href="{% url 'updates:updateConflict' company.name member.username conflict.id %}" data-target="#{{ conflict.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
@@ -218,7 +217,6 @@
                                 </div></li>
                                 {% endfor %}
                             </ul>
-                            {% endif %}
                             <br>
                         {% endfor %}
                     </ul>
