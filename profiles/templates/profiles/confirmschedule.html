@@ -39,6 +39,11 @@
 </head>
 
 <body>
+    <div id="makeSchedule" class="hidden container flexbox" style="width:100vw; height:100vh; flex-direction:column; -webkit-flex-direction:column;">
+        <h3>Please wait while we make the {{company.name}} schedule...</h3>
+        <span class="fa fa-spinner fa-4x fa-spin"></span>
+        <h6>Do not close this page until schedule is complete.</h6>
+    </div>
     <a id="getModal" class="hidden" data-toggle="modal" data-target="#confirm-modal"></a>
     <div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -61,33 +66,30 @@
                 {% else %}
                     <div class="flexbox fluid">
                         <div class="box center">
-                            <h5>Rehearsal spaces to be used in schedule</h5>
-                            <ul style="list-style:none">
-                                {% for space in dict.1 %}
-                                <li>{{space}}</li>
+                            <h5>Times to be scheduled</h5>
+                            <ul style="list-style:none; padding:0">
+                                {% for rehearsal in dict.items.1.1 %}
+                                <li>{{rehearsal.day_of_week}}: {{rehearsal.start_time}} - {{rehearsal.end_time}}</li>
                                 {% endfor %}
                             </ul>
                         </div>
                         <div class="box center">
                             <h5>Casts to be scheduled</h5>
-                            {{dict}}
-                            {{dict.0}}
-                            {{dict.1}}
-                            <br>
-                            For Loop results:
-                            {% for title, list in dict %}
-                            {{title}}
-                            {{list}}
-                            {% endfor %}
+                            <ul style="list-style:none; padding:0">
+                                {% for cast in dict.items.0.1 %}
+                                <li>{{cast}}</li>
+                                {% endfor %}
+                            </ul>
                         </div>
                     </div>
                 <div class="modal-footer center">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Continue</button>
+                    <button type="button" class="btn btn-default" id="continue" data-dismiss="modal">Continue</button>
                 </div>
                 {% endif%}
             </div>
         </div>
     </div>
+
 
 
     <!-- jQuery -->
@@ -97,6 +99,11 @@
      $(window).load(function(){
             $('#getModal').click();
         });
+
+     $('#confirm-modal').on('hidden.bs.modal', function() {
+        $('#makeSchedule').removeClass('hidden');
+        // $('#makeSchedule').append('{{company.name}}');
+     });
     </script>
 
     <!-- Bootstrap Core JavaScript -->

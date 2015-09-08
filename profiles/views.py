@@ -332,24 +332,10 @@ def confirmSchedule(request, company_name, member_name):
             rehearsals = request.POST.getlist('rehearsals')
             casts = request.POST.getlist('casts')
 
-            # get the associated rehearsals and casts
-            rehearsal_list = []
-            cast_list = []
-
-            for rehearsal_id in rehearsals:
-                rehearsal = Rehearsal.objects.get(id=rehearsal_id)
-                rehearsal_list.append(rehearsal)
-
-            for cast_id in casts:
-                cast = Cast.objects.get(id=cast_id)
-                cast_list.append(cast)
-
-
-            print rehearsal_list, cast_list
             errors = ""
 
             # check lengths
-            if len(rehearsal_list) < len(cast_list):
+            if len(rehearsals) < len(casts):
                 error = "In order to create a schedule, there must be at least as many rehearsals as casts.\n"
                 errors += error
 
@@ -378,9 +364,25 @@ def confirmSchedule(request, company_name, member_name):
 
             if errors == "":
                 errors = None
+
+                # get the associated rehearsals and casts
                 finalDict = {}
-                finalDict["Rehearsals"] = rehearsal_list
-                finalDict['Casts'] = cast_list
+                finalDict["Rehearsals"] = []
+                finalDict['Casts'] = []
+
+                # rehearsal_list = []
+                # cast_list = []
+
+                for rehearsal_id in rehearsals:
+                    rehearsal = Rehearsal.objects.get(id=rehearsal_id)
+                    finalDict["Rehearsals"].append(rehearsal)
+
+                for cast_id in casts:
+                    cast = Cast.objects.get(id=cast_id)
+                    finalDict["Casts"].append(cast)
+
+
+                print finalDict
 
             else:
                 finalDict = None
