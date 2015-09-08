@@ -214,6 +214,8 @@ def profile(request, company_name, member_name):
     member = memberAuth(request, company_name, member_name)
 
     if member:
+        if not member.first_name:
+            return redirect('profiles:settings', company_name, member_name,)
         company = Company.objects.get(name=company_name)
         admin = adminAuth(request, company_name, member_name)
     

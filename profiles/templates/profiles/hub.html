@@ -236,21 +236,6 @@
 
     </div>
 
-    {% if not member.first_name %}
-    <a id="getModal" data-toggle="modal" href="{% url 'updates:updateName' company.name member.username %}" data-target="#name-modal"></a>
-    <div class="modal fade" id="name-modal" data-backdrop="static">
-        <div class="modal-dialog">
-            <div class="modal-content">
-            </div>
-        </div>
-    </div>
-    <script type="text/javascript">
-     $(window).load(function(){
-            $('#getModal').click();
-        });
-    </script>
-    {% endif %}
-
     <script>
         $(document).ready(function(){
             if ($(window).width() >= 768) {

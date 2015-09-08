@@ -22,6 +22,7 @@
 
     <!-- Custom CSS -->
     <link href="{% static 'profiles/css/clean-blog.min.css' %}" rel="stylesheet">
+    <link href="{% static 'profiles/css/flex.css' %}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -46,7 +47,7 @@
 
 <body>
     <script>
-        $(function () { $("input").not("[type=submit]").jqBootstrapValidation(); } );
+        $(function () { $("input,select").not("[type=submit]").jqBootstrapValidation(); } );
     </script>
 
     <!-- Navigation -->
@@ -65,6 +66,7 @@
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            {% if member.first_name %}
                 <ul class="nav navbar-nav navbar-right">
                     <li>
                         <a href="{% url 'profiles:profile' company.name member.username %}">Hub</a>
@@ -73,6 +75,11 @@
                         <a href="logout/">Logout</a>
                     </li>
                 </ul>
+            {% else %}
+                <div class="flexbox" style="color:white">
+                    Please enter your name, before continuing.
+                </div>
+            {% endif %}
             </div>
             <!-- /.navbar-collapse -->
         </div>
@@ -100,6 +107,9 @@
             <form action="{% url 'profiles:confirmSchedule' company.name member.username %}" method="post" id="scheduleForm">
             {% csrf_token %}
                 <h2 style="margin-top:5%">Rehearsal Spaces</h2>
+                <div class="flexbox">
+                    <h5 style="font-weight:normal; margin-right:2%;"><a id="allRehearsals">Select All</a></h5> <h5 style="font-weight:normal"><a id="noRehearsals">Deselect All</a></h5>
+                </div>
                 <hr>
                 <div class="row" style="text-align:left">
                     {% if rehearsal_list %}
@@ -107,7 +117,7 @@
                             <div class="col-md-4 col-sm-6 portfolio-item">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" name="rehearsals" value="{{rehearsal.id}}"> <a data-toggle="popover" title="Casts Available During this Rehearsal" data-content="{% for cast in rehearsal.getCasts %} {{cast}} <br> {% empty %} None {% endfor %}" data-placement="bottom">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</a>
+                                        <input type="checkbox" name="rehearsals" class="rehearsal" value="{{rehearsal.id}}"> <a data-toggle="popover" title="Casts Available During this Rehearsal" data-content="{% for cast in rehearsal.getCasts %} {{cast}} <br> {% empty %} None {% endfor %}" data-placement="bottom">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</a>
                                     </label>
                                 </div>
                             </div>
@@ -118,6 +128,9 @@
                     {% endif %}
                 </div>
                 <h2 style="margin-top:5%">Casting List</h2>
+                <div class="flexbox">
+                    <h5 style="font-weight:normal; margin-right:2%;"><a id="allCasts">Select All</a></h5> <h5 style="font-weight:normal"><a id="noCasts">Deselect All</a></h5>
+                </div>
                 <hr>
                 <div class="row" style="text-align:left">
                     {% if cast_list %}
@@ -126,7 +139,7 @@
                                 <div class="col-md-3 col-sm-4 col-xs-6 portfolio-item">
                                     <div class="checkbox">
                                         <label style="">
-                                            <input type="checkbox" name="casts" value="{{cast.id}}"> <a data-toggle="modal" href="{% url 'updates:RehearsalView' company.name member.username cast.id %}" data-target="#{{ cast.id }}-modal">{{ cast.name }}</a>
+                                            <input type="checkbox" name="casts" class="cast" value="{{cast.id}}"> <a data-toggle="modal" href="{% url 'updates:RehearsalView' company.name member.username cast.id %}" data-target="#{{ cast.id }}-modal">{{ cast.name }}</a>
                                         </label>
                                     </div>
                                     <!-- <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
@@ -134,6 +147,7 @@
                                     </div> -->
                                 </div>
                             {% endfor %}
+                            <label class="checkbox"><input type="checkbox" name="casts" class="hidden" data-validation-minchecked-minchecked="1" data-validation-minchecked-message="Choose at least one"></label>
                     {% else %}
                         <p>No casts have been added yet.</p>
                     {% endif %}
@@ -180,6 +194,22 @@
     <script>
     $(document).ready(function(){
         $('[data-toggle="popover"]').popover({html:true}); 
+
+        $('#allRehearsals').click(function(e) {
+            $('.rehearsal').prop('checked', true);
+        });
+
+        $('#allCasts').click(function(e) {
+            $('.cast').prop('checked', true);
+        });
+
+        $('#noRehearsals').click(function(e) {
+            $('.rehearsal').prop('checked', false);
+        });
+
+        $('#noCasts').click(function(e) {
+            $('.cast').prop('checked', false);
+        });
     });
     </script>
 
