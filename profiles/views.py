@@ -334,12 +334,18 @@ def confirmSchedule(request, company_name, member_name):
             rehearsals = request.POST.getlist('rehearsals')
             casts = request.POST.getlist('casts')
 
-            errors = ""
+            errors = []
 
             # check lengths
+            if len(rehearsals) == 0:
+                error = "You must select at least one rehearsal to be scheduled.\n"
+                errors.append(error)
+            if len(casts) == 0:
+                error = "You must select at least one cast to be scheduled.\n"
+                errors.append(error)
             if len(rehearsals) < len(casts):
                 error = "In order to create a schedule, there must be at least as many rehearsals as casts.\n"
-                errors += error
+                errors.append(error)
 
             # # make sure availabeRehearsals >0 for all casts
             # cast_error = "The following casts are not available for any rehearsals and cannot be scheduled:\n"
@@ -363,8 +369,8 @@ def confirmSchedule(request, company_name, member_name):
             #     rehearsal_error += ' -\nConsider contacting PAC or switching rehearsal spaces with another company.'
             #     errors += rehearsal_error
 
-
-            if errors == "":
+            print errors
+            if errors == []:
                 errors = None
 
                 # get the associated rehearsals and casts

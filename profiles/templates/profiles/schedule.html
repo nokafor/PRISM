@@ -102,7 +102,7 @@
             {% csrf_token %}
                 <h2 style="margin-top:5%">Rehearsal Spaces</h2>
                 <div class="flexbox">
-                    <h5 style="font-weight:normal; margin-right:2%;"><a id="allRehearsals">Select All</a></h5> <h5 style="font-weight:normal"><a id="noRehearsals">Deselect All</a></h5>
+                    <h5 style="font-weight:normal; margin-right:2%; cursor:pointer;"><a id="allRehearsals">Select All</a></h5> <h5 style="font-weight:normal; cursor:pointer;"><a id="noRehearsals">Deselect All</a></h5>
                 </div>
                 <hr>
                 <div class="row" style="text-align:left">
@@ -111,19 +111,19 @@
                             <div class="col-md-4 col-sm-6 portfolio-item">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" name="rehearsals" class="rehearsal" value="{{rehearsal.id}}"> <a data-toggle="popover" title="Casts Available During this Rehearsal" data-content="{% for cast in rehearsal.getCasts %} {{cast}} <br> {% empty %} None {% endfor %}" data-placement="bottom">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</a>
+                                        <input type="checkbox" name="rehearsals" class="rehearsal" value="{{rehearsal.id}}"> <a data-toggle="popover" title="Casts Available During this Rehearsal Time" data-content="{% for cast in rehearsal.getAvailableCasts %} {{cast}} <br> {% empty %} None {% endfor %}" data-placement="bottom">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</a>
                                     </label>
                                 </div>
                             </div>
                         {% endfor %}
-                        <label class="checkbox"><input type="checkbox" name="rehearsals" class="hidden" data-validation-minchecked-minchecked="1" data-validation-minchecked-message="Choose at least one"></label>
+                        <!-- <label class="checkbox"><input type="checkbox" name="rehearsals" class="hidden" ></label> -->
                     {% else %}
                         <p>No rehearsals have been added yet.</p>
                     {% endif %}
                 </div>
                 <h2 style="margin-top:5%">Casting List</h2>
                 <div class="flexbox">
-                    <h5 style="font-weight:normal; margin-right:2%;"><a id="allCasts">Select All</a></h5> <h5 style="font-weight:normal"><a id="noCasts">Deselect All</a></h5>
+                    <h5 style="font-weight:normal; margin-right:2%; cursor:pointer;"><a id="allCasts">Select All</a></h5> <h5 style="font-weight:normal; cursor:pointer;"><a id="noCasts">Deselect All</a></h5>
                 </div>
                 <hr>
                 <div class="row" style="text-align:left">
@@ -133,12 +133,9 @@
                                 <div class="col-md-3 col-sm-4 col-xs-6 portfolio-item">
                                     <div class="checkbox">
                                         <label style="">
-                                            <input type="checkbox" name="casts" class="cast" value="{{cast.id}}"> <a data-toggle="modal" href="{% url 'updates:RehearsalView' company.name member.username cast.id %}" data-target="#{{ cast.id }}-modal">{{ cast.name }}</a>
+                                            <input type="checkbox" name="casts" class="cast" value="{{cast.id}}"> <a data-toggle="popover" title="Rehearsal Times that Work for This Cast" data-content="{% for rehearsal in cast.getAvailableRehearsals %} {{rehearsal.day_of_week}}: {{rehearsal.start_time}} - {{rehearsal.end_time}} <br> {% empty %} None {% endfor %}" data-placement="bottom">{{ cast.name }}</a>
                                         </label>
                                     </div>
-                                    <!-- <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
-                                        <a data-toggle="modal" href="{% url 'updates:RehearsalView' company.name member.username cast.id %}" data-target="#{{ cast.id }}-modal"><h4>{{ cast.name }}</h4></a>
-                                    </div> -->
                                 </div>
                             {% endfor %}
                             <label class="checkbox"><input type="checkbox" name="casts" class="hidden" data-validation-minchecked-minchecked="1" data-validation-minchecked-message="Choose at least one"></label>
@@ -151,14 +148,6 @@
             </form>
         </div>
     </section>
-
-    <!-- Confirm Schedule Modal -->
-    <div class="modal fade" id="schedule-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-            </div>
-        </div>
-    </div>
 
     <!-- Footer -->
     <footer>

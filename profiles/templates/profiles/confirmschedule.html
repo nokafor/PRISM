@@ -59,7 +59,12 @@
                 <div id="form-modal-body" class="modal-body">
                 {% if errors %}
                     <h5>Errors:</h5>
-                    <p style="font-size:70%">{{ errors|default:"None" }}</p>
+                    <p style="font-size:70%">
+                        {% for error in errors %}
+                            {{ error }}
+                            <br>
+                        {% endfor %}
+                    </p>
                 <div class="modal-footer center">
                     <a class="btn btn-default" href="{% url 'profiles:scheduling' company.name member.username %}">Back</a>
                 </div>
