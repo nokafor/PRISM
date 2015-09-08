@@ -48,6 +48,7 @@
 
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
+        {% if member.first_name %}
             <ul class="sidebar-nav">
                 <li style="text-indent:0">
                     <a href="{% url 'profiles:profile' company.name member.username %}" style="text-align:center; margin: 5% auto;">
@@ -66,8 +67,15 @@
                     <a href="logout/">Logout</a>
                 </li>
             </ul>
+        {% endif %}
         </div>
         <!-- /#sidebar-wrapper -->
+
+        {% if not member.first_name %}
+        <script>
+            window.alert("Please enter your name before continuing");
+        </script>
+        {% endif %}
 
         <!-- Page Content -->
         <div id="page-content-wrapper">
