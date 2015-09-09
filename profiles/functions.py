@@ -2,33 +2,16 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.http import HttpResponse
-from django.core.exceptions import SuspiciousOperation
+from django.core.exceptions import SuspiciousOperation, PermissionDenied
 
-from companies.models import Company, Member, Admin
+from companies.models import Company, Member, Admin, Cast, Rehearsal
 from django.contrib.auth.models import User, Group
 
 import urllib2
 import json
 
 from string import ascii_uppercase
-# Google Sheets API Dependencies
-# from oauth2client.client import OAuth2WebServerFlow
-# from oauth2client.tools import run
-# from oauth2client.file import Storage
 
-# def get_oauth2_token(request):
-#     CLIENT_ID = '926398386913-osgjnrb1p57m28rtqmrc0oeru2jmm2u2.apps.googleusercontent.com'
-#     CLIENT_SECRET = 'nhB0NqaKQd8N4jmUP4wEihGB'
-
-#     flow = OAuth2WebServerFlow(
-#         client_id = CLIENT_ID,
-#         client_secret = CLIENT_SECRET,
-#         scope = 'https://spreadsheets.google.com/feeds https://docs.google.com/feeds',
-#         redirect_uri = 'http://localhost:8000/'
-#         )
-#     storage = Storage('creds.data')
-#     credentials = run(flow, storage)
-#     print "access_token: %s" % credentials.access_token
 
 # Function to make sure user has access to the company and profile they are trying to access
 def memberAuth(request, company_name, member_name):
@@ -44,7 +27,7 @@ def memberAuth(request, company_name, member_name):
     else:
         raise SuspiciousOperation
 
-
+# Function to make sure user has admin access to the company and profile they are trying to access
 def adminAuth(request, company_name, member_name):
     company = get_object_or_404(Company, name=company_name)
 
@@ -58,6 +41,43 @@ def adminAuth(request, company_name, member_name):
     else:
         raise SuspiciousOperation
 
+# Function to unschedule a companies rehearsals
+def unscheduleRehearsals(company_name, rehearsals, casts):
+    company = Company.objects.get(name=company_name)
+    totalCasts = Cast.objects.filter(company=company)
+    totalRehearsals = Rehearsal.objects.filter(company=company)
+
+    members = Member.objects.filter(groups__name=company.name)
+    for mem in members:
+        conflicts = mem.conflict_set.filter(description__startswith="%s Rehearsal" % (company.name))
+        for r in conflicts:
+            r.delete()
+
+    for cast in totalCasts:
+        cast.is_scheduled = False
+        cast.rehearsal = None
+        cast.save()
+
+    for rehearsal in totalRehearsals:
+        rehearsal.is_scheduled = False
+        rehearsal.save()
+
+    rehearsal_list = []
+    cast_list = []
+
+    for rehearsal in rehearsals:
+        rehearsal_list.append(Rehearsal.objects.get(id=rehearsal.id))
+    for cast in casts:
+        cast_list.append(Cast.objects.get(id=cast.id))
+
+    finalDict = {}
+    finalDict["Rehearsals"] = rehearsal_list
+    finalDict["Casts"] = cast_list
+
+    return finalDict
+
+# Functions for parsing PAC schedule
+# =====================================
 def get_json(format, calID, day):
     #Adsf
     url = 'https://spreadsheets.google.com/feeds/%s/%s/%d/public/basic?prettyprint=true&alt=json' % (format, calID, day);

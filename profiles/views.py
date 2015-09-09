@@ -8,7 +8,7 @@ from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreograp
 from profiles.models import Conflict
 from updates.forms import PersonalForm, UserForm, CastingForm, CompanyForm, SchedulingForm
 
-from profiles.functions import memberAuth, adminAuth, getRowValue, get_json, get_col_headers
+from profiles.functions import memberAuth, adminAuth, getRowValue, get_json, get_col_headers, unscheduleRehearsals
 from django.contrib.auth.models import User, Group
 
 from datetime import datetime, timedelta
@@ -339,55 +339,85 @@ def makeSchedule(request, company_name, member_name):
 
                 # unschedule any rehearsals that are already scheduled
                 company = Company.objects.get(name=company_name)
-                company.unscheduleRehearsals()
+
+                dict = unscheduleRehearsals(company_name, rehearsals, casts)
+                rehearsals = dict["Rehearsals"]
+                casts = dict["Casts"]
+
+                for rehearsal in rehearsals:
+                    print rehearsal.is_scheduled, rehearsal
+                for cast in casts:
+                    print cast.is_scheduled, cast
+
+                print "======================"
 
                 # begin scheduling casts
                 for cast in casts:
+                    print "\n\n"
                     # get all unscheduled rehearsals with least number of available casts (greater than 0)
-                    min = len(casts)
+                    min = len(Cast.objects.filter(company=company))
                     for rehearsal in rehearsals:
-                        n = len(rehearsal.getAvailableCasts())
-                        if n > 0 and n < min:
-                            min = n
-                    print min
+                        print rehearsal, rehearsal.is_scheduled
+                        if rehearsal.is_scheduled == False:
+                            n = len(rehearsal.getAvailableCasts())
+                            print n, rehearsal
+                            if n > 0 and n <= min:
+                                min = n
+                    print "Least # of available casts:\n", min
 
                     rehearsal_list = []
                     for rehearsal in rehearsals:
-                        if len(rehearsal.getAvailableCasts()) == min:
+                        if rehearsal.is_scheduled == False and len(rehearsal.getAvailableCasts()) == min:
                             rehearsal_list.append(rehearsal)
+
+                    print "Unscheduled rehearsals with least # of available casts:\n", rehearsal_list
 
                     # get all unscheduled casts available during rehearsals above
                     # pick the ones with least number of available rehearsals
-                    min = len(rehearsals)
+                    min = len(Rehearsal.objects.filter(company=company))
+                    print min
                     for rehearsal in rehearsal_list:
                         available_casts = rehearsal.getAvailableCasts()
                         for cast in available_casts:
-                            n = len(cast.getAvailableRehearsals())
-                            if n > 0 and n < min:
-                                min = n
-                    print min
+                            print cast.is_scheduled, cast
+                            if cast.is_scheduled == False:
+                                n = len(cast.getAvailableRehearsals())
+                                if n > 0 and n <= min:
+                                    print n, cast
+                                    min = n
+
+                    print "Least # of available rehearsals\n", min
 
                     # create scheduling options for casts with min number found above
                     options = {}
                     for rehearsal in rehearsal_list:
                         available_casts = rehearsal.getAvailableCasts()
                         for cast in available_casts:
-                            if len(cast.getAvailableRehearsals()) == min:
-                                options[cast] = rehearsal
+                            if cast.is_scheduled == False and len(cast.getAvailableRehearsals()) == min:
+                                try:
+                                    options[cast].append(rehearsal)
+                                except:
+                                    options[cast] = []
+                                    options[cast].append(rehearsal)
 
-                    print options
+                    print "Scheduling options based on rehearsals and casts above:\n", options
 
                     if options != {}:
                         # randomly pick a cast from the options
-                        cast = random.choice(casts.keys())
+                        cast = random.choice(options.keys())
 
-                        print "Randomly chosen cast:"
-                        print cast
-                        print casts[cast]
+                        print "Randomly chosen cast:\n", cast
+
+                        rehearsal = random.choice(options[cast])
+                        print "Randomly chosen rehearsal:\n", rehearsal
+
+                        # print cast
+                        # print options[cast]
+
 
                         # schedule the cast to its respective rehearsal
-                        cast.scheduleRehearsal(casts[cast])
-                        # rehearsal.is_scheduled = True
+                        cast.scheduleRehearsal(rehearsal)
+                        rehearsal.is_scheduled = True
                         cast.save()
                         rehearsal.save()
 
@@ -395,13 +425,12 @@ def makeSchedule(request, company_name, member_name):
                         print cast.is_scheduled
 
                     else:
-                        self.has_schedule = False
-                        self.save()
-                        return "Could not complete scheduling... Too many conflicts"
+                        company.has_schedule = False
+                        company.save()
+                        return HttpResponse("Something went wrong! Could not complete scheduling... Too many conflicts")
 
-                # self.has_schedule = True
-                # self.save()
-                # return "Iteration done"
+                company.has_schedule = True
+                company.save()
 
         return redirect('profiles:scheduling', company_name, member_name,)
 
@@ -443,8 +472,8 @@ def confirmSchedule(request, company_name, member_name):
             # # make sure availabeRehearsals >0 for all casts
             cast_error = "The following casts are not available for any rehearsals and cannot be scheduled:\n"
             for cast in cast_list:
-                if len(cast.getAvailableRehearsals()) == 0:
-                    c = " - " + cast.name
+                if len(cast.getAllRehearsals()) == 0:
+                    c = " - " + cast
                     cast_error += c
 
             if '-' in cast_error:
@@ -454,8 +483,8 @@ def confirmSchedule(request, company_name, member_name):
             # make sure availabeCasts >0 for all rehearsals
             rehearsal_error = "The following rehearsals do not work for any casts and cannot be scheduled:\n"
             for rehearsal in rehearsal_list:
-                if len(rehearsal.getAvailableCasts()) == 0:
-                    r = " - " + rehearsal.name
+                if len(rehearsal.getAllCasts()) == 0:
+                    r = " - " + rehearsal
                     rehearsal_error += r
 
             if '-' in rehearsal_error:

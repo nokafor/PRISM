@@ -97,7 +97,7 @@
     </header>
 
     <section>
-        <div class="container" style="text-align:center">
+        <div class="container center">
             <form action="{% url 'profiles:confirmSchedule' company.name member.username %}" method="post" id="scheduleForm">
             {% csrf_token %}
                 <h2 style="margin-top:5%">Rehearsal Spaces</h2>
@@ -111,7 +111,7 @@
                             <div class="col-md-4 col-sm-6 portfolio-item">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" name="rehearsals" class="rehearsal" value="{{rehearsal.id}}"> <a data-toggle="popover" title="Casts Available During this Rehearsal Time" data-content="{% for cast in rehearsal.getAvailableCasts %} {{cast}} <br> {% empty %} None {% endfor %}" data-placement="bottom">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</a>
+                                        <input type="checkbox" name="rehearsals" class="rehearsal" value="{{rehearsal.id}}"> <a data-toggle="popover" title="Casts Available During this Rehearsal Time" data-content="{% for cast in rehearsal.getAllCasts %} {{cast}} <br> {% empty %} None {% endfor %}" data-placement="bottom">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</a>
                                     </label>
                                 </div>
                             </div>
@@ -133,7 +133,7 @@
                                 <div class="col-md-3 col-sm-4 col-xs-6 portfolio-item">
                                     <div class="checkbox">
                                         <label style="">
-                                            <input type="checkbox" name="casts" class="cast" value="{{cast.id}}"> <a data-toggle="popover" title="Rehearsal Times that Work for This Cast" data-content="{% for rehearsal in cast.getAvailableRehearsals %} {{rehearsal.day_of_week}}: {{rehearsal.start_time}} - {{rehearsal.end_time}} <br> {% empty %} None {% endfor %}" data-placement="bottom">{{ cast.name }}</a>
+                                            <input type="checkbox" name="casts" class="cast" value="{{cast.id}}"> <a data-toggle="popover" title="Rehearsal Times that Work for This Cast" data-content="{% for rehearsal in cast.getAllRehearsals %} {{rehearsal.day_of_week}}: {{rehearsal.start_time}} - {{rehearsal.end_time}} <br> {% empty %} None {% endfor %}" data-placement="bottom">{{ cast.name }}</a>
                                         </label>
                                     </div>
                                 </div>
@@ -144,10 +144,39 @@
                     {% endif %}
                 </div>
                 <!-- <a href="" data-toggle="modal" data-target="#schedule-modal"></a> -->
-                <button type="submit" class="btn btn-lg btn-default" style="margin-top:10%">Make Rehearsal Schedule</button>
+                {% if company.has_schedule %}
+                <button type="submit" class="btn btn-lg btn-default" style="margin-top:10%" onclick="confirm('Making a new schedule will override the current schedule. Continue?')">Make New Schedule</button>
+                {% else %}
+                <button type="submit" class="btn btn-lg btn-default" style="margin-top:5%">Make Rehearsal Schedule</button>
+                {% endif %}
             </form>
         </div>
     </section>
+
+
+    {% if company.has_schedule %}
+    <section style="margin-top:10%">
+        <div class="container center">
+            <h2>Current Weekly Rehearsal Schedule</h2> 
+            <hr>
+            <div class="row">
+                {% for cast in cast_list %}
+                {% if cast.is_scheduled %}
+                    <div class="col-md-3 col-sm-4 col-xs-6 portfolio-item" style="padding:2%">
+                        <h3>{{cast}}</h3>
+                        <!-- <br> -->
+                        <strong>{{cast.rehearsal.day_of_week}}</strong>
+                        <br>
+                        {{cast.rehearsal.start_time}} - {{cast.rehearsal.end_time}}
+                        <br>
+                        ({{cast.rehearsal.place}})
+                    </div>
+                {% endif %}
+                {% endfor%}
+            </div>
+        </div>
+    </section>
+    {% endif %}
 
     <!-- Footer -->
     <footer>
@@ -159,16 +188,6 @@
             </div>
         </div>
     </footer>
-
-
-    {% if company.has_schedule %}
-        <h2>Current Weekly Rehearsal Schedule</h2>    
-        {% for cast in cast_list %}
-            <p>{{cast}}: {{cast.rehearsal}}</p>
-        {% empty %}
-            Schedule has not been made yet. Click Make Rehearsal Schedule button above to create a new weekly schedule
-        {% endfor%}
-    {% endif %}
 
     <!-- Bootstrap Core JavaScript -->
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>

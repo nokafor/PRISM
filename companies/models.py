@@ -40,17 +40,29 @@ class Company(Group):
         sortedRehearsals = sorted(rehearsals, key = lambda t : len(t.getAvailableCasts()) )
         return sortedRehearsals
     def unscheduleRehearsals(self):
-        totalCasts = self.cast_set.all()
+        totalCasts = Cast.objects.filter(company=self)
+        totalRehearsals = Rehearsal.objects.filter(company=self)
 
-        members = Member.objects.filter(company=self)
+        members = Member.objects.filter(groups__name=self.name)
         for mem in members:
-            r = mem.conflict_set.filter(description__startswith="%s Rehearsal" % (self.name))
-            r.delete()
+            conflicts = mem.conflict_set.filter(description__startswith="%s Rehearsal" % (self.name))
+            for r in conflicts:
+                r.delete()
 
         for cast in totalCasts:
             cast.is_scheduled = False
             cast.rehearsal = None
             cast.save()
+
+        for rehearsal in totalRehearsals:
+            rehearsal.is_scheduled = False
+            rehearsal.save()
+
+        print "Check unscheduling function"
+        for cast in totalCasts:
+            print cast.is_scheduled, cast
+        for rehearsal in totalRehearsals:
+            print rehearsal.is_scheduled, rehearsal
 
         self.has_schedule = False
         self.save()
@@ -247,7 +259,7 @@ class Cast(models.Model):
         self.is_scheduled = True
         # reh.is_scheduled = True
 
-    def getAvailableRehearsals(self):
+    def getAllRehearsals(self):
         rehearsals = self.company.rehearsal_set.all()
         members = self.member_set.all()
         choreographers = self.choreographer_set.all()
@@ -285,6 +297,45 @@ class Cast(models.Model):
                 rehearsal_list.append(rehearsal)
         return list(rehearsal_list)
 
+    def getAvailableRehearsals(self):
+        rehearsals = self.company.rehearsal_set.all()
+        members = self.member_set.all()
+        choreographers = self.choreographer_set.all()
+
+        rehearsal_list = []
+        for rehearsal in rehearsals:
+            if not rehearsal.is_scheduled:
+                available = True
+
+                # check conflicts for all members in cast
+                for member in members:
+                    for conflict in member.conflict_set.all():
+                        # do not include scheduled rehearsals for this company
+                        # if not conflict.description.startswith('%s Rehearsal' % self.company.name):
+                        if conflict.conflictsWith(rehearsal):
+                            available = False
+                            break
+                    if available == False:
+                        break
+
+                if available == False:
+                    continue
+
+                # check conflicts for choreographers of cast
+                for choreographer in choreographers:
+                    for conflict in choreographer.member.conflict_set.all():
+                        # do not include scheduled rehearsals for this company
+                        # if not conflict.description.startswith('%s Rehearsal' % self.company.name):
+                        if conflict.conflictsWith(rehearsal):
+                            available = False
+                            break
+                    if available == False:
+                        break
+
+                if available == True:
+                    rehearsal_list.append(rehearsal)
+        return list(rehearsal_list)
+
 class Member(User):
     cast = models.ManyToManyField(Cast, blank=True)
     def __unicode__(self):
@@ -317,7 +368,7 @@ class Choreographer(models.Model):
 class Rehearsal(TimeBlock):
     company = models.ForeignKey(Company)
     place = models.CharField(max_length=200)
-    # is_scheduled = models.BooleanField(default=False)
+    is_scheduled = models.BooleanField(default=False)
     
     def __str__(self):
         return "%s: %s - %s (%s)" % (self.place, self.start_time, self.end_time, self.day_of_week)
@@ -325,21 +376,22 @@ class Rehearsal(TimeBlock):
     class Meta:
         ordering = ['day_of_week', 'start_time']
 
-    def getAvailableCasts(self):
+    def getAllCasts(self):
         casts = Cast.objects.filter(company = self.company)
 
         cast_list = []
         for cast in casts:
-
             # check all the cast members
             members = cast.member_set.all()
             available = True
             for member in members:
                 available = True
                 for conflict in member.conflict_set.all():
-                    if conflict.conflictsWith(self):
-                        available = False
-                        break
+                    # do not include scheduled rehearsals for this company as conflicts
+                    if not conflict.description.startswith('%s Rehearsal' % self.company.name):
+                        if conflict.conflictsWith(self):
+                            available = False
+                            break
                 if available == False:
                     break
             # if not all the members are free, move to next cast
@@ -350,9 +402,11 @@ class Rehearsal(TimeBlock):
             choreographers = Choreographer.objects.filter(cast=cast)
             for choreographer in choreographers:
                 for conflict in choreographer.member.conflict_set.all():
-                    if conflict.conflictsWith(self):
-                        available = False
-                        break
+                    # do not include scheduled rehearsals for this company as conflicts
+                    if not conflict.description.startswith('%s Rehearsal' % self.company.name):
+                        if conflict.conflictsWith(self):
+                            available = False
+                            break
                 if available == False:
                     break
 
@@ -360,5 +414,43 @@ class Rehearsal(TimeBlock):
             if available == True:
                 cast_list.append(cast)
             # print available
+        # print cast_list
+        return list(cast_list)
+
+    def getAvailableCasts(self):
+        casts = Cast.objects.filter(company = self.company)
+
+        cast_list = []
+        for cast in casts:
+            if not cast.is_scheduled:
+                # check all the cast members
+                members = cast.member_set.all()
+                available = True
+                for member in members:
+                    available = True
+                    for conflict in member.conflict_set.all():
+                        if conflict.conflictsWith(self):
+                            available = False
+                            break
+                    if available == False:
+                        break
+                # if not all the members are free, move to next cast
+                if available == False: 
+                    continue       
+
+                # check all the choreographers
+                choreographers = Choreographer.objects.filter(cast=cast)
+                for choreographer in choreographers:
+                    for conflict in choreographer.member.conflict_set.all():
+                        if conflict.conflictsWith(self):
+                            available = False
+                            break
+                    if available == False:
+                        break
+
+                # if everyone is free
+                if available == True:
+                    cast_list.append(cast)
+                # print available
         # print cast_list
         return list(cast_list)
