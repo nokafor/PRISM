@@ -1,5 +1,5 @@
 {% load staticfiles %}
-{% load bootstrap %}
+{% load profiles_filters %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -40,9 +40,14 @@
 
 <body>
     <div id="makeSchedule" class="hidden container flexbox" style="width:100vw; height:100vh; flex-direction:column; -webkit-flex-direction:column;">
-        <h3>Please wait while we make the {{company.name}} schedule...</h3>
+        <h3>Please wait while we make the {{company_name}} schedule...</h3>
         <span class="fa fa-spinner fa-4x fa-spin"></span>
         <h6>Do not close this page until schedule is complete.</h6>
+        <form action="{% url 'profiles:makeSchedule' company_name member_name %}" method="post" class="hidden">
+            {% csrf_token %}
+            {{form}}
+            <button type="submit" id="create"></button>
+        </form>
     </div>
     <a id="getModal" class="hidden" data-toggle="modal" data-target="#confirm-modal"></a>
     <div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -50,7 +55,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                 {% if errors %}
-                    <a class="close" href="{% url 'profiles:scheduling' company.name member.username %}">&times;</a>
+                    <a class="close" onclick=(history.back())>&times;</a>
                 {% else %}
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 {% endif %}
@@ -66,7 +71,7 @@
                         {% endfor %}
                     </p>
                 <div class="modal-footer center">
-                    <a class="btn btn-default" href="{% url 'profiles:scheduling' company.name member.username %}">Back</a>
+                    <a class="btn btn-default" onclick=(history.back())>Back</a>
                 </div>
                 {% else %}
                     <div class="flexbox fluid">
@@ -100,19 +105,20 @@
     <!-- jQuery -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
+    <!-- Bootstrap Core JavaScript -->
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
     <script type="text/javascript">
      $(window).load(function(){
             $('#getModal').click();
+            $('.typeahead-select option').prop('selected', true);
         });
 
      $('#confirm-modal').on('hidden.bs.modal', function() {
         $('#makeSchedule').removeClass('hidden');
-        // $('#makeSchedule').append('{{company.name}}');
+        $('#create').click();
      });
     </script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 
 </body>

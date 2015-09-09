@@ -26,6 +26,24 @@ class CastingForm(forms.Form):
         if company_name:
             self.fields['members'].queryset = Member.objects.filter(groups__name=company_name)
 
+class SchedulingForm(forms.Form):
+    rehearsals = MultipleTypeaheadField(
+        queryset = Rehearsal.objects.all(),
+        label="", help_text=""
+    ) 
+    casts = MultipleTypeaheadField(
+        queryset = Cast.objects.all(),
+        label="", help_text=""
+    ) 
+    def __init__(self, *args, **kwargs):
+        rehearsals = kwargs.pop('rehearsals', None)
+        casts = kwargs.pop('casts', None)
+        super(SchedulingForm, self).__init__(*args, **kwargs)
+
+        if rehearsals and casts:
+            self.fields['rehearsals'].queryset = Rehearsal.objects.filter(id__in=rehearsals)
+            self.fields['casts'].queryset = Cast.objects.filter(id__in=casts)
+
 class UploadFileForm(forms.Form):
     file = forms.FileField(label="", help_text="")
     

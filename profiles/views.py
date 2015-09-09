@@ -1,10 +1,12 @@
+import random
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 
 from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock, Founder
 from profiles.models import Conflict
-from updates.forms import PersonalForm, UserForm, CastingForm, CompanyForm
+from updates.forms import PersonalForm, UserForm, CastingForm, CompanyForm, SchedulingForm
 
 from profiles.functions import memberAuth, adminAuth, getRowValue, get_json, get_col_headers
 from django.contrib.auth.models import User, Group
@@ -323,16 +325,107 @@ def scheduling(request, company_name, member_name):
     else:
         raise PermissionDenied
 
+def makeSchedule(request, company_name, member_name):
+    admin = adminAuth(request, company_name, member_name)
+    if admin:
+        # get dict
+        if request.method =='POST':
+            form = SchedulingForm(request.POST)
+            if form.is_valid():
+                # get rehearsals and casts to be scheduled
+                rehearsals = form.cleaned_data['rehearsals']
+                casts = form.cleaned_data['casts']
+                # print casts, rehearsals
+
+                # unschedule any rehearsals that are already scheduled
+                company = Company.objects.get(name=company_name)
+                company.unscheduleRehearsals()
+
+                # begin scheduling casts
+                for cast in casts:
+                    # get all unscheduled rehearsals with least number of available casts (greater than 0)
+                    min = len(casts)
+                    for rehearsal in rehearsals:
+                        n = len(rehearsal.getAvailableCasts())
+                        if n > 0 and n < min:
+                            min = n
+                    print min
+
+                    rehearsal_list = []
+                    for rehearsal in rehearsals:
+                        if len(rehearsal.getAvailableCasts()) == min:
+                            rehearsal_list.append(rehearsal)
+
+                    # get all unscheduled casts available during rehearsals above
+                    # pick the ones with least number of available rehearsals
+                    min = len(rehearsals)
+                    for rehearsal in rehearsal_list:
+                        available_casts = rehearsal.getAvailableCasts()
+                        for cast in available_casts:
+                            n = len(cast.getAvailableRehearsals())
+                            if n > 0 and n < min:
+                                min = n
+                    print min
+
+                    # create scheduling options for casts with min number found above
+                    options = {}
+                    for rehearsal in rehearsal_list:
+                        available_casts = rehearsal.getAvailableCasts()
+                        for cast in available_casts:
+                            if len(cast.getAvailableRehearsals()) == min:
+                                options[cast] = rehearsal
+
+                    print options
+
+                    if options != {}:
+                        # randomly pick a cast from the options
+                        cast = random.choice(casts.keys())
+
+                        print "Randomly chosen cast:"
+                        print cast
+                        print casts[cast]
+
+                        # schedule the cast to its respective rehearsal
+                        cast.scheduleRehearsal(casts[cast])
+                        # rehearsal.is_scheduled = True
+                        cast.save()
+                        rehearsal.save()
+
+                        print "Is cast scheduled?"
+                        print cast.is_scheduled
+
+                    else:
+                        self.has_schedule = False
+                        self.save()
+                        return "Could not complete scheduling... Too many conflicts"
+
+                # self.has_schedule = True
+                # self.save()
+                # return "Iteration done"
+
+        return redirect('profiles:scheduling', company_name, member_name,)
+
+    else:
+        raise PermissionDenied
+
 def confirmSchedule(request, company_name, member_name):
     admin = adminAuth(request, company_name, member_name)
     if admin:
-        company = Company.objects.get(name=company_name)
         if request.method == 'POST':
-            make_schedule = True
-            render(request, 'profiles/makeschedule.html', {'company':company, 'member':admin.member, 'make_schedule':make_schedule})
-
+            # get cast and rehearsal lists
             rehearsals = request.POST.getlist('rehearsals')
             casts = request.POST.getlist('casts')
+
+            rehearsal_list = []
+            cast_list = []
+
+            for rehearsal_id in rehearsals:
+                rehearsal = Rehearsal.objects.get(id=rehearsal_id)
+                rehearsal_list.append(rehearsal)
+
+            for cast_id in casts:
+                cast = Cast.objects.get(id=cast_id)
+                cast_list.append(cast)
 
             errors = []
 
@@ -348,60 +441,52 @@ def confirmSchedule(request, company_name, member_name):
                 errors.append(error)
 
             # # make sure availabeRehearsals >0 for all casts
-            # cast_error = "The following casts are not available for any rehearsals and cannot be scheduled:\n"
-            # for cast in cast_list:
-            #     if cast.getAvailableRehearsals() == 0:
-            #         c = " - " + cast.name
-            #         cast_error += c
+            cast_error = "The following casts are not available for any rehearsals and cannot be scheduled:\n"
+            for cast in cast_list:
+                if len(cast.getAvailableRehearsals()) == 0:
+                    c = " - " + cast.name
+                    cast_error += c
 
-            # if '-' in cast_error:
-            #     cast_error += ' -\nConsider asking members of the cast to adjust their conflicts.'
-            #     errors += cast_error
+            if '-' in cast_error:
+                cast_error += ' -\nConsider asking members of the cast to adjust their conflicts.'
+                errors.append(cast_error)
 
-            # # make sure availabeCasts >0 for all rehearsals
-            # rehearsal_error = "The following rehearsals do not work for any casts and cannot be scheduled:\n"
-            # for rehearsal in rehearsal_list:
-            #     if rehearsal.getAvailableCasts() == 0:
-            #         r = " - " + rehearsal.name
-            #         rehearsal_error += r
+            # make sure availabeCasts >0 for all rehearsals
+            rehearsal_error = "The following rehearsals do not work for any casts and cannot be scheduled:\n"
+            for rehearsal in rehearsal_list:
+                if len(rehearsal.getAvailableCasts()) == 0:
+                    r = " - " + rehearsal.name
+                    rehearsal_error += r
 
-            # if '-' in rehearsal_error:
-            #     rehearsal_error += ' -\nConsider contacting PAC or switching rehearsal spaces with another company.'
-            #     errors += rehearsal_error
+            if '-' in rehearsal_error:
+                rehearsal_error += ' -\nConsider contacting PAC or switching rehearsal spaces with another company.'
+                errors.append(rehearsal_error)
 
-            print errors
+            # print errors
             if errors == []:
                 errors = None
 
                 # get the associated rehearsals and casts
                 finalDict = {}
-                finalDict["Rehearsals"] = []
-                finalDict['Casts'] = []
+                finalDict["Rehearsals"] = rehearsal_list
+                finalDict['Casts'] = cast_list
 
-                # rehearsal_list = []
-                # cast_list = []
-
-                for rehearsal_id in rehearsals:
-                    rehearsal = Rehearsal.objects.get(id=rehearsal_id)
-                    finalDict["Rehearsals"].append(rehearsal)
-
-                for cast_id in casts:
-                    cast = Cast.objects.get(id=cast_id)
-                    finalDict["Casts"].append(cast)
+                # create scheduling form
+                form = SchedulingForm(rehearsals=rehearsals, casts=casts)
 
 
-                print finalDict
 
             else:
                 finalDict = None
-
-                
-
+                form = None
 
             # return render(request, 'profiles/makeschedule.html', {'company':company, 'member':admin.member, 'make_schedule':make_schedule})
+            # print errors, finalDict
+
 
     
     # return redirect('profiles:scheduling', company_name, member_name,)
-    return render(request, 'profiles/confirmschedule.html', {'company':company, 'member':admin.member, 'make_schedule':make_schedule, 'errors':errors, 'dict':finalDict})
+    return render(request, 'profiles/confirmschedule.html', {'company_name':company_name, 'member_name':member_name, 'errors':errors, 'dict':finalDict, 'form':form})
+
 
 

@@ -44,7 +44,7 @@ class Company(Group):
 
         members = Member.objects.filter(company=self)
         for mem in members:
-            r = mem.conflict_set.filter(description__startswith="%s Rehearsal" % (self))
+            r = mem.conflict_set.filter(description__startswith="%s Rehearsal" % (self.name))
             r.delete()
 
         for cast in totalCasts:
@@ -57,9 +57,47 @@ class Company(Group):
         return True
         
     def makeSchedule(self, info):
-        print info
-        return True
+        casts = info["Casts"]
+        rehearsals = info["Rehearsals"]
 
+        print casts, "\n", rehearsals
+
+        for cast in casts:
+            # get all unscheduled rehearsals with least number of available casts (greater than 0)
+            min = len(casts)
+
+            for rehearsal in rehearsals:
+                n = len(rehearsal.getAvailableCasts())
+                if n > 0 and n < min:
+                    min = n
+            print min
+
+            rehearsal_list = []
+            for rehearsal in rehearsals:
+                if len(rehearsal.getAvailableCasts()) == min:
+                    rehearsal_list.append(rehearsal)
+
+            # get all unscheduled casts available during rehearsals above
+            # pick the ones with least number of available rehearsals
+            min = len(rehearsals)
+            for rehearsal in rehearsal_list:
+                available_casts = rehearsal.getAvailableCasts()
+                for cast in available_casts:
+                    n = len(cast.getAvailableRehearsals())
+                    if n > 0 and n < min:
+                        min = n
+            print min
+
+            # create scheduling options for casts with min number found above
+            options = {}
+            for rehearsal in rehearsal_list:
+                available_casts = rehearsal.getAvailableCasts()
+                for cast in available_casts:
+                    if len(cast.getAvailableRehearsals()) == min:
+                        options[cast] = rehearsal
+
+            print options
+        return "Schedule Created"
         # totalCasts = self.cast_set.all()
         # totalRehearsals = self.rehearsal_set.all()
         # # print >> sys.stderr, "Total Casts"
