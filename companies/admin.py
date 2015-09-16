@@ -38,7 +38,7 @@ class MemberAdmin(admin.ModelAdmin):
 
 class RehearsalAdmin(admin.ModelAdmin):
 	list_display = ['day_of_week', 'start_time', 'place']
-	ordering = ['company', 'day_of_week', 'start_time']
+	ordering = ['company', 'day_of_week', 'start_time', 'is_scheduled']
 	list_filter = ['company']
 	# actions = [unschedule_rehearsals]
 

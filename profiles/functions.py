@@ -4,7 +4,7 @@ from django.contrib.auth import logout
 from django.http import HttpResponse
 from django.core.exceptions import SuspiciousOperation, PermissionDenied
 
-from companies.models import Company, Member, Admin, Cast, Rehearsal
+from companies.models import Company, Member, Admin, Cast, Rehearsal, Choreographer
 from django.contrib.auth.models import User, Group
 
 import urllib2
@@ -50,6 +50,12 @@ def unscheduleRehearsals(company_name, rehearsals, casts):
     members = Member.objects.filter(groups__name=company.name)
     for mem in members:
         conflicts = mem.conflict_set.filter(description__startswith="%s Rehearsal" % (company.name))
+        for r in conflicts:
+            r.delete()
+
+    choreographers = Choreographer.objects.filter(company=company)
+    for choreographer in choreographers:
+        conflicts = choreographer.member.conflict_set.filter(description__startswith="%s Rehearsal" % (company.name))
         for r in conflicts:
             r.delete()
 

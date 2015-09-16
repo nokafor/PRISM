@@ -293,7 +293,33 @@ def deleteCast(request, company_name, member_name, cast_id):
     if admin:
         if Cast.objects.filter(id=cast_id).exists():
             cast = Cast.objects.get(id=cast_id)
+
+            #unschedule the rehearsal, and delete the conflicts in cast mem
+            rehearsal = cast.rehearsal
+            rehearsal.is_scheduled = False
+            rehearsal.save()
+
+            members = Member.objects.filter(cast=cast)
+            for mem in members:
+                conflicts = mem.conflict_set.filter(description__endswith="(%s)" % (cast.name))
+                for r in conflicts:
+                    r.delete()
+            
+            choreographers = Choreographer.objects.filter(cast=cast)
+            for choreographer in choreographers:
+                conflicts = choreographer.member.conflict_set.filter(description__endswith="(%s)" % (cast.name))
+                for r in conflicts:
+                    r.delete()
+
             cast.delete()
+
+            # check to see if company has any more casts
+            casts = Cast.objects.filter(company__name=company_name)
+            if len(casts) == 0:
+                company = Company.objects.get(name=company_name)
+                company.has_schedule = False
+                company.save()
+
         return redirect('profiles:casts', company_name, member_name,)
     else:
         raise PermissionDenied

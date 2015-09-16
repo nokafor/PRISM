@@ -58,12 +58,6 @@ class Company(Group):
             rehearsal.is_scheduled = False
             rehearsal.save()
 
-        print "Check unscheduling function"
-        for cast in totalCasts:
-            print cast.is_scheduled, cast
-        for rehearsal in totalRehearsals:
-            print rehearsal.is_scheduled, rehearsal
-
         self.has_schedule = False
         self.save()
         return True
@@ -228,7 +222,7 @@ class TimeBlock(models.Model):
         abstract = True
     def end_day(self):
         dow = time.strptime(self.day_of_week, "%a").tm_wday
-        if self.end_time < self.start_time:
+        if self.end_time < self.start_time or self.end_time == datetime.datetime.today().replace(hour=0, minute=0, second=0).time():
             try:
                 return self.DAY_OF_WEEK_CHOICES[dow+1][0]
             except IndexError:
@@ -256,6 +250,9 @@ class Cast(models.Model):
         for mem in members:
             mem.conflict_set.create(description="%s Rehearsal (%s)" % (self.company, self.name), start_time=reh.start_time, end_time=reh.end_time, day_of_week=reh.day_of_week)
 
+        choreographers = Choreographer.objects.filter(cast=self)
+        for choreographer in choreographers:
+            choreographer.member.conflict_set.create(description="%s Rehearsal (%s)" % (self.company, self.name), start_time=reh.start_time, end_time=reh.end_time, day_of_week=reh.day_of_week)
         self.is_scheduled = True
         # reh.is_scheduled = True
 
@@ -343,7 +340,7 @@ class Member(User):
         #     return "%s %s" % (self.first_name, self.last_name)
         return "%s %s (%s)" % (self.first_name, self.last_name, self.username)
     class Meta:
-        ordering = ['username', 'first_name']
+        ordering = ['first_name', 'username']
 
 class Admin(models.Model):
     member = models.ForeignKey(Member)

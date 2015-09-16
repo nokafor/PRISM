@@ -306,7 +306,7 @@ def casts(request, company_name, member_name):
 
         form = CastingForm(company_name=company_name)
         # form = UserForm()
-        return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'admin':None, 'cast_list':cast_list, 'choreographer_list':choreographer_list, 'my_cast_list':my_cast_list, 'form':form})
+        return render(request, 'profiles/casts.html', {'company':company, 'member':member, 'admin':admin, 'cast_list':cast_list, 'choreographer_list':choreographer_list, 'my_cast_list':my_cast_list, 'form':form})
     else:
         raise PermissionDenied
 
@@ -470,26 +470,30 @@ def confirmSchedule(request, company_name, member_name):
                 errors.append(error)
 
             # # make sure availabeRehearsals >0 for all casts
-            cast_error = "The following casts are not available for any rehearsals and cannot be scheduled:\n"
+            cast_error = ""
             for cast in cast_list:
                 if len(cast.getAllRehearsals()) == 0:
-                    c = " - " + cast
+                    c = " - " + cast.name
                     cast_error += c
 
             if '-' in cast_error:
-                cast_error += ' -\nConsider asking members of the cast to adjust their conflicts.'
+                cast_error += ' -'
+                errors.append("The following casts are not available for any rehearsals and cannot be scheduled:")
                 errors.append(cast_error)
+                errors.append('Consider asking members of the cast to adjust their conflicts.')
 
             # make sure availabeCasts >0 for all rehearsals
-            rehearsal_error = "The following rehearsals do not work for any casts and cannot be scheduled:\n"
+            rehearsal_error = ""
             for rehearsal in rehearsal_list:
                 if len(rehearsal.getAllCasts()) == 0:
-                    r = " - " + rehearsal
+                    r = " - " + rehearsal.place + ", " + str(rehearsal.start_time) + " (" + rehearsal.day_of_week + ")"
                     rehearsal_error += r
 
             if '-' in rehearsal_error:
-                rehearsal_error += ' -\nConsider contacting PAC or switching rehearsal spaces with another company.'
+                rehearsal_error += ' -'
+                errors.append("The following rehearsals do not work for any casts and cannot be scheduled:")
                 errors.append(rehearsal_error)
+                errors.append('Consider contacting PAC or switching rehearsal spaces with another company.')
 
             # print errors
             if errors == []:

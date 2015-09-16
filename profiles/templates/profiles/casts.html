@@ -36,7 +36,11 @@
         <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    
+    <!-- jQuery -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 </head>
 <body>
@@ -106,7 +110,7 @@
                     {% for cast in cast_list %}
                         <div class="col-md-3 col-sm-4 col-xs-6 portfolio-item">
                             <div class="portfolio-caption" style="display:flex; flex-direction:row; align-items:center">
-                                <h4 class="center-margin" style="margin-left:auto; margin-right:auto"><a href="#{{cast.name}}">{{cast}}</a></h4>
+                                <h4 class="center-margin center"><a href="#{{cast.name}}">{{cast}}</a></h4>
                             </div>
                         </div>
 
@@ -155,7 +159,7 @@
                         <p class="modal-font-size" style="font-size:70%">Use the text area below to create casts. List the name of each piece on a separate line, then save. After saving, admins will have the option to add the rest of the casting information (e.g. choreographers and dancers).</p>
                         <form action="{% url 'updates:addCast' company.name member.username %}" method="post">
                         {% csrf_token %}
-                            <textarea class="form-control margin-center" name="cast_list" placeholder="< Piece Name >" rows="5" cols="30" style="width:80%;margin: 0 auto"></textarea> 
+                            <textarea class="form-control margin-center" name="cast_list" placeholder="Piece Name" rows="5" cols="30" style="width:80%;margin: 0 auto"></textarea> 
                             <button type="submit" class="btn btn-primary" style="margin-top: 15px;">Save</button>
                         </form>
                     </div>  
@@ -322,11 +326,7 @@
     </footer>
 
     
-    <!-- jQuery -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    
 
     <!-- Pop Overs -->
     <script>
