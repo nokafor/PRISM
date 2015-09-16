@@ -176,7 +176,7 @@
             </div>
             {% if admin %}
             <div class="row center">
-                <button class="btn btn-lg btn-default">Delete Schedule</button>
+                <a href="{% url 'updates:deleteSchedule' company.name member.username %}" class="btn btn-lg btn-default">Delete Schedule</a>
             </div>
             {% endif %}
         </div>

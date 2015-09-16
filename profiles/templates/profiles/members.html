@@ -130,7 +130,7 @@
                                     <a href="{% url 'profiles:conflicts' company.name member.username %}"><h4>{{ mem }}</h4></a>
                                 {% else %}
                                     {% if admin %}
-                                        <a data-toggle="modal" href="{% url 'updates:ConflictView' company.name member.username mem.id %}" data-target="#{{ mem.id }}-modal"><h4>{{ mem }}</h4></a>
+                                        <a data-toggle="popover" title="{{mem.first_name}}'s Conflicts" data-content="{% for conflict in mem.conflict_set.all %} {{conflict.day_of_week}}: {{conflict.start_time}} - {{conflict.end_time}} <br> {% empty %} None {% endfor %}" data-placement="bottom" style="cursor:pointer"><h4>{{ mem }}</h4></a>
                                         <div class="flexbox">
                                             <a onclick="return confirm('Are you sure you want to make {{ mem }} an admin?')" href="{% url 'updates:addAdmin' company.name member.username mem.id %}"><span class="fa fa-plus-circle" style="margin-left:5px"></span></a>
                                             <a onclick="return confirm('Are you sure you want to remove {{ mem }} from {{company.name}}?')"href="{% url 'updates:deleteMember' company.name member.username mem.id %}"><span class="fa fa-minus-circle" style="margin-left:5px"></span></a>
@@ -139,14 +139,6 @@
                                         <h4>{{ mem }}</h4>
                                     {% endif %}
                                 {% endifequal %}
-                            </div>
-                        </div>
-
-                        <!-- Modal -->
-                        <div class="modal fade" id="{{ mem.id }}-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                </div>
                             </div>
                         </div>
                     {% endfor %}
@@ -209,5 +201,12 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <!-- Pop Overs -->
+    <script>
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover({html:true}); 
+    });
+    </script>
 </body>
 </html>

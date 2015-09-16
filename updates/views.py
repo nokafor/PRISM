@@ -12,7 +12,7 @@ from updates.forms import RehearsalForm, ConflictForm, CastForm, CastingForm, Pe
 from django.views.generic import DetailView
 from django.template.loader import render_to_string
 
-from profiles.functions import memberAuth, adminAuth
+from profiles.functions import memberAuth, adminAuth, unscheduleRehearsals
 
 from django.contrib.auth.models import Group, User
 
@@ -543,5 +543,13 @@ def deleteRehearsal(request, company_name, member_name, rehearsal_id):
             rehearsal.delete()
 
         return redirect('profiles:spaces', company_name, member_name,)
+    else:
+        raise PermissionDenied
+
+def deleteSchedule(request, company_name, member_name):
+    admin = adminAuth(request, company_name, member_name)
+    if admin:
+        unscheduleRehearsals(company_name, [], [])
+        return redirect('profiles:scheduling', company_name, member_name,)
     else:
         raise PermissionDenied

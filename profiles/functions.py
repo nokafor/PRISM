@@ -44,6 +44,7 @@ def adminAuth(request, company_name, member_name):
 # Function to unschedule a companies rehearsals
 def unscheduleRehearsals(company_name, rehearsals, casts):
     company = Company.objects.get(name=company_name)
+
     totalCasts = Cast.objects.filter(company=company)
     totalRehearsals = Rehearsal.objects.filter(company=company)
 
@@ -79,6 +80,9 @@ def unscheduleRehearsals(company_name, rehearsals, casts):
     finalDict = {}
     finalDict["Rehearsals"] = rehearsal_list
     finalDict["Casts"] = cast_list
+
+    company.has_schedule = False
+    company.save()
 
     return finalDict
 
