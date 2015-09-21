@@ -222,7 +222,7 @@ class TimeBlock(models.Model):
         abstract = True
     def end_day(self):
         dow = time.strptime(self.day_of_week, "%a").tm_wday
-        if self.end_time < self.start_time or self.end_time == datetime.datetime.today().replace(hour=0, minute=0, second=0).time():
+        if self.end_time < self.start_time or self.end_time == datetime.datetime.today().replace(hour=0, minute=0, second=0, microsecond=0).time():
             try:
                 return self.DAY_OF_WEEK_CHOICES[dow+1][0]
             except IndexError:

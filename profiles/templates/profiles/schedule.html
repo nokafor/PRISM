@@ -71,7 +71,7 @@
                         <a href="{% url 'profiles:profile' company.name member.username %}">Hub</a>
                     </li>
                     <li>
-                        <a href="logout/">Logout</a>
+                        <a id="logout" href="logout/">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -88,7 +88,7 @@
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
                         <h1>Rehearsal Schedule</h1>
-                        <h2 class="subheading">Manage the rehearsal schedules for all pieces and/or performances</h2>
+                        <h2 class="subheading">{% if admin %}Manage{% else %}View{% endif %} the rehearsal schedules for all pieces and/or performances</h2>
                         <!-- <span class="meta">Posted March 5, 2015</span> -->
                     </div>
                 </div>
@@ -96,24 +96,30 @@
         </div>
     </header>
 
-    <section>
+    <section id="automatic">
         <div class="container center">
             <form action="{% url 'profiles:confirmSchedule' company.name member.username %}" method="post" id="scheduleForm">
             {% csrf_token %}
                 <h2 style="margin-top:5%">Rehearsal Spaces</h2>
+                {% if admin %}
                 <div class="flexbox">
                     <h5 style="font-weight:normal; margin-right:2%; cursor:pointer;"><a id="allRehearsals">Select All</a></h5> <h5 style="font-weight:normal; cursor:pointer;"><a id="noRehearsals">Deselect All</a></h5>
                 </div>
+                {% endif %}
                 <hr>
                 <div class="row" style="text-align:left">
                     {% if rehearsal_list %}
                         {% for rehearsal in rehearsal_list %}
                             <div class="col-md-4 col-sm-6 portfolio-item">
-                                <div class="checkbox">
+                                {% if admin %}
+                                <div class="checkbox rehearsalDiv">
                                     <label>
                                         <input type="checkbox" name="rehearsals" class="rehearsal" value="{{rehearsal.id}}"> <a data-toggle="popover" title="Casts Available During this Rehearsal Time" data-content="{% for cast in rehearsal.getAllCasts %} {{cast}} <br> {% empty %} None {% endfor %}" data-placement="bottom">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</a>
                                     </label>
                                 </div>
+                                {% else %}
+                                <div class="rehearsalDiv" style="margin:2%"><a data-toggle="popover" title="Casts Available During this Rehearsal Time" data-content="{% for cast in rehearsal.getAllCasts %} {{cast}} <br> {% empty %} None {% endfor %}" data-placement="bottom" style="cursor:pointer;">{{ rehearsal.place }}: {{rehearsal.start_time}} - {{rehearsal.end_time}} ({{rehearsal.day_of_week}})</a></div>
+                                {% endif %}
                             </div>
                         {% endfor %}
                         <!-- <label class="checkbox"><input type="checkbox" name="rehearsals" class="hidden" ></label> -->
@@ -122,20 +128,26 @@
                     {% endif %}
                 </div>
                 <h2 style="margin-top:5%">Casting List</h2>
+                {% if admin %}
                 <div class="flexbox">
                     <h5 style="font-weight:normal; margin-right:2%; cursor:pointer;"><a id="allCasts">Select All</a></h5> <h5 style="font-weight:normal; cursor:pointer;"><a id="noCasts">Deselect All</a></h5>
                 </div>
+                {% endif %}
                 <hr>
                 <div class="row" style="text-align:left">
                     {% if cast_list %}
                             <!-- {% csrf_token %} -->
                             {% for cast in cast_list %}
                                 <div class="col-md-3 col-sm-4 col-xs-6 portfolio-item">
-                                    <div class="checkbox">
+                                    {% if admin %}
+                                    <div class="checkbox castDiv">
                                         <label style="">
                                             <input type="checkbox" name="casts" class="cast" value="{{cast.id}}"> <a data-toggle="popover" title="Rehearsal Times that Work for This Cast" data-content="{% for rehearsal in cast.getAllRehearsals %} {{rehearsal.day_of_week}}: {{rehearsal.start_time}} - {{rehearsal.end_time}} <br> {% empty %} None {% endfor %}" data-placement="bottom">{{ cast.name }}</a>
                                         </label>
                                     </div>
+                                    {% else %}
+                                    <div class="castDiv" style="margin:2%"><a data-toggle="popover" title="Rehearsal Times that Work for This Cast" data-content="{% for rehearsal in cast.getAllRehearsals %} {{rehearsal.day_of_week}}: {{rehearsal.start_time}} - {{rehearsal.end_time}} <br> {% empty %} None {% endfor %}" data-placement="bottom" style="cursor:pointer;">{{ cast.name }}</a></div>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                             <label class="checkbox"><input type="checkbox" name="casts" class="hidden" data-validation-minchecked-minchecked="1" data-validation-minchecked-message="Choose at least one"></label>
@@ -144,10 +156,8 @@
                     {% endif %}
                 </div>
                 <!-- <a href="" data-toggle="modal" data-target="#schedule-modal"></a> -->
-                {% if company.has_schedule %}
-                <button type="submit" class="btn btn-lg btn-default" style="margin-top:10%" onclick="confirm('Making a new schedule will override the current schedule. Continue?')">Make New Schedule</button>
-                {% else %}
-                <button type="submit" class="btn btn-lg btn-default" style="margin-top:5%">Make Rehearsal Schedule</button>
+                {% if admin %}
+                    <button type="submit" class="btn btn-lg btn-default" style="margin-top:5%">Schedule Rehearsal(s)</button>
                 {% endif %}
             </form>
         </div>
@@ -217,6 +227,30 @@
         $('#noCasts').click(function(e) {
             $('.cast').prop('checked', false);
         });
+
+        var max = 0;
+        $('.castDiv').each(function() {
+            if ($(this).height() > max) {
+                max = $(this).height();
+            }
+        });
+
+        $('.castDiv').css('height', max);
+
+        max = 0;
+
+        $('.rehearsalDiv').each(function() {
+            if ($(this).height() > max) {
+                max = $(this).height();
+            }
+        });
+
+        $('.rehearsalDiv').css('height', max);
+
+
+        // $('.cast').each(function() {
+        //     alert('Height: '+ $(this).height());
+        // });
     });
     </script>
 

@@ -17,6 +17,12 @@ class Conflict(TimeBlock):
         ordering = ['day_of_week', 'start_time']
     def conflictsWith(self, that):
         if self.day_of_week != that.day_of_week:
+            if self.end_day() == that.day_of_week:
+                if self.end_time > that.start_time:
+                    return True
+            elif that.end_day() == self.day_of_week:
+                if that.end_time > self.start_time:
+                    return True
             return False
         if that.start_time == self.end_time or that.end_time == self.start_time:
             return False

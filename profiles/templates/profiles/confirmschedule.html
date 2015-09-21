@@ -40,12 +40,15 @@
 
 <body>
     <div id="makeSchedule" class="hidden container flexbox" style="width:100vw; height:100vh; flex-direction:column; -webkit-flex-direction:column;">
-        <h3>Please wait while we make the {{company_name}} schedule...</h3>
+        <h3>Please wait while we schedule your {{company_name}} rehearsals...</h3>
         <span class="fa fa-spinner fa-4x fa-spin"></span>
-        <h6>Do not close this page. We will redirect you when the schedule is complete.</h6>
+        <h6>Do not close this page. We will redirect you when the scheduling is complete.</h6>
         <form action="{% url 'profiles:makeSchedule' company_name member_name %}" method="post" class="hidden">
             {% csrf_token %}
             {{form}}
+            <label style="font-weight:normal">
+                <input type="checkbox" name="override" id="override"> Would you like to override current schedule?
+            </label>
             <button type="submit" id="create"></button>
         </form>
     </div>
@@ -93,6 +96,9 @@
                         </div>
                     </div>
                 <div class="modal-footer center">
+                    <label style="font-weight:normal">
+                        <input type="checkbox" id="userOverride"> Would you like to override current schedule?
+                    </label>
                     <button type="button" class="btn btn-default" id="continue" data-dismiss="modal">Continue</button>
                 </div>
                 {% endif%}
@@ -113,6 +119,13 @@
             $('#getModal').click();
             $('.typeahead-select option').prop('selected', true);
         });
+
+     $('#userOverride').click(function(e) {
+        if (this.checked) {
+            $('#userOverride').prop('checked', confirm('Overriding the schedule means that all currently scheduled rehearsals will be deleted. Continue?'))
+        }
+        $('#override').prop('checked', this.checked);
+     });
 
      $('#confirm-modal').on('hidden.bs.modal', function() {
         $('#makeSchedule').removeClass('hidden');

@@ -57,8 +57,8 @@
                 {% for rehearsal in company.rehearsal_set.all %}
                 {
                     title : "{{ rehearsal.place }}",
-                    start : moment("{{ rehearsal.start_time }}", "hh:mm a").day("{{rehearsal.day_of_week}}"),
-                    end   : moment("{{ rehearsal.end_time }}", "hh:mm a").day("{{rehearsal.end_day}}"),
+                    start : moment("{{ rehearsal.start_time|date:'g:i a' }}", "hh:mm a").day("{{rehearsal.day_of_week}}"),
+                    end   : moment("{{ rehearsal.end_time|date:'g:i a' }}", "hh:mm a").day("{{rehearsal.end_day}}"),
                     allDay: false
                 },
                 {% endfor %}

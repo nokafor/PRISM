@@ -332,17 +332,28 @@ def makeSchedule(request, company_name, member_name):
         if request.method =='POST':
             form = SchedulingForm(request.POST)
             if form.is_valid():
+                try:
+                    if request.POST['override']:
+                        override = True
+                except Exception:
+                    override = False
+
+                print "Override:", override
                 # get rehearsals and casts to be scheduled
                 rehearsals = form.cleaned_data['rehearsals']
                 casts = form.cleaned_data['casts']
                 # print casts, rehearsals
 
-                # unschedule any rehearsals that are already scheduled
+                # if user elected to override rehearsals, unschedule any rehearsals that are already scheduled
                 company = Company.objects.get(name=company_name)
-
-                dict = unscheduleRehearsals(company_name, rehearsals, casts)
-                rehearsals = dict["Rehearsals"]
-                casts = dict["Casts"]
+                if override:
+                    dict = unscheduleRehearsals(company_name, rehearsals, casts)
+                    rehearsals = dict["Rehearsals"]
+                    casts = dict["Casts"]
+                
+                # otherwise, remove any already scheduled casts from the list of casts to be scheduled
+                else:
+                    casts = casts.exclude(is_scheduled=True)
 
                 for rehearsal in rehearsals:
                     print rehearsal.is_scheduled, rehearsal
@@ -379,12 +390,13 @@ def makeSchedule(request, company_name, member_name):
                     for rehearsal in rehearsal_list:
                         available_casts = rehearsal.getAvailableCasts()
                         for cast in available_casts:
-                            print cast.is_scheduled, cast
-                            if cast.is_scheduled == False:
-                                n = len(cast.getAvailableRehearsals())
-                                if n > 0 and n <= min:
-                                    print n, cast
-                                    min = n
+                            if cast in casts:
+                                print cast.is_scheduled, cast
+                                if cast.is_scheduled == False:
+                                    n = len(cast.getAvailableRehearsals())
+                                    if n > 0 and n <= min:
+                                        print n, cast
+                                        min = n
 
                     print "Least # of available rehearsals\n", min
 
@@ -393,12 +405,13 @@ def makeSchedule(request, company_name, member_name):
                     for rehearsal in rehearsal_list:
                         available_casts = rehearsal.getAvailableCasts()
                         for cast in available_casts:
-                            if cast.is_scheduled == False and len(cast.getAvailableRehearsals()) == min:
-                                try:
-                                    options[cast].append(rehearsal)
-                                except:
-                                    options[cast] = []
-                                    options[cast].append(rehearsal)
+                            if cast in casts:
+                                if cast.is_scheduled == False and len(cast.getAvailableRehearsals()) == min:
+                                    try:
+                                        options[cast].append(rehearsal)
+                                    except:
+                                        options[cast] = []
+                                        options[cast].append(rehearsal)
 
                     print "Scheduling options based on rehearsals and casts above:\n", options
 
@@ -425,6 +438,7 @@ def makeSchedule(request, company_name, member_name):
                         print cast.is_scheduled
 
                     else:
+                        # if override:
                         company.has_schedule = False
                         company.save()
                         return HttpResponse("Something went wrong! Could not complete scheduling... Too many conflicts")
@@ -460,13 +474,13 @@ def confirmSchedule(request, company_name, member_name):
 
             # check lengths
             if len(rehearsals) == 0:
-                error = "You must select at least one rehearsal to be scheduled.\n"
+                error = "You must select at least one rehearsal to be scheduled."
                 errors.append(error)
             if len(casts) == 0:
-                error = "You must select at least one cast to be scheduled.\n"
+                error = "You must select at least one cast to be scheduled."
                 errors.append(error)
             if len(rehearsals) < len(casts):
-                error = "In order to create a schedule, there must be at least as many rehearsals as casts.\n"
+                error = "In order to create a schedule, there must be at least as many rehearsals as casts. Right now you have more casts than rehearsals."
                 errors.append(error)
 
             # # make sure availabeRehearsals >0 for all casts

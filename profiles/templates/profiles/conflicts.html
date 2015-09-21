@@ -52,7 +52,7 @@
           {
             'client_id': CLIENT_ID,
             'scope': SCOPES,
-            'immediate': true
+            'immediate': false
           }, handleAuthResult);
         }
 
@@ -80,8 +80,8 @@
                 {% for conflict in member.conflict_set.all %}
                 {
                     title : "{{ conflict.description }}",
-                    start : moment("{{ conflict.start_time }}", "hh:mm a").day("{{conflict.day_of_week}}"),
-                    end   : moment("{{ conflict.end_time }}", "hh:mm a").day("{{conflict.end_day}}"),
+                    start : moment("{{ conflict.start_time|date:'g:i a' }}", "hh:mm a").day("{{conflict.day_of_week}}"),
+                    end   : moment("{{ conflict.end_time|date:'g:i a' }}", "hh:mm a").day("{{conflict.end_day}}"),
                     allDay: false
                 },
                 {% endfor %}
@@ -156,10 +156,10 @@
                     <button class="btn btn-default" id="authorize-button" onclick="handleAuthClick(event, '{{founder.client_id}}')">Import from Google</button>
                 </div>
                 <!-- <pre id="output"></pre> -->
-                <div id="calendars">
+                <div id="calendars" style="display:none">
                     <h5>Import from Google Calendars</h5>
                 </div>
-                <div id="output">
+                <div id="output" style="display:none">
                     <h5>Upcoming Events in Google Calendar</h5>
                 </div>
             </div>
