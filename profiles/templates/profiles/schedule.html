@@ -102,6 +102,7 @@
             {% csrf_token %}
                 <h2 style="margin-top:5%">Rehearsal Spaces</h2>
                 {% if admin %}
+                <p style="font-size:70%; padding:0; margin:0">Select one or more {{company.name}} rehearsal space(s) to schedule.</p>
                 <div class="flexbox">
                     <h5 style="font-weight:normal; margin-right:2%; cursor:pointer;"><a id="allRehearsals">Select All</a></h5> <h5 style="font-weight:normal; cursor:pointer;"><a id="noRehearsals">Deselect All</a></h5>
                 </div>
@@ -129,6 +130,7 @@
                 </div>
                 <h2 style="margin-top:5%">Casting List</h2>
                 {% if admin %}
+                <p style="font-size:70%; padding:0; margin:0">Select one or more {{company.name}} cast(s) to schedule.</p>
                 <div class="flexbox">
                     <h5 style="font-weight:normal; margin-right:2%; cursor:pointer;"><a id="allCasts">Select All</a></h5> <h5 style="font-weight:normal; cursor:pointer;"><a id="noCasts">Deselect All</a></h5>
                 </div>
@@ -138,7 +140,7 @@
                     {% if cast_list %}
                             <!-- {% csrf_token %} -->
                             {% for cast in cast_list %}
-                                <div class="col-md-3 col-sm-4 col-xs-6 portfolio-item">
+                                <div class="col-md-3 col-sm-4 col-xs-12 portfolio-item">
                                     {% if admin %}
                                     <div class="checkbox castDiv">
                                         <label style="">

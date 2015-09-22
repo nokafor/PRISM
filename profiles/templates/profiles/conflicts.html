@@ -147,6 +147,9 @@
 
     <!-- Calendar of Events -->
     <!-- <div id="cal" style="width:90%; height: 500px; border:1px solid black; margin:0 auto;text-align:center;">Calendar</div> -->
+    <div class="container center" style="margin-bottom:3%">
+        <a id="toggleCal" style="cursor:pointer; padding:2%; text-decoration:none">Show/Hide Calendar</a>
+    </div>
     <div id="calendar"></div>
 
     <div class="container">
@@ -172,7 +175,8 @@
                 <form action="{% url 'updates:addConflicts' company.name member.username %}" method="post" style="width:90%;">
                 {% csrf_token %}
                     <h5>Upload Your Conflicts Manually</h5>
-                    <div class="form-group" style="margin:5% auto; margin-top: 8%;">
+                    <p style="font-size:70%; padding:0; margin:0; padding-top:2%">Follow the format depicted below to enter your conflicts manually.</p>
+                    <div class="form-group" style="margin:5% auto">
                         <textarea name="conflicts" class="form-control" rows="3" placeholder="Work Friday 10:00PM 12:30AM"></textarea>
                     </div>
                     <button class="btn btn-default" type="submit">Submit</button>
@@ -198,12 +202,12 @@
                     <!-- <h2 class="section-heading">Saved Conflicts</h2> -->
                     <!-- <hr> -->
                     {% if conflict_list %}
-                    <ul style="list-style:none;" style="">
+                    <ul style="list-style:none; padding:0" style="">
                         {% for item in conflict_list %}
-                            <li><h3>{{ item.0 }}</h3></li>
-                            <ul style="list-style:none">
+                            <li style="width:100%"><h3>{{ item.0 }}</h3></li>
+                            <ul style="list-style:none; padding:0">
                                 {% for conflict in item.1 %}
-                                <li><div class="flexbox" style="">
+                                <li style="width:100%"><div class="flexbox" style="">
                                     <p style="margin:0;">{{ conflict.description }}: {{conflict.start_time}} - {{conflict.end_time}}</p>
                                     <div style="margin-left:5%"><a data-toggle="modal" href="{% url 'updates:updateConflict' company.name member.username conflict.id %}" data-target="#{{ conflict.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
                                     <div><a href="{% url 'updates:deleteConflict' company.name member.username conflict.id %}" onclick="return confirm('Are you sure you want to delete the following conflict: {{conflict}}')"><span class="fa fa-minus-circle"></span></a></div> 
@@ -237,6 +241,12 @@
             </div>
         </footer>
         
+
+    <script>
+        $('#toggleCal').click(function() {
+            $('#calendar').toggleClass('hidden');
+        })
+    </script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
