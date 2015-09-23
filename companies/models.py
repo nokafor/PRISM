@@ -28,11 +28,13 @@ class Company(Group):
     def __str__(self):
         return self.name
     def conflicts_past_due(self):
-        if self.conflicts_due <= timezone.now():
+        print "Due Time: ", self.conflicts_due
+        print "Current Time: ", timezone.localtime(timezone.now())
+        if self.conflicts_due <= timezone.localtime(timezone.now()):
             return True
         return False
     def casting_past_due(self):
-        if self.casting_due <= timezone.now():
+        if self.casting_due <= timezone.localtime(timezone.now()):
             return True
         return False
     def getSortedRehearsals(self):

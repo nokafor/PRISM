@@ -138,7 +138,7 @@
                     <div class="post-heading">
                         <h1>Conflicts</h1>
                         <h2 class="subheading">View and edit your conflicts for the current semester</h2>
-                        <span class="meta">Changes allowed until {{company.conflicts_due}}</span>
+                        <span class="meta">{% if company.conflicts_past_due %}No more changes allowed to conflicts {% else %}Changes allowed until {{company.conflicts_due}} {% endif %}</span>
                     </div>
                 </div>
             </div>
@@ -152,6 +152,7 @@
     </div>
     <div id="calendar"></div>
 
+    {% if not company.conflicts_past_due %}
     <div class="container">
         <div class="flexbox fluid" style="margin:5% auto;">
             <div class="box center flexbox" style="padding-right:7%; flex-direction: column; -webkit-flex-direction:column;">
@@ -184,6 +185,7 @@
             </div>
         </div>
     </div>
+    
     <!-- <div id="authorize-div" style="display: none">
       <span>Authorize access to Google Calendar API</span>
       Button for the user to click to initiate auth sequence 
@@ -195,7 +197,9 @@
     <!-- View Conflicts -->
     <br>
     <hr>
+    {% endif %}
     <br>
+
     <div class="container" style="text-align:center">
             <div class="row">
                 <!-- <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="margin:0"> -->
@@ -209,6 +213,7 @@
                                 {% for conflict in item.1 %}
                                 <li style="width:100%"><div class="flexbox" style="">
                                     <p style="margin:0;">{{ conflict.description }}: {{conflict.start_time}} - {{conflict.end_time}}</p>
+                                    {% if not company.conflicts_past_due %}
                                     <div style="margin-left:5%"><a data-toggle="modal" href="{% url 'updates:updateConflict' company.name member.username conflict.id %}" data-target="#{{ conflict.id }}-modal"><span class="fa fa-pencil-square-o"></span></a></div> |
                                     <div><a href="{% url 'updates:deleteConflict' company.name member.username conflict.id %}" onclick="return confirm('Are you sure you want to delete the following conflict: {{conflict}}')"><span class="fa fa-minus-circle"></span></a></div> 
 
@@ -217,7 +222,8 @@
                                             <div class="modal-content">
                                             </div>
                                         </div>
-                                    </div>   
+                                    </div>  
+                                    {% endif %} 
                                 </div></li>
                                 {% endfor %}
                             </ul>

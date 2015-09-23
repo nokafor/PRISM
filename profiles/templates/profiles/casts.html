@@ -99,9 +99,7 @@
         </div>
     </header>
 
-<!--     {% if not company.casting_past_due %}
-    <h2>Sorry, the casting results for {{ company.name }} will be released on {{ company.casting_due }}.</h2>
-    {% else %} -->
+    {% if company.casting_past_due %}
     <!-- List of Current Casts -->
     <section>
         <div class="container">
@@ -214,7 +212,7 @@
                                     {% ifequal choreographer.cast cast%}
                                         <li style="width:100%">
                                         {% if admin %}
-                                            <a href="{% url 'updates:deleteChoreographer' company.name member.username choreographer.id %}" onclick="return confirm('Are you sure you want to delete {{choreographer.member}} from the list of choreographers for {{ choreographer.cast.name }}?')">{{ choreographer.member }}</a>
+                                            <a onclick="return confirm('Are you sure you want to remove {{choreographer.member}} as a choreographer from this piece?')" href="{% url 'updates:deleteChoreographer' company.name member.username choreographer.id %}">{{ choreographer.member }}</a>
                                         {% else %}
                                             {{ choreographer.member }}
                                         {% endif %}
@@ -228,7 +226,7 @@
                                 {% for mem in cast.member_set.all %}
                                     <li style="width:100%">
                                     {% if admin %}
-                                        <a href="{% url 'updates:deleteCastMem' company.name member.username cast.id mem.id %}" onclick="return confirm('Are you sure you want to delete {{mem}} from the list of dancers in {{cast.name }}?')">{{ mem }}</a>
+                                        <a href="{% url 'updates:deleteCastMem' company.name member.username cast.id mem.id %}" onclick="return confirm('Are you sure you want to delete {{mem}} from the list of dancers for this piece?')">{{ mem }}</a>
                                     {% else %}
                                         {{ mem }}
                                     {% endif %}

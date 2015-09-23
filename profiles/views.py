@@ -137,13 +137,13 @@ def testing(request, company_name, member_name, date_string):
         else:
             event = date_string.replace("%20", " ").split('-')
             try:
-                start_time1 = datetime.fromtimestamp(float(event[2])/1000.0) - timedelta(minutes=float(event[3]))
-                start_time2 = datetime.fromtimestamp(float(event[2])/1000.0) + timedelta(minutes=float(event[3]))
-                end_time1 = datetime.fromtimestamp(float(event[4])/1000.0) - timedelta(minutes=float(event[5]))
-                end_time2 = datetime.fromtimestamp(float(event[4])/1000.0) + timedelta(minutes=float(event[5]))
+                start_time = datetime.fromtimestamp(float(event[2])/1000.0)
+                # start_time2 = datetime.fromtimestamp(float(event[2])/1000.0) + timedelta(minutes=float(event[3]))
+                end_time = datetime.fromtimestamp(float(event[4])/1000.0)
+                # end_time2 = datetime.fromtimestamp(float(event[4])/1000.0) + timedelta(minutes=float(event[5]))
                 # print day_of_week, start_time, end_time
 
-                return render(request, 'profiles/testing.html', {'company_name':company_name, 'member_name':member_name, 'start_time1':start_time1, 'start_time2':start_time2, 'end_time1':end_time1, 'end_time2':end_time2, 'dow':event[1], 'description':event[0]})
+                return render(request, 'profiles/testing.html', {'company_name':company_name, 'member_name':member_name, 'start_time':start_time, 'end_time':end_time, 'dow':event[1], 'description':event[0]})
             except:
                 return HttpResponse("Could not process your request")
     else:
@@ -362,6 +362,9 @@ def makeSchedule(request, company_name, member_name):
 
                 print "======================"
 
+                # save the casts that are scheduled
+                scheduled_casts = []
+                scheduled_rehearsals = []
                 # begin scheduling casts
                 for cast in casts:
                     print "\n\n"
@@ -434,14 +437,20 @@ def makeSchedule(request, company_name, member_name):
                         cast.save()
                         rehearsal.save()
 
+                        scheduled_casts.append(cast)
+                        scheduled_rehearsals.append(rehearsal)
+
                         print "Is cast scheduled?"
                         print cast.is_scheduled
 
                     else:
-                        # if override:
+                        # if cannot complete schedule for some reason
                         company.has_schedule = False
+                        unscheduleRehearsals(company_name, scheduled_rehearsals, scheduled_casts)
                         company.save()
-                        return HttpResponse("Something went wrong! Could not complete scheduling... Too many conflicts")
+                        if len(casts) == 1:
+                            return HttpResponse("Could not schedule %s for %s, because all members in cast are not available.<p>Someone in the cast should adjust their conflicts before you schedule this cast for this rehearsal.</p><a href='/%s/%s'>Return to Hub</a>" % (casts[0], rehearsals[0], company_name, member_name))
+                        return HttpResponse("Something went wrong! Could not complete scheduling. <p>Make sure you are not trying to schedule casts for rehearsal times that all cast members cannot make (the schedule will not allow this). If you would like to schedule a cast for a specific rehearsal time, regardless of conflicts, please ask members to adjust their conflicts, then return to the <a href='/%s/%s/schedule'>scheduling page</a> to re-schedule the %s rehearsal(s)/cast(s)</p>" % (company_name, member_name, company_name))
 
                 company.has_schedule = True
                 company.save()
