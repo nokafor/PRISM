@@ -231,7 +231,9 @@ class TimeBlock(models.Model):
                 return self.DAY_OF_WEEK_CHOICES[0][0]
         return self.DAY_OF_WEEK_CHOICES[dow][0]
 
-
+class AdditionalRehearsals(models.Model):
+    cast = models.ForeignKey('Cast')
+    rehearsals = models.ManyToManyField('Rehearsal')
 
 class Cast(models.Model):
     company = models.ForeignKey(Company)
@@ -258,6 +260,32 @@ class Cast(models.Model):
         self.is_scheduled = True
         # reh.is_scheduled = True
 
+    def unschedule(self):
+        members = Member.objects.filter(cast=self)
+        for mem in members:
+            r = mem.conflict_set.filter(description__endswith='(%s)' % self.name)
+            r.delete()
+
+        choreographers = Choreographer.objects.filter(cast=self)
+        for choreographer in choreographers:
+            r = choreographer.member.conflict_set.filter(description__endswith='(%s)' % self.name)
+            r.delete()
+
+        self.is_scheduled = False
+
+        if self.rehearsal != None:
+            self.rehearsal.is_scheduled = False
+            self.rehearsal.save()
+
+        self.rehearsal = None
+        self.save()
+
+    def getAdditionalRehearsals(self):
+        rehearsals = AdditionalRehearsals.objects.get(cast=self)
+        if rehearals != None:
+            rehearsals = rehearsals.rehearsals
+
+        return rehearsals
     def getAllRehearsals(self):
         rehearsals = self.company.rehearsal_set.all()
         members = self.member_set.all()
@@ -453,3 +481,6 @@ class Rehearsal(TimeBlock):
                 # print available
         # print cast_list
         return list(cast_list)
+
+
+

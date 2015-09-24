@@ -549,7 +549,7 @@ def deleteRehearsal(request, company_name, member_name, rehearsal_id):
 def deleteSchedule(request, company_name, member_name):
     admin = adminAuth(request, company_name, member_name)
     if admin:
-        unscheduleRehearsals(company_name, [], [])
+        unscheduleRehearsals(company_name, Rehearsal.objects.filter(company__name=company_name), Cast.objects.filter(company__name=company_name))
         return redirect('profiles:scheduling', company_name, member_name,)
     else:
         raise PermissionDenied

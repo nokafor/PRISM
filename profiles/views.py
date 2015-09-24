@@ -6,7 +6,7 @@ from django.core.exceptions import PermissionDenied
 
 from companies.models import Company, Member, Admin, Rehearsal, Cast, Choreographer, TimeBlock, Founder
 from profiles.models import Conflict
-from updates.forms import PersonalForm, UserForm, CastingForm, CompanyForm, SchedulingForm
+from updates.forms import PersonalForm, UserForm, CastingForm, CompanyForm, SchedulingForm, RehearsalForm
 
 from profiles.functions import memberAuth, adminAuth, getRowValue, get_json, get_col_headers, unscheduleRehearsals
 from django.contrib.auth.models import User, Group
@@ -320,8 +320,10 @@ def scheduling(request, company_name, member_name):
         rehearsals = Rehearsal.objects.filter(company=company)
 
         casts = Cast.objects.filter(company=company)
-                     
-        return render(request, 'profiles/schedule.html', {'company':company, 'member':member, 'admin':admin, 'cast_list':casts, 'rehearsal_list':rehearsals})
+
+        form = RehearsalForm(company_name=company_name)
+
+        return render(request, 'profiles/schedule.html', {'company':company, 'member':member, 'admin':admin, 'cast_list':casts, 'rehearsal_list':rehearsals, 'form':form})
     else:
         raise PermissionDenied
 
@@ -342,7 +344,7 @@ def makeSchedule(request, company_name, member_name):
                 # get rehearsals and casts to be scheduled
                 rehearsals = form.cleaned_data['rehearsals']
                 casts = form.cleaned_data['casts']
-                # print casts, rehearsals
+                # print casts, "\n", rehearsals
 
                 # if user elected to override rehearsals, unschedule any rehearsals that are already scheduled
                 company = Company.objects.get(name=company_name)
@@ -385,6 +387,12 @@ def makeSchedule(request, company_name, member_name):
                             rehearsal_list.append(rehearsal)
 
                     print "Unscheduled rehearsals with least # of available casts:\n", rehearsal_list
+                    # if rehearsal_list == []:
+                    #     company.has_schedule = False
+                    #     unscheduleRehearsals(company_name, scheduled_rehearsals, scheduled_casts)
+                    #     company.save()
+                    #     return HttpResponse("Could not complete scheduling. <p>Please return to the <a href='/%s/%s/schedule'>scheduling page</a> to unschedule rehearsals / overwrite old schedule in order to complete this scheduling request.</p>" % (company_name, member_name))
+
 
                     # get all unscheduled casts available during rehearsals above
                     # pick the ones with least number of available rehearsals
@@ -445,12 +453,12 @@ def makeSchedule(request, company_name, member_name):
 
                     else:
                         # if cannot complete schedule for some reason
-                        company.has_schedule = False
                         unscheduleRehearsals(company_name, scheduled_rehearsals, scheduled_casts)
+                        if override:
+                            company.has_schedule = False
                         company.save()
-                        if len(casts) == 1:
-                            return HttpResponse("Could not schedule %s for %s, because all members in cast are not available.<p>Someone in the cast should adjust their conflicts before you schedule this cast for this rehearsal.</p><a href='/%s/%s'>Return to Hub</a>" % (casts[0], rehearsals[0], company_name, member_name))
-                        return HttpResponse("Something went wrong! Could not complete scheduling. <p>Make sure you are not trying to schedule casts for rehearsal times that all cast members cannot make (the schedule will not allow this). If you would like to schedule a cast for a specific rehearsal time, regardless of conflicts, please ask members to adjust their conflicts, then return to the <a href='/%s/%s/schedule'>scheduling page</a> to re-schedule the %s rehearsal(s)/cast(s)</p>" % (company_name, member_name, company_name))
+                        return HttpResponse("Something went wrong! Could not complete schedule. <p>Please make sure the rehearsal(s)/cast(s) you are trying to schedule are not already scheduled. If rehearsal(s)/cast(s) are free, please ask members to adjust their conflicts.</p><a href='/%s/%s'>Return to Hub</a> or <a href='/%s/%s/schedule'>Return to Scheduling</a>" % (company_name, member_name, company_name, member_name))
+                        # return HttpResponse("Something went wrong! Could not complete schedule. <p>Make sure you are not trying to schedule casts for rehearsal times that all cast members cannot make (the schedule will not allow this). If you would like to schedule a cast for a specific rehearsal time, regardless of conflicts, please ask members to adjust their conflicts, then return to the <a href='/%s/%s/schedule'>scheduling page</a> to re-schedule the %s rehearsal(s)/cast(s)</p>" % (company_name, member_name, company_name))
 
                 company.has_schedule = True
                 company.save()
@@ -480,6 +488,7 @@ def confirmSchedule(request, company_name, member_name):
                 cast_list.append(cast)
 
             errors = []
+            warnings = []
 
             # check lengths
             if len(rehearsals) == 0:
@@ -494,29 +503,46 @@ def confirmSchedule(request, company_name, member_name):
 
             # # make sure availabeRehearsals >0 for all casts
             cast_error = ""
+            cast_warning = ""
             for cast in cast_list:
                 if len(cast.getAllRehearsals()) == 0:
                     c = " - " + cast.name
                     cast_error += c
+                if cast.is_scheduled:
+                    c = " - " + cast.name
+                    cast_warning += c
 
             if '-' in cast_error:
                 cast_error += ' -'
                 errors.append("The following casts are not available for any rehearsals and cannot be scheduled:")
                 errors.append(cast_error)
                 errors.append('Consider asking members of the cast to adjust their conflicts.')
+            if '-' in cast_warning:
+                cast_warning += ' -'
+                warnings.append("The following casts are currently scheduled for a rehearsal, and may not be scheduled unless you overwrite the current schedule.")
+                warnings.append(cast_warning)
+                warnings.append("If you would like to schedule an additional rehearsal for this cast, please do so from the scheduling page.")
 
             # make sure availabeCasts >0 for all rehearsals
             rehearsal_error = ""
+            rehearsal_warning = ""
             for rehearsal in rehearsal_list:
                 if len(rehearsal.getAllCasts()) == 0:
                     r = " - " + rehearsal.place + ", " + str(rehearsal.start_time) + " (" + rehearsal.day_of_week + ")"
                     rehearsal_error += r
+                if rehearsal.is_scheduled:
+                    r = " - " + rehearsal.place + ", " + str(rehearsal.start_time) + " (" + rehearsal.day_of_week + ")"
+                    rehearsal_warning += r
 
             if '-' in rehearsal_error:
                 rehearsal_error += ' -'
                 errors.append("The following rehearsals do not work for any casts and cannot be scheduled:")
                 errors.append(rehearsal_error)
                 errors.append('Consider contacting PAC or switching rehearsal spaces with another company.')
+            if '-' in rehearsal_warning:
+                rehearsal_warning += ' -'
+                warnings.append("The following rehearsals are currently assigned to a cast, and may not be scheduled unless you overwrite / delete the current schedule.")
+                warnings.append(rehearsal_warning)
 
             # print errors
             if errors == []:
@@ -536,13 +562,16 @@ def confirmSchedule(request, company_name, member_name):
                 finalDict = None
                 form = None
 
+            if warnings == []:
+                warnings = None
+
             # return render(request, 'profiles/makeschedule.html', {'company':company, 'member':admin.member, 'make_schedule':make_schedule})
             # print errors, finalDict
 
 
     
     # return redirect('profiles:scheduling', company_name, member_name,)
-    return render(request, 'profiles/confirmschedule.html', {'company_name':company_name, 'member_name':member_name, 'errors':errors, 'dict':finalDict, 'form':form})
+    return render(request, 'profiles/confirmschedule.html', {'company_name':company_name, 'member_name':member_name, 'errors':errors, 'warnings':warnings, 'dict':finalDict, 'form':form})
 
 
 

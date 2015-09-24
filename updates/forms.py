@@ -14,6 +14,19 @@ class UserForm(forms.Form):
         queryset = Member.objects.filter(groups__isnull=True).exclude(username='admin'),
         label="", help_text=""
     )
+
+class RehearsalForm(forms.Form):
+    rehearsals = MultipleTypeaheadField(
+        queryset = Rehearsal.objects.all(),
+        label="", help_text=""
+    )
+    def __init__(self, *args, **kwargs):
+        company_name = kwargs.pop('company_name', None)
+        super(RehearsalForm, self).__init__(*args, **kwargs)
+
+        if company_name:
+            self.fields['rehearsals'].queryset = Rehearsal.objects.filter(company__name=company_name, is_scheduled=False)
+
 class CastingForm(forms.Form):
     members = MultipleTypeaheadField(
         queryset = Member.objects.all(),
@@ -80,10 +93,10 @@ class ConflictForm(ModelForm):
         model = Conflict
         fields = ['description', 'day_of_week', 'start_time', 'end_time']
 
-class RehearsalForm(ModelForm):
-    class Meta:
-        model = Rehearsal
-        fields = ['place', 'day_of_week', 'start_time', 'end_time']
+# class RehearsalForm(ModelForm):
+#     class Meta:
+#         model = Rehearsal
+#         fields = ['place', 'day_of_week', 'start_time', 'end_time']
 
 class CastForm(ModelForm):
     class Meta:

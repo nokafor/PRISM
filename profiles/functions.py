@@ -45,46 +45,70 @@ def adminAuth(request, company_name, member_name):
 def unscheduleRehearsals(company_name, rehearsals, casts):
     company = Company.objects.get(name=company_name)
 
-    totalCasts = Cast.objects.filter(company=company)
-    totalRehearsals = Rehearsal.objects.filter(company=company)
+    # print rehearsals, "\n", casts
 
-    members = Member.objects.filter(groups__name=company.name)
-    for mem in members:
-        conflicts = mem.conflict_set.filter(description__startswith="%s Rehearsal" % (company.name))
-        for r in conflicts:
-            r.delete()
+    # unschedule any casts in list
+    for cast in casts:
+        cast.unschedule()
 
-    choreographers = Choreographer.objects.filter(company=company)
-    for choreographer in choreographers:
-        conflicts = choreographer.member.conflict_set.filter(description__startswith="%s Rehearsal" % (company.name))
-        for r in conflicts:
-            r.delete()
-
-    for cast in totalCasts:
-        cast.is_scheduled = False
-        cast.rehearsal = None
-        cast.save()
-
-    for rehearsal in totalRehearsals:
+    # unschedule any rehearsals in list
+    for rehearsal in rehearsals:
         rehearsal.is_scheduled = False
         rehearsal.save()
 
-    rehearsal_list = []
-    cast_list = []
-
-    for rehearsal in rehearsals:
-        rehearsal_list.append(Rehearsal.objects.get(id=rehearsal.id))
-    for cast in casts:
-        cast_list.append(Cast.objects.get(id=cast.id))
-
-    finalDict = {}
-    finalDict["Rehearsals"] = rehearsal_list
-    finalDict["Casts"] = cast_list
+        associated_casts = Cast.objects.filter(company=company, rehearsal=rehearsal)
+        for cast in associated_casts:
+            cast.unschedule()
 
     company.has_schedule = False
     company.save()
 
+
+    finalDict = {}
+    finalDict["Rehearsals"] = rehearsals
+    finalDict["Casts"] = casts
+
     return finalDict
+    # totalCasts = Cast.objects.filter(company=company)
+    # totalRehearsals = Rehearsal.objects.filter(company=company)
+
+    # members = Member.objects.filter(groups__name=company.name)
+    # for mem in members:
+    #     conflicts = mem.conflict_set.filter(description__startswith="%s Rehearsal" % (company.name))
+    #     for r in conflicts:
+    #         r.delete()
+
+    # choreographers = Choreographer.objects.filter(company=company)
+    # for choreographer in choreographers:
+    #     conflicts = choreographer.member.conflict_set.filter(description__startswith="%s Rehearsal" % (company.name))
+    #     for r in conflicts:
+    #         r.delete()
+
+    # for cast in totalCasts:
+    #     cast.is_scheduled = False
+    #     cast.rehearsal = None
+    #     cast.save()
+
+    # for rehearsal in totalRehearsals:
+    #     rehearsal.is_scheduled = False
+    #     rehearsal.save()
+
+    # rehearsal_list = []
+    # cast_list = []
+
+    # for rehearsal in rehearsals:
+    #     rehearsal_list.append(Rehearsal.objects.get(id=rehearsal.id))
+    # for cast in casts:
+    #     cast_list.append(Cast.objects.get(id=cast.id))
+
+    # finalDict = {}
+    # finalDict["Rehearsals"] = rehearsal_list
+    # finalDict["Casts"] = cast_list
+
+    # company.has_schedule = False
+    # company.save()
+
+    # return finalDict
 
 # Functions for parsing PAC schedule
 # =====================================

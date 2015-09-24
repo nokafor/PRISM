@@ -46,9 +46,8 @@
 </head>
 
 <body>
-    <script>
-        $(function () { $("input,select").not("[type=submit]").jqBootstrapValidation(); } );
-    </script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
@@ -152,7 +151,7 @@
                                     {% endif %}
                                 </div>
                             {% endfor %}
-                            <label class="checkbox"><input type="checkbox" name="casts" class="hidden" data-validation-minchecked-minchecked="1" data-validation-minchecked-message="Choose at least one"></label>
+                            <label class="checkbox"><input type="checkbox" name="casts" class="hidden"></label>
                     {% else %}
                         <p>No casts have been added yet.</p>
                     {% endif %}
@@ -168,26 +167,61 @@
 
     {% if company.has_schedule %}
     <section style="margin-top:10%">
-        <div class="container center">
+        <div class="container center" style="width:100%; padding:0">
             <h2>Current Weekly Rehearsal Schedule</h2> 
             <hr>
-            <div class="row">
                 {% for cast in cast_list %}
-                {% if cast.is_scheduled %}
-                    <div class="col-md-3 col-sm-4 col-xs-6 portfolio-item" style="padding:2%">
-                        <h3>{{cast}}</h3>
-                        <!-- <br> -->
-                        <strong>{{cast.rehearsal.day_of_week}}</strong>
-                        <br>
-                        {{cast.rehearsal.start_time}} - {{cast.rehearsal.end_time}}
-                        <br>
-                        ({{cast.rehearsal.place}})
+                <div class="row" style="width:100%">
+                    {% if cast.is_scheduled %}
+                        <div style="padding:3%">
+                            <h3>{{cast}}</h3>
+                            <!-- <br> -->
+                            <strong>{{cast.rehearsal.day_of_week}}</strong>
+                            <br>
+                            {{cast.rehearsal.start_time}} - {{cast.rehearsal.end_time}}
+                            <br>
+                            ({{cast.rehearsal.place}})
+                            <br>
+                            <a href="#" style="font-size:70%" data-toggle="modal" data-target="#rehearsal-modal"> Add Another Rehearsal</a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Add Another Rehearsal Modal -->
+                <div class="modal fade" id="rehearsal-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="text-align:left">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title">Add Rehearsal(s)</h4>
+                            </div>
+
+                            <div class="modal-body" style="padding:7%;">
+                                <div class="form">
+                                    <h5>Adding Rehearsal(s)</h5>
+                                    <p class="modal-font-size" style="font-size:70%">You may search for rehearsals below, but because PRIISM utilizes weekly schedules, you may not schedule another rehearsal for {{cast}} that is already scheduled for another cast this week.</p>
+                                    <form class="flexbox" action="" method="post">
+                                    {% csrf_token %}        
+                                        {{ form.non_field_errors }}
+                                        <div class="fieldWrapper" style="width:75%">
+                                            {{ form.rehearsals.errors }}
+                                            {{ form.rehearsals }}
+                                        </div>
+                                        <!-- {{form}} -->
+                                        <button type="submit" class="btn btn-primary" style="border-radius:5px; padding:0; margin:0; height:35px; margin-left:5px; width:35px;"><span class="fa fa-plus"></span></button>
+                                        {{ form.media }}
+                                    </form>
+                                </div>  
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
                     </div>
-                {% endif %}
+                </div> 
                 {% endfor%}
-            </div>
             {% if admin %}
-            <div class="row center">
+            <div class="row center" style="width:100%">
                 <a href="{% url 'updates:deleteSchedule' company.name member.username %}" class="btn btn-lg btn-default">Delete Schedule</a>
             </div>
             {% endif %}
@@ -206,8 +240,6 @@
         </div>
     </footer>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <!-- Pop Overs -->
     <script>
